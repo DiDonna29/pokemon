@@ -9,7 +9,7 @@ import {
   fetchPokemonSpecies, 
   getTypeColorClass 
 } from "@/lib/pokeapi";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -81,7 +81,12 @@ export function PokemonDetailsView({ pokemon, onClose, lang }: PokemonDetailsVie
                 
                 <div className="z-10 flex flex-col items-center">
                   <span className="text-white/60 font-headline font-bold text-xl mb-2">#{String(pokemon.id).padStart(3, '0')}</span>
-                  <h2 className="text-white font-headline font-bold text-5xl capitalize tracking-tight drop-shadow-lg">{pokemon.name}</h2>
+                  <DialogTitle className="text-white font-headline font-bold text-5xl capitalize tracking-tight drop-shadow-lg">
+                    {pokemon.name}
+                  </DialogTitle>
+                  <DialogDescription className="sr-only">
+                    {flavorText}
+                  </DialogDescription>
                   <div className="flex gap-2 mt-4">
                     {pokemon.types.map(t => (
                       <Badge key={t.type.name} variant="secondary" className="glass bg-white/20 border-none px-4 py-1 text-white capitalize text-sm font-bold">
