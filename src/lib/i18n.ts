@@ -1,4 +1,3 @@
-
 export type Language = 'en' | 'es';
 
 export const translations = {
@@ -25,8 +24,8 @@ export const translations = {
     no_pokemon: "No Pokemon Found",
     no_pokemon_desc: "Try adjusting your filters or checking your search query.",
     clear_filters: "Clear all filters",
-    infinite_dex: "Infinite Dex",
-    infinite_dex_desc: "Browse all 1000+ species via high-performance PokeAPI integration.",
+    infinite_dex: "Master Dex",
+    infinite_dex_desc: "Explore the comprehensive database of every known Pokemon species.",
     about: "About",
     stats: "Stats",
     height: "Height",
@@ -40,6 +39,10 @@ export const translations = {
     small_lt_1m: "Small (< 1m)",
     medium_1_2m: "Medium (1m - 2m)",
     large_gt_2m: "Large (> 2m)",
+    next: "Next",
+    previous: "Previous",
+    page: "Page",
+    of: "of"
   },
   es: {
     app_subtitle: "La Pokédex Digital Definitiva",
@@ -64,8 +67,8 @@ export const translations = {
     no_pokemon: "No se encontraron Pokémon",
     no_pokemon_desc: "Intenta ajustar los filtros o revisar tu búsqueda.",
     clear_filters: "Limpiar filtros",
-    infinite_dex: "Dex Infinita",
-    infinite_dex_desc: "Explora más de 1000 especies con integración de PokeAPI de alto rendimiento.",
+    infinite_dex: "Dex Maestro",
+    infinite_dex_desc: "Explora la base de datos completa de todas las especies Pokémon conocidas.",
     about: "Información",
     stats: "Estadísticas",
     height: "Altura",
@@ -79,5 +82,9 @@ export const translations = {
     small_lt_1m: "Pequeño (< 1m)",
     medium_1_2m: "Mediano (1m - 2m)",
     large_gt_2m: "Grande (> 2m)",
+    next: "Siguiente",
+    previous: "Anterior",
+    page: "Página",
+    of: "de"
   }
 };
