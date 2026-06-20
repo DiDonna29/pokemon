@@ -1,34 +1,67 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { PokemonDetails, fetchPokemonDetails } from "@/lib/pokeapi";
+import { useState, useMemo, useEffect } from "react";
+import { PokemonDetails, fetchPokemonDetails, PokemonSummary } from "@/lib/pokeapi";
 import { Language, translations } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { Swords, RotateCcw, Search, Zap, Heart, Shield, Trophy } from "lucide-react";
+import { Swords, RotateCcw, Search, Zap, Heart, Shield, Trophy, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 interface BattleArenaProps {
   lang: Language;
+  allPokemon: PokemonSummary[];
 }
 
-export function BattleArena({ lang }: BattleArenaProps) {
+export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
   const t = translations[lang];
+  
   const [p1Search, setP1Search] = useState("");
   const [p2Search, setP2Search] = useState("");
+  
+  const [p1Suggestions, setP1Suggestions] = useState<PokemonSummary[]>([]);
+  const [p2Suggestions, setP2Suggestions] = useState<PokemonSummary[]>([]);
+
   const [p1, setP1] = useState<PokemonDetails | null>(null);
   const [p2, setP2] = useState<PokemonDetails | null>(null);
+  
   const [loading, setLoading] = useState(false);
   const [battleLogs, setBattleLogs] = useState<{turn: number, message: string}[]>([]);
   const [winner, setWinner] = useState<1 | 2 | null>(null);
 
-  const handleSearch = async (player: 1 | 2, name: string) => {
-    if (!name.trim()) return;
+  // Filter suggestions for Player 1
+  useEffect(() => {
+    if (p1Search.length > 1) {
+      const filtered = allPokemon.filter(p => p.name.includes(p1Search.toLowerCase())).slice(0, 5);
+      setP1Suggestions(filtered);
+    } else {
+      setP1Suggestions([]);
+    }
+  }, [p1Search, allPokemon]);
+
+  // Filter suggestions for Player 2
+  useEffect(() => {
+    if (p2Search.length > 1) {
+      const filtered = allPokemon.filter(p => p.name.includes(p2Search.toLowerCase())).slice(0, 5);
+      setP2Suggestions(filtered);
+    } else {
+      setP2Suggestions([]);
+    }
+  }, [p2Search, allPokemon]);
+
+  const handleSelectPokemon = async (player: 1 | 2, name: string) => {
     setLoading(true);
+    if (player === 1) {
+      setP1Search(name);
+      setP1Suggestions([]);
+    } else {
+      setP2Search(name);
+      setP2Suggestions([]);
+    }
+
     try {
       const details = await fetchPokemonDetails(name.toLowerCase());
       if (details) {
@@ -50,8 +83,6 @@ export function BattleArena({ lang }: BattleArenaProps) {
     
     let hp1 = p1.stats.find(s => s.stat.name === 'hp')?.base_stat || 100;
     let hp2 = p2.stats.find(s => s.stat.name === 'hp')?.base_stat || 100;
-    const initialHp1 = hp1;
-    const initialHp2 = hp2;
     
     const atk1 = p1.stats.find(s => s.stat.name === 'attack')?.base_stat || 50;
     const def1 = p1.stats.find(s => s.stat.name === 'defense')?.base_stat || 50;
@@ -64,7 +95,6 @@ export function BattleArena({ lang }: BattleArenaProps) {
     let logs: {turn: number, message: string}[] = [];
     let turnCount = 1;
     
-    // Determine who goes first
     let currentTurn = spd1 >= spd2 ? 1 : 2;
     
     while (hp1 > 0 && hp2 > 0 && turnCount < 50) {
@@ -102,18 +132,36 @@ export function BattleArena({ lang }: BattleArenaProps) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         {/* Player 1 Selection */}
-        <div className="space-y-6">
-          <div className="flex gap-2">
+        <div className="space-y-6 relative">
+          <div className="relative group">
             <Input 
               placeholder={t.select_pokemon} 
               value={p1Search} 
               onChange={(e) => setP1Search(e.target.value)}
-              className="glass border-foreground/10 rounded-xl"
-              onKeyDown={(e) => e.key === 'Enter' && handleSearch(1, p1Search)}
+              className="glass border-foreground/10 rounded-xl pl-10 h-12 focus:ring-primary/50"
             />
-            <Button size="icon" onClick={() => handleSearch(1, p1Search)} className="rounded-xl bg-primary text-black">
-              <Search className="w-4 h-4" />
-            </Button>
+            <Search className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground" />
+            
+            <AnimatePresence>
+              {p1Suggestions.length > 0 && (
+                <motion.div 
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="absolute z-50 w-full mt-2 glass rounded-2xl border-foreground/5 shadow-2xl overflow-hidden"
+                >
+                  {p1Suggestions.map(suggest => (
+                    <button
+                      key={suggest.name}
+                      onClick={() => handleSelectPokemon(1, suggest.name)}
+                      className="w-full px-5 py-3 text-left hover:bg-primary/10 hover:text-primary font-bold capitalize transition-colors border-b border-foreground/5 last:border-0"
+                    >
+                      {suggest.name}
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
           
           <AnimatePresence mode="wait">
@@ -147,8 +195,8 @@ export function BattleArena({ lang }: BattleArenaProps) {
                 </div>
               </motion.div>
             ) : (
-              <div className="glass h-[400px] rounded-[2.5rem] border-dashed border-foreground/10 flex items-center justify-center text-muted-foreground font-black uppercase text-xs tracking-widest">
-                Slot 1 Empty
+              <div className="glass h-[400px] rounded-[2.5rem] border-dashed border-foreground/10 flex flex-col items-center justify-center text-muted-foreground gap-4">
+                {loading ? <Loader2 className="w-10 h-10 animate-spin text-primary" /> : <div className="font-black uppercase text-xs tracking-widest opacity-30">Slot 1 Empty</div>}
               </div>
             )}
           </AnimatePresence>
@@ -175,7 +223,7 @@ export function BattleArena({ lang }: BattleArenaProps) {
 
           <Button 
             variant="ghost" 
-            onClick={() => { setP1(null); setP2(null); setWinner(null); setBattleLogs([]); }}
+            onClick={() => { setP1(null); setP2(null); setWinner(null); setBattleLogs([]); setP1Search(""); setP2Search(""); }}
             className="text-muted-foreground hover:text-primary gap-2"
           >
             <RotateCcw className="w-4 h-4" />
@@ -184,18 +232,36 @@ export function BattleArena({ lang }: BattleArenaProps) {
         </div>
 
         {/* Player 2 Selection */}
-        <div className="space-y-6">
-          <div className="flex gap-2">
+        <div className="space-y-6 relative">
+          <div className="relative group">
             <Input 
               placeholder={t.select_pokemon} 
               value={p2Search} 
               onChange={(e) => setP2Search(e.target.value)}
-              className="glass border-foreground/10 rounded-xl"
-              onKeyDown={(e) => e.key === 'Enter' && handleSearch(2, p2Search)}
+              className="glass border-foreground/10 rounded-xl pl-10 h-12 focus:ring-secondary/50"
             />
-            <Button size="icon" onClick={() => handleSearch(2, p2Search)} className="rounded-xl bg-secondary text-white">
-              <Search className="w-4 h-4" />
-            </Button>
+            <Search className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground" />
+            
+            <AnimatePresence>
+              {p2Suggestions.length > 0 && (
+                <motion.div 
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="absolute z-50 w-full mt-2 glass rounded-2xl border-foreground/5 shadow-2xl overflow-hidden"
+                >
+                  {p2Suggestions.map(suggest => (
+                    <button
+                      key={suggest.name}
+                      onClick={() => handleSelectPokemon(2, suggest.name)}
+                      className="w-full px-5 py-3 text-left hover:bg-secondary/10 hover:text-secondary font-bold capitalize transition-colors border-b border-foreground/5 last:border-0"
+                    >
+                      {suggest.name}
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
           
           <AnimatePresence mode="wait">
@@ -229,8 +295,8 @@ export function BattleArena({ lang }: BattleArenaProps) {
                 </div>
               </motion.div>
             ) : (
-              <div className="glass h-[400px] rounded-[2.5rem] border-dashed border-foreground/10 flex items-center justify-center text-muted-foreground font-black uppercase text-xs tracking-widest">
-                Slot 2 Empty
+              <div className="glass h-[400px] rounded-[2.5rem] border-dashed border-foreground/10 flex flex-col items-center justify-center text-muted-foreground gap-4">
+                {loading ? <Loader2 className="w-10 h-10 animate-spin text-secondary" /> : <div className="font-black uppercase text-xs tracking-widest opacity-30">Slot 2 Empty</div>}
               </div>
             )}
           </AnimatePresence>

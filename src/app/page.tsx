@@ -318,7 +318,7 @@ export default function Home() {
           </TabsContent>
 
           <TabsContent value="arena" className="mt-0 outline-none">
-            <BattleArena lang={lang} />
+            <BattleArena lang={lang} allPokemon={allPokemon} />
           </TabsContent>
         </Tabs>
       </section>
