@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { PokemonSummary, PokemonDetails, fetchPokemonList } from "@/lib/pokeapi";
+import { useEffect, useState, useMemo } from "react";
+import { PokemonSummary, PokemonDetails, fetchPokemonList, fetchAllPokemon } from "@/lib/pokeapi";
 import { PokemonCard } from "@/components/pokedex/PokemonCard";
 import { SearchPanel } from "@/components/pokedex/SearchPanel";
 import { FiltersDrawer } from "@/components/pokedex/FiltersDrawer";
 import { PokemonDetailsView } from "@/components/pokedex/PokemonDetails";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Trophy, Github, LayoutGrid, Info, Sun, Moon, Globe, ChevronLeft, ChevronRight } from "lucide-react";
+import { Trophy, Globe, Sun, Moon, LayoutGrid, Info, ChevronLeft, ChevronRight } from "lucide-react";
 import { Language, translations } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -21,10 +21,11 @@ export default function Home() {
   const t = translations[lang];
 
   // Data State
+  const [allPokemon, setAllPokemon] = useState<PokemonSummary[]>([]);
   const [visiblePokemon, setVisiblePokemon] = useState<PokemonSummary[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [totalCount, setTotalCount] = useState(1025); // Approximate total
+  const [loading, setLoading] = useState(true);
+  const [totalCount, setTotalCount] = useState(0);
 
   // Filter State
   const [searchQuery, setSearchQuery] = useState("");
@@ -43,21 +44,55 @@ export default function Home() {
     document.documentElement.className = theme;
   }, [theme]);
 
-  // Load List based on pagination or filters
+  // Initial Load: Fetch all pokemon names for searching
   useEffect(() => {
-    async function loadData() {
-      setLoading(true);
-      const offset = (currentPage - 1) * PAGE_SIZE;
-      
-      // If we are searching or have AI suggestions, we don't paginate the same way
-      if (!searchQuery && !aiSuggestions && selectedTypes.length === 0) {
-        const list = await fetchPokemonList(PAGE_SIZE, offset);
-        setVisiblePokemon(list);
+    async function loadInitial() {
+      try {
+        const fullList = await fetchAllPokemon();
+        setAllPokemon(fullList);
+      } catch (error) {
+        console.error("Failed to load pokemon list", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
-    loadData();
-  }, [currentPage, searchQuery, aiSuggestions, selectedTypes.length]);
+    loadInitial();
+  }, []);
+
+  // Computed Filtered List
+  const filteredList = useMemo(() => {
+    let list = [...allPokemon];
+
+    // Filter by name (Partial match)
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter(p => p.name.includes(q));
+    }
+
+    // Filter by AI Suggestions
+    if (aiSuggestions) {
+      list = list.filter(p => aiSuggestions.includes(p.name.toLowerCase()));
+    }
+
+    // Sorting
+    if (sortBy === "name-asc") {
+      list.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortBy === "name-desc") {
+      list.sort((a, b) => b.name.localeCompare(a.name));
+    } else if (sortBy === "id-desc") {
+      list.reverse(); // Default is asc, so desc is just reversed if original is asc
+    }
+
+    return list;
+  }, [allPokemon, searchQuery, aiSuggestions, sortBy]);
+
+  // Update visible list based on filtered list and pagination
+  useEffect(() => {
+    const offset = (currentPage - 1) * PAGE_SIZE;
+    const paginated = filteredList.slice(offset, offset + PAGE_SIZE);
+    setVisiblePokemon(paginated);
+    setTotalCount(filteredList.length);
+  }, [filteredList, currentPage]);
 
   // Load Caught state from LocalStorage
   useEffect(() => {
@@ -79,18 +114,12 @@ export default function Home() {
     setSearchQuery(query);
     setAiSuggestions(null);
     setCurrentPage(1);
-    if (!query) {
-      setVisiblePokemon([]);
-    } else {
-      setVisiblePokemon([{ name: query.toLowerCase(), url: "" }]);
-    }
   };
 
   const handleAiSuggest = (names: string[]) => {
     setAiSuggestions(names);
     setSearchQuery("");
     setCurrentPage(1);
-    setVisiblePokemon(names.map(name => ({ name, url: "" })));
   };
 
   const handleClearFilters = () => {
@@ -102,7 +131,7 @@ export default function Home() {
     setCurrentPage(1);
   };
 
-  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE) || 1;
 
   return (
     <main className="min-h-screen bg-background text-foreground relative pb-20 overflow-x-hidden transition-colors duration-500">
@@ -219,7 +248,7 @@ export default function Home() {
         </motion.div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8 min-h-[400px]">
           <AnimatePresence mode="popLayout">
             {visiblePokemon.map((p, idx) => (
               <motion.div 
@@ -258,7 +287,7 @@ export default function Home() {
         )}
 
         {/* Empty State */}
-        {visiblePokemon.length === 0 && !loading && (
+        {!loading && visiblePokemon.length === 0 && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -276,7 +305,7 @@ export default function Home() {
         )}
 
         {/* Pagination Controls */}
-        {!searchQuery && !aiSuggestions && visiblePokemon.length > 0 && (
+        {!loading && visiblePokemon.length > 0 && (
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -286,7 +315,7 @@ export default function Home() {
               <Button 
                 variant="outline" 
                 size="icon" 
-                disabled={currentPage === 1 || loading}
+                disabled={currentPage === 1}
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                 className="rounded-2xl glass h-12 w-12 border-foreground/10 hover:bg-primary/10 hover:text-primary transition-all active:scale-95"
               >
@@ -302,7 +331,7 @@ export default function Home() {
               <Button 
                 variant="outline" 
                 size="icon" 
-                disabled={currentPage === totalPages || loading}
+                disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                 className="rounded-2xl glass h-12 w-12 border-foreground/10 hover:bg-secondary/10 hover:text-secondary transition-all active:scale-95"
               >

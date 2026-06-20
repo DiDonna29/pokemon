@@ -54,6 +54,15 @@ export const fetchPokemonList = async (limit: number = 20, offset: number = 0) =
   return data.results as PokemonSummary[];
 };
 
+/**
+ * Fetches all available pokemon summaries for local searching and filtering.
+ */
+export const fetchAllPokemon = async () => {
+  const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=2000`);
+  const data = await res.json();
+  return data.results as PokemonSummary[];
+};
+
 export const fetchPokemonDetails = async (nameOrId: string | number) => {
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${nameOrId}`);
   if (!res.ok) return null;
