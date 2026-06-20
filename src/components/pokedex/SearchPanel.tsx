@@ -1,7 +1,6 @@
-
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, Sparkles, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -23,12 +22,17 @@ export function SearchPanel({ onSearch, onAiSuggest, isLoading, lang }: SearchPa
   const [aiLoading, setAiLoading] = useState(false);
   const t = translations[lang];
 
+  // Automatic search for classic mode
+  useEffect(() => {
+    if (!aiMode) {
+      onSearch(query);
+    }
+  }, [query, aiMode, onSearch]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (aiMode) {
       handleAiDiscovery();
-    } else {
-      onSearch(query);
     }
   };
 
@@ -77,23 +81,22 @@ export function SearchPanel({ onSearch, onAiSuggest, isLoading, lang }: SearchPa
                  <X className="w-4 h-4" />
                </Button>
              )}
-             <Button 
-               type="submit" 
-               disabled={isLoading || aiLoading}
-               className={cn(
-                 "rounded-xl px-5 h-9 font-bold transition-all",
-                 aiMode ? "bg-secondary hover:bg-secondary/90 text-white" : "bg-primary hover:bg-primary/90 text-black"
-               )}
-             >
-               {aiLoading ? t.thinking : aiMode ? t.discover : t.search}
-             </Button>
+             {aiMode && (
+               <Button 
+                 type="submit" 
+                 disabled={isLoading || aiLoading}
+                 className="rounded-xl px-5 h-9 font-bold bg-secondary hover:bg-secondary/90 text-white transition-all"
+               >
+                 {aiLoading ? t.thinking : t.discover}
+               </Button>
+             )}
           </div>
         </motion.div>
       </form>
 
       <div className="flex items-center justify-center gap-6">
         <button 
-          onClick={() => setAiMode(false)}
+          onClick={() => { setAiMode(false); setQuery(""); }}
           className={cn(
             "text-[10px] font-bold uppercase tracking-widest transition-all relative pb-1",
             !aiMode ? "text-primary" : "text-muted-foreground hover:text-foreground"
@@ -103,7 +106,7 @@ export function SearchPanel({ onSearch, onAiSuggest, isLoading, lang }: SearchPa
           {!aiMode && <motion.div layoutId="underline" className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />}
         </button>
         <button 
-          onClick={() => setAiMode(true)}
+          onClick={() => { setAiMode(true); setQuery(""); }}
           className={cn(
             "text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-1.5 relative pb-1",
             aiMode ? "text-secondary" : "text-muted-foreground hover:text-foreground"

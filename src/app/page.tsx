@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { PokemonSummary, PokemonDetails, fetchPokemonList, fetchAllPokemon } from "@/lib/pokeapi";
 import { PokemonCard } from "@/components/pokedex/PokemonCard";
 import { SearchPanel } from "@/components/pokedex/SearchPanel";
@@ -59,6 +59,11 @@ export default function Home() {
     loadInitial();
   }, []);
 
+  // Automatic Page Reset on filter change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, aiSuggestions, selectedTypes, selectedWeight, selectedHeight, sortBy]);
+
   // Computed Filtered List
   const filteredList = useMemo(() => {
     let list = [...allPokemon];
@@ -80,7 +85,7 @@ export default function Home() {
     } else if (sortBy === "name-desc") {
       list.sort((a, b) => b.name.localeCompare(a.name));
     } else if (sortBy === "id-desc") {
-      list.reverse(); // Default is asc, so desc is just reversed if original is asc
+      list = [...list].reverse();
     }
 
     return list;
@@ -110,17 +115,15 @@ export default function Home() {
     localStorage.setItem("pokeNexus_caught", JSON.stringify(Array.from(next)));
   };
 
-  const handleSearch = (query: string) => {
+  const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
     setAiSuggestions(null);
-    setCurrentPage(1);
-  };
+  }, []);
 
-  const handleAiSuggest = (names: string[]) => {
+  const handleAiSuggest = useCallback((names: string[]) => {
     setAiSuggestions(names);
     setSearchQuery("");
-    setCurrentPage(1);
-  };
+  }, []);
 
   const handleClearFilters = () => {
     setSelectedTypes([]);
@@ -128,7 +131,6 @@ export default function Home() {
     setSelectedHeight(null);
     setSearchQuery("");
     setAiSuggestions(null);
-    setCurrentPage(1);
   };
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE) || 1;
