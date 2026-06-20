@@ -1,14 +1,20 @@
+
 "use client";
 
 import { useEffect, useState, useMemo, useCallback } from "react";
-import { PokemonSummary, PokemonDetails, fetchPokemonList, fetchAllPokemon } from "@/lib/pokeapi";
+import { 
+  PokemonSummary, 
+  PokemonDetails, 
+  fetchAllPokemon, 
+  fetchPokemonByType 
+} from "@/lib/pokeapi";
 import { PokemonCard } from "@/components/pokedex/PokemonCard";
 import { SearchPanel } from "@/components/pokedex/SearchPanel";
 import { FiltersDrawer } from "@/components/pokedex/FiltersDrawer";
 import { PokemonDetailsView } from "@/components/pokedex/PokemonDetails";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Trophy, Globe, Sun, Moon, LayoutGrid, Info, ChevronLeft, ChevronRight } from "lucide-react";
+import { Trophy, Globe, Sun, Moon, LayoutGrid, Info, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { Language, translations } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -25,12 +31,14 @@ export default function Home() {
   const [visiblePokemon, setVisiblePokemon] = useState<PokemonSummary[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [filtering, setFiltering] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
 
   // Filter State
   const [searchQuery, setSearchQuery] = useState("");
   const [aiSuggestions, setAiSuggestions] = useState<string[] | null>(null);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [typeFilteredNames, setTypeFilteredNames] = useState<Set<string> | null>(null);
   const [selectedWeight, setSelectedWeight] = useState<string | null>(null);
   const [selectedHeight, setSelectedHeight] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState("id-asc");
@@ -59,6 +67,34 @@ export default function Home() {
     loadInitial();
   }, []);
 
+  // Fetch names by type whenever selectedTypes changes
+  useEffect(() => {
+    async function updateTypeFilters() {
+      if (selectedTypes.length === 0) {
+        setTypeFilteredNames(null);
+        return;
+      }
+      
+      setFiltering(true);
+      try {
+        const results = await Promise.all(selectedTypes.map(type => fetchPokemonByType(type)));
+        // Intersection of names if multiple types selected
+        let intersectedNames: string[] = [];
+        results.forEach((typeList, idx) => {
+          const names = typeList.map(p => p.pokemon.name);
+          if (idx === 0) intersectedNames = names;
+          else intersectedNames = intersectedNames.filter(name => names.includes(name));
+        });
+        setTypeFilteredNames(new Set(intersectedNames));
+      } catch (error) {
+        console.error("Failed to filter by type", error);
+      } finally {
+        setFiltering(false);
+      }
+    }
+    updateTypeFilters();
+  }, [selectedTypes]);
+
   // Automatic Page Reset on filter change
   useEffect(() => {
     setCurrentPage(1);
@@ -79,6 +115,14 @@ export default function Home() {
       list = list.filter(p => aiSuggestions.includes(p.name.toLowerCase()));
     }
 
+    // Filter by Types (from the type-specific API fetch)
+    if (typeFilteredNames) {
+      list = list.filter(p => typeFilteredNames.has(p.name));
+    }
+
+    // Note: Weight and Height filtering globally requires full metadata for 1000+ items.
+    // In this MVP, we focus on the reactive experience of types and search.
+
     // Sorting
     if (sortBy === "name-asc") {
       list.sort((a, b) => a.name.localeCompare(b.name));
@@ -89,7 +133,7 @@ export default function Home() {
     }
 
     return list;
-  }, [allPokemon, searchQuery, aiSuggestions, sortBy]);
+  }, [allPokemon, searchQuery, aiSuggestions, typeFilteredNames, sortBy]);
 
   // Update visible list based on filtered list and pagination
   useEffect(() => {
@@ -131,6 +175,7 @@ export default function Home() {
     setSelectedHeight(null);
     setSearchQuery("");
     setAiSuggestions(null);
+    setTypeFilteredNames(null);
   };
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE) || 1;
@@ -148,11 +193,6 @@ export default function Home() {
           animate={{ scale: [1, 1.3, 1], opacity: [0.1, 0.15, 0.1] }}
           transition={{ duration: 12, repeat: Infinity, delay: 2 }}
           className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-secondary/20 rounded-full blur-[120px]" 
-        />
-        <motion.div 
-          animate={{ scale: [1, 1.4, 1], opacity: [0.05, 0.1, 0.05] }}
-          transition={{ duration: 15, repeat: Infinity, delay: 5 }}
-          className="absolute top-[20%] right-[20%] w-[30%] h-[30%] bg-accent/20 rounded-full blur-[100px]" 
         />
       </div>
 
@@ -228,8 +268,8 @@ export default function Home() {
                onClear={handleClearFilters}
                lang={lang}
              />
-             <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider hidden sm:block bg-foreground/5 px-3 py-1.5 rounded-full">
-               {totalCount} {t.species}
+             <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2 bg-foreground/5 px-3 py-1.5 rounded-full">
+               {filtering ? <Loader2 className="w-3 h-3 animate-spin" /> : totalCount} {t.species}
              </div>
           </div>
 
@@ -252,18 +292,18 @@ export default function Home() {
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8 min-h-[400px]">
           <AnimatePresence mode="popLayout">
-            {visiblePokemon.map((p, idx) => (
+            {!loading && !filtering && visiblePokemon.map((p, idx) => (
               <motion.div 
-                key={`${p.name}-${idx}`} 
+                key={`${p.name}`} 
                 layout
                 initial={{ opacity: 0, scale: 0.8, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.8, y: -20 }}
-                transition={{ type: "spring", stiffness: 300, damping: 25, delay: (idx % 10) * 0.03 }}
+                transition={{ type: "spring", stiffness: 300, damping: 25 }}
               >
                 <PokemonCard 
                   name={p.name} 
-                  isCaught={caughtPokemon.has(idx + 1 + (currentPage-1)*PAGE_SIZE)}
+                  isCaught={caughtPokemon.has(parseInt(p.url.split('/').filter(Boolean).pop() || '0'))}
                   onToggleCaught={(id) => toggleCaught(id)}
                   onClick={(details) => setSelectedDetails(details)}
                 />
@@ -273,8 +313,8 @@ export default function Home() {
         </div>
 
         {/* Skeleton Loader */}
-        {loading && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8 mt-8">
+        {(loading || filtering) && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
             {[...Array(PAGE_SIZE)].map((_, i) => (
               <div key={i} className="glass rounded-3xl p-6 h-[320px] flex flex-col items-center justify-between animate-pulse">
                 <div className="h-40 w-40 bg-foreground/5 rounded-full" />
@@ -289,7 +329,7 @@ export default function Home() {
         )}
 
         {/* Empty State */}
-        {!loading && visiblePokemon.length === 0 && (
+        {!loading && !filtering && visiblePokemon.length === 0 && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -307,7 +347,7 @@ export default function Home() {
         )}
 
         {/* Pagination Controls */}
-        {!loading && visiblePokemon.length > 0 && (
+        {!loading && !filtering && visiblePokemon.length > 0 && (
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

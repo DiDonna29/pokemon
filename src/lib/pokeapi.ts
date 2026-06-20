@@ -1,3 +1,4 @@
+
 export interface PokemonSummary {
   name: string;
   url: string;
@@ -48,6 +49,12 @@ export interface PokemonSpecies {
   };
 }
 
+export interface TypeResponse {
+  pokemon: {
+    pokemon: PokemonSummary;
+  }[];
+}
+
 export const fetchPokemonList = async (limit: number = 20, offset: number = 0) => {
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`);
   const data = await res.json();
@@ -72,6 +79,12 @@ export const fetchPokemonDetails = async (nameOrId: string | number) => {
 export const fetchPokemonSpecies = async (url: string) => {
   const res = await fetch(url);
   return (await res.json()) as PokemonSpecies;
+};
+
+export const fetchPokemonByType = async (type: string) => {
+  const res = await fetch(`https://pokeapi.co/api/v2/type/${type}`);
+  const data = (await res.json()) as TypeResponse;
+  return data.pokemon;
 };
 
 export const fetchEvolutionChain = async (url: string) => {
