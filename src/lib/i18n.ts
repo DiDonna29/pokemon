@@ -42,7 +42,9 @@ export const translations = {
     next: "Next",
     previous: "Previous",
     page: "Page",
-    of: "of"
+    of: "of",
+    my_collection: "My Collection",
+    all_pokemon: "All Species"
   },
   es: {
     app_subtitle: "La Pokédex Digital Definitiva",
@@ -85,6 +87,8 @@ export const translations = {
     next: "Siguiente",
     previous: "Anterior",
     page: "Página",
-    of: "de"
+    of: "de",
+    my_collection: "Mi Colección",
+    all_pokemon: "Todas las especies"
   }
 };

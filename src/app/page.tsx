@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState, useMemo, useCallback } from "react";
@@ -14,9 +13,10 @@ import { FiltersDrawer } from "@/components/pokedex/FiltersDrawer";
 import { PokemonDetailsView } from "@/components/pokedex/PokemonDetails";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Trophy, Globe, Sun, Moon, LayoutGrid, Info, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { Trophy, Globe, Sun, Moon, LayoutGrid, Info, ChevronLeft, ChevronRight, Loader2, Sparkles, Star } from "lucide-react";
 import { Language, translations } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 const PAGE_SIZE = 20;
 
@@ -42,6 +42,7 @@ export default function Home() {
   const [selectedWeight, setSelectedWeight] = useState<string | null>(null);
   const [selectedHeight, setSelectedHeight] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState("id-asc");
+  const [showCapturedOnly, setShowCapturedOnly] = useState(false);
 
   // UX State
   const [caughtPokemon, setCaughtPokemon] = useState<Set<number>>(new Set());
@@ -98,7 +99,7 @@ export default function Home() {
   // Automatic Page Reset on filter change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, aiSuggestions, selectedTypes, selectedWeight, selectedHeight, sortBy]);
+  }, [searchQuery, aiSuggestions, selectedTypes, selectedWeight, selectedHeight, sortBy, showCapturedOnly]);
 
   // Computed Filtered List
   const filteredList = useMemo(() => {
@@ -120,8 +121,13 @@ export default function Home() {
       list = list.filter(p => typeFilteredNames.has(p.name));
     }
 
-    // Note: Weight and Height filtering globally requires full metadata for 1000+ items.
-    // In this MVP, we focus on the reactive experience of types and search.
+    // Filter by Captured
+    if (showCapturedOnly) {
+      list = list.filter(p => {
+        const id = parseInt(p.url.split('/').filter(Boolean).pop() || '0');
+        return caughtPokemon.has(id);
+      });
+    }
 
     // Sorting
     if (sortBy === "name-asc") {
@@ -133,7 +139,7 @@ export default function Home() {
     }
 
     return list;
-  }, [allPokemon, searchQuery, aiSuggestions, typeFilteredNames, sortBy]);
+  }, [allPokemon, searchQuery, aiSuggestions, typeFilteredNames, sortBy, showCapturedOnly, caughtPokemon]);
 
   // Update visible list based on filtered list and pagination
   useEffect(() => {
@@ -176,6 +182,7 @@ export default function Home() {
     setSearchQuery("");
     setAiSuggestions(null);
     setTypeFilteredNames(null);
+    setShowCapturedOnly(false);
   };
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE) || 1;
@@ -223,13 +230,21 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-3">
-             <motion.div 
+             <motion.button 
                whileHover={{ scale: 1.05 }}
-               className="glass px-5 py-2 rounded-full flex items-center gap-3 border-foreground/10"
+               whileTap={{ scale: 0.95 }}
+               onClick={() => setShowCapturedOnly(!showCapturedOnly)}
+               className={cn(
+                 "glass px-5 py-2 rounded-full flex items-center gap-3 border-foreground/10 transition-all duration-300",
+                 showCapturedOnly ? "ring-2 ring-primary bg-primary/10" : ""
+               )}
              >
-                <div className="w-2.5 h-2.5 bg-primary rounded-full animate-pulse shadow-sm shadow-primary" />
+                <div className={cn(
+                  "w-2.5 h-2.5 rounded-full shadow-sm",
+                  showCapturedOnly ? "bg-primary animate-ping" : "bg-primary/50 animate-pulse"
+                )} />
                 <span className="text-xs font-black uppercase tracking-tight">{caughtPokemon.size} {t.captured}</span>
-             </motion.div>
+             </motion.button>
              
              <div className="flex items-center gap-1 glass p-1 rounded-full border-foreground/10">
                 <Button 
@@ -268,6 +283,22 @@ export default function Home() {
                onClear={handleClearFilters}
                lang={lang}
              />
+             
+             <div className="flex items-center gap-2">
+               <Button 
+                 variant={showCapturedOnly ? "secondary" : "ghost"}
+                 size="sm"
+                 onClick={() => setShowCapturedOnly(!showCapturedOnly)}
+                 className={cn(
+                   "rounded-xl font-bold text-xs gap-2 h-10 px-4 transition-all duration-300",
+                   showCapturedOnly ? "bg-primary text-black" : "glass border-foreground/10"
+                 )}
+               >
+                 {showCapturedOnly ? <Star className="w-3.5 h-3.5 fill-current" /> : <Star className="w-3.5 h-3.5" />}
+                 {t.my_collection}
+               </Button>
+             </div>
+
              <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2 bg-foreground/5 px-3 py-1.5 rounded-full">
                {filtering ? <Loader2 className="w-3 h-3 animate-spin" /> : totalCount} {t.species}
              </div>
@@ -292,23 +323,26 @@ export default function Home() {
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8 min-h-[400px]">
           <AnimatePresence mode="popLayout">
-            {!loading && !filtering && visiblePokemon.map((p, idx) => (
-              <motion.div 
-                key={`${p.name}`} 
-                layout
-                initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.8, y: -20 }}
-                transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              >
-                <PokemonCard 
-                  name={p.name} 
-                  isCaught={caughtPokemon.has(parseInt(p.url.split('/').filter(Boolean).pop() || '0'))}
-                  onToggleCaught={(id) => toggleCaught(id)}
-                  onClick={(details) => setSelectedDetails(details)}
-                />
-              </motion.div>
-            ))}
+            {!loading && !filtering && visiblePokemon.map((p) => {
+              const id = parseInt(p.url.split('/').filter(Boolean).pop() || '0');
+              return (
+                <motion.div 
+                  key={`${p.name}`} 
+                  layout
+                  initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.8, y: -20 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                >
+                  <PokemonCard 
+                    name={p.name} 
+                    isCaught={caughtPokemon.has(id)}
+                    onToggleCaught={(id) => toggleCaught(id)}
+                    onClick={(details) => setSelectedDetails(details)}
+                  />
+                </motion.div>
+              );
+            })}
           </AnimatePresence>
         </div>
 
