@@ -91,17 +91,44 @@ export default function Home() {
     loadInitial();
   }, []);
 
-  // Detect if search query is a type and fetch
+  // Detect if search query is a type (English or Spanish) and fetch
   useEffect(() => {
     async function checkSearchForType() {
       const q = searchQuery.toLowerCase().trim();
+      if (!q) {
+        setSearchTypeFilteredNames(null);
+        return;
+      }
+
+      // Find the type key even if searched in Spanish
+      let matchedType: string | null = null;
+      
+      // Check direct English match
       if (POKEMON_TYPES.includes(q)) {
+        matchedType = q;
+      } 
+      // Check translations (Spanish or English)
+      else {
+        const currentTranslations = translations[lang];
+        const esTranslations = translations.es;
+        const enTranslations = translations.en;
+        
+        matchedType = POKEMON_TYPES.find(type => {
+          const transCurrent = (currentTranslations as any)[type]?.toLowerCase();
+          const transEs = (esTranslations as any)[type]?.toLowerCase();
+          const transEn = (enTranslations as any)[type]?.toLowerCase();
+          return transCurrent === q || transEs === q || transEn === q;
+        }) || null;
+      }
+
+      if (matchedType) {
         setFiltering(true);
         try {
-          const typeList = await fetchPokemonByType(q);
+          const typeList = await fetchPokemonByType(matchedType);
           setSearchTypeFilteredNames(new Set(typeList.map(p => p.pokemon.name)));
         } catch (error) {
           console.error("Search type filter failed", error);
+          setSearchTypeFilteredNames(null);
         } finally {
           setFiltering(false);
         }
@@ -109,12 +136,9 @@ export default function Home() {
         setSearchTypeFilteredNames(null);
       }
     }
-    if (searchQuery) {
-      checkSearchForType();
-    } else {
-      setSearchTypeFilteredNames(null);
-    }
-  }, [searchQuery]);
+    
+    checkSearchForType();
+  }, [searchQuery, lang]);
 
   // Update Drawer Type Filters
   useEffect(() => {
