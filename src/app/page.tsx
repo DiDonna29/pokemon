@@ -434,9 +434,9 @@ export default function Home() {
       </div>
 
       <nav className={cn(
-        "fixed z-[120] bg-background/80 backdrop-blur-3xl border-foreground/5 md:border-white/10 flex items-center justify-around shadow-[0_-10px_40px_rgba(0,0,0,0.1)] transition-all duration-700",
-        "bottom-0 left-0 right-0 w-full h-20 md:h-24 border-t px-8 md:px-12", // Mobile & Tablet: Docked
-        "lg:bottom-10 lg:left-1/2 lg:-translate-x-1/2 lg:w-fit lg:min-w-[600px] lg:px-16 lg:rounded-[3rem] lg:border lg:h-24" // Desktop: Floating
+        "fixed bg-background/80 backdrop-blur-3xl border-foreground/5 md:border-white/10 flex items-center justify-around shadow-[0_-10px_40px_rgba(0,0,0,0.1)] transition-all duration-700",
+        "bottom-0 left-0 right-0 w-full h-20 md:h-24 border-t px-8 md:px-12 z-40", // Mobile & Tablet: Docked (z-40 to be below sheets/modals)
+        "lg:bottom-10 lg:left-1/2 lg:-translate-x-1/2 lg:w-fit lg:min-w-[600px] lg:px-16 lg:rounded-[3rem] lg:border lg:h-24 lg:z-40" // Desktop: Floating
       )}>
         <button 
           onClick={() => handleTabChange("pokedex")}

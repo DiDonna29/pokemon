@@ -77,13 +77,14 @@ export function FiltersDrawer({
           )}
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="glass w-full sm:max-w-md border-l border-foreground/10 p-0 flex flex-col [&>button]:hidden">
+      <SheetContent side="right" className="glass w-full sm:max-w-md border-l border-foreground/10 p-0 flex flex-col [&>button]:hidden z-50">
         <SheetHeader className="sr-only">
           <SheetTitle>{t.filters}</SheetTitle>
           <SheetDescription>{t.filters_desc}</SheetDescription>
         </SheetHeader>
 
-        <div className="shrink-0 p-6 md:p-8 space-y-6">
+        {/* Fixed Header with Exit Button */}
+        <div className="shrink-0 p-6 md:p-8 space-y-6 sticky top-0 z-10 glass border-b border-foreground/5 bg-background/80 backdrop-blur-3xl">
           <div className="flex items-center justify-between">
             <div className="relative w-32 h-10">
               <Image 
@@ -93,7 +94,7 @@ export function FiltersDrawer({
                 className="object-contain"
               />
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <Button 
                 variant="ghost" 
                 size="sm" 
@@ -107,9 +108,9 @@ export function FiltersDrawer({
                 <Button 
                   variant="ghost" 
                   size="icon" 
-                  className="h-10 w-10 rounded-xl glass border-foreground/5 text-muted-foreground hover:text-foreground transition-all"
+                  className="h-12 w-12 rounded-2xl glass border-foreground/10 text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition-all shadow-xl flex items-center justify-center"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-6 h-6" />
                 </Button>
               </SheetClose>
             </div>
@@ -119,8 +120,6 @@ export function FiltersDrawer({
           </p>
         </div>
         
-        <Separator className="bg-foreground/5" />
-
         <ScrollArea className="flex-1 px-6 md:px-8 py-6">
           <div className="space-y-12 pb-32">
             <div className="space-y-6">
