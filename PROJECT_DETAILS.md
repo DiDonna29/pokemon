@@ -1,10 +1,10 @@
 # 📖 Detalles Técnicos del Proyecto: PokeNexus
 
-Este documento proporciona una visión profunda de la arquitectura y las funcionalidades del proyecto para desarrolladores.
+Este documento proporciona una visión profunda de la arquitectura y las funcionalidades del proyecto para desarrolladores y stakeholders.
 
 ## 🏗️ Arquitectura de Software
 
-El proyecto sigue una estructura de **Next.js App Router** optimizada para el rendimiento y la escalabilidad:
+El proyecto sigue una estructura de **Next.js 15 App Router** optimizada para el rendimiento y la escalabilidad:
 
 - `src/app`: Rutas y páginas principales.
 - `src/components`: Componentes UI modulares y lógicos (Pokedex, BattleArena, Quiz).
@@ -17,32 +17,36 @@ El proyecto sigue una estructura de **Next.js App Router** optimizada para el re
 La funcionalidad de **Descubrimiento IA** utiliza Genkit para procesar lenguaje natural:
 
 1. **Definición de Flujo:** Ubicado en `src/ai/flows/intelligent-pokemon-discovery-flow.ts`.
-2. **Modelo:** Utiliza `gemini-2.5-flash` a través de `@genkit-ai/google-genai`.
-3. **Prompting:** Implementa *Handlebars* para estructurar las consultas al modelo, asegurando respuestas en formato JSON estructurado que la aplicación puede mapear directamente a IDs de la PokeAPI.
+2. **Modelo:** Utiliza `gemini-1.5-flash` a través de `@genkit-ai/google-genai`.
+3. **Lógica de Fallback:** Si la IA no encuentra resultados o falla la conexión (ej. falta de API Key), el sistema lanza un aviso visual (Toast) y permite resetear los filtros para no bloquear la experiencia del usuario.
 
-## 🌓 Sistema de Temas y Contraste
+## 🌓 Sistema de Contraste Inteligente (UI/UX)
 
-Se ha implementado una lógica de contraste dinámico para asegurar la accesibilidad (WCAG):
+Se ha implementado una lógica de contraste dinámico para asegurar la accesibilidad (WCAG) en todas las condiciones:
 
-- **Variables CSS:** Uso intensivo de variables HSL en `globals.css`.
-- **Lógica de Tipografía:** En componentes críticos (como `page.tsx` y `WhosThatPokemon.tsx`), el color del texto se fuerza dinámicamente:
-  - Fondos Claros/Amarillos -> Texto Negro (`text-black`).
-  - Fondos Oscuros -> Texto Blanco (`text-white`).
+- **Regla de Oro:** Texto NEGRO sobre fondos claros/amarillos y texto BLANCO sobre fondos oscuros/cristal.
+- **Botón Mi Colección:** Implementa un estado "Sticky/Activo" que cambia radicalmente su apariencia para indicar que el filtro está aplicado.
+- **Modo Oscuro/Claro:** Sincronización total mediante variables CSS HSL que garantizan que el cristalismo (glassmorphism) nunca comprometa la legibilidad.
 
-## 🎮 Funcionalidades Específicas
+## 🎮 Funcionalidades Premium
 
-### 1. Sistema de Filtrado Profundo
-A diferencia de una búsqueda simple, PokeNexus realiza llamadas asíncronas para obtener detalles de Peso y Altura, permitiendo un filtrado que la API estándar no ofrece en sus endpoints de lista.
+### 1. Sistema de Filtrado Profundo (Deep Filtering)
+A diferencia de una búsqueda simple, PokeNexus realiza llamadas asíncronas para obtener detalles de Peso y Altura. Hemos implementado un motor de filtrado que analiza estas métricas en tiempo real, permitiendo segmentar la Pokedex por categorías como "Pesado (>100kg)" o "Pequeño (<1m)".
 
-### 2. Campo de Batalla
-Utiliza un motor de simulación basado en las estadísticas reales (HP, Attack, Defense, Speed). Los registros de batalla se generan en tiempo real para dar transparencia al resultado.
+### 2. Campo de Batalla Directo
+Un motor de simulación basado en las estadísticas reales (HP, Attack, Defense, Speed). Los registros de batalla se generan con delays controlados para simular turnos de juego clásicos.
 
-### 3. Quiz de Suspenso
-El modo "¿Quién es ese Pokémon?" utiliza animaciones de `framer-motion` para crear un efecto de revelación dramático:
-- **Vibración:** Se activa al fallar o al revelar.
-- **Flash:** Un destello de opacidad simula el "encendido" de la luz.
-- **Confeti:** Feedback positivo visual tras el acierto o revelación.
+### 3. Quiz de Suspenso Cinematográfico
+El modo "¿Quién es ese Pokémon?" ha sido mejorado con:
+- **Vibración y Destellos:** Al intentar revelar al Pokémon, la silueta vibra y emite luz pulsante para crear suspenso.
+- **Revelado Automático:** Si el usuario falla 3 veces, se habilita el botón "Revelar Pokémon".
+- **Feedback Visual:** Explosión de confeti y cambio de brillo al descubrir la identidad.
 
-## 📦 Gestión de Paquetes
+## 📦 Gestión de Paquetes y Producción
 
-El archivo `package.json` está configurado para ser agnóstico al gestor de paquetes. Se recomienda el uso de `pnpm` por su velocidad y eficiencia en el manejo de dependencias de Next.js.
+El proyecto está configurado para ser agnóstico al gestor de paquetes:
+- **Scripts:** `dev`, `build`, `start`, `lint`.
+- **Configuración:** `next.config.ts` incluye protecciones de `allowedDevOrigins` para entornos de desarrollo en la nube.
+- **Soporte:** Probado en `pnpm`, `yarn` y `npm`.
+
+© 2024 PokeNexus - Desarrollado con pasión por los detalles.
