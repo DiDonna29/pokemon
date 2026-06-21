@@ -226,7 +226,12 @@ export default function Home() {
                     variant={showCapturedOnly ? "secondary" : "ghost"} 
                     size="sm" 
                     onClick={() => setShowCapturedOnly(!showCapturedOnly)} 
-                    className="rounded-2xl font-black text-[10px] uppercase tracking-widest h-12 px-6 glass hover:bg-foreground/5 transition-all"
+                    className={cn(
+                      "rounded-2xl font-black text-[10px] uppercase tracking-widest h-12 px-6 glass transition-all",
+                      showCapturedOnly 
+                        ? "bg-primary text-primary-foreground hover:bg-primary/90" 
+                        : "hover:bg-foreground/10 hover:text-foreground"
+                    )}
                   >
                     <div className="relative w-4 h-4 mr-2">
                        <Image 
