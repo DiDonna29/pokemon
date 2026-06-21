@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
@@ -5,7 +6,8 @@ import {
   PokemonSummary, 
   PokemonDetails, 
   fetchAllPokemon, 
-  fetchPokemonByType 
+  fetchPokemonByType,
+  fetchPokemonDetails
 } from "@/lib/pokeapi";
 import { PokemonCard } from "@/components/pokedex/PokemonCard";
 import { SearchPanel } from "@/components/pokedex/SearchPanel";
@@ -27,7 +29,8 @@ import {
   ChevronsLeft,
   ChevronsRight,
   RotateCcw,
-  SearchX
+  SearchX,
+  Loader2
 } from "lucide-react";
 import { Language, translations } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
@@ -61,6 +64,8 @@ export default function Home() {
   const [caughtPokemon, setCaughtPokemon] = useState<Set<number>>(new Set());
   const [selectedDetails, setSelectedDetails] = useState<PokemonDetails | null>(null);
   
+  const [deepFilteredList, setDeepFilteredList] = useState<PokemonSummary[] | null>(null);
+
   useEffect(() => {
     document.documentElement.className = theme;
   }, [theme]);
@@ -105,7 +110,8 @@ export default function Home() {
     updateTypeFilters();
   }, [selectedTypes]);
 
-  const filteredList = useMemo(() => {
+  // Base list filtered by search, AI, and types
+  const baseFilteredList = useMemo(() => {
     let list = [...allPokemon];
     
     if (aiSuggestions !== null) {
@@ -129,6 +135,55 @@ export default function Home() {
       });
     }
 
+    return list;
+  }, [allPokemon, searchQuery, aiSuggestions, typeFilteredNames, showCapturedOnly, caughtPokemon]);
+
+  // Deep filtering for weight and height
+  useEffect(() => {
+    async function applyDeepFilters() {
+      if (!selectedWeight && !selectedHeight) {
+        setDeepFilteredList(null);
+        return;
+      }
+      
+      setFiltering(true);
+      // Limit processing to a reasonable batch for performance in this prototype
+      const candidates = baseFilteredList.slice(0, 100); 
+      const results: PokemonSummary[] = [];
+      
+      try {
+        for (const p of candidates) {
+          const details = await fetchPokemonDetails(p.name);
+          if (details) {
+            let match = true;
+            if (selectedWeight) {
+              const w = details.weight / 10;
+              if (selectedWeight === 'light' && w >= 10) match = false;
+              if (selectedWeight === 'medium' && (w < 10 || w > 100)) match = false;
+              if (selectedWeight === 'heavy' && w <= 100) match = false;
+            }
+            if (selectedHeight) {
+              const h = details.height / 10;
+              if (selectedHeight === 'small' && h >= 1) match = false;
+              if (selectedHeight === 'medium' && (h < 1 || h > 2)) match = false;
+              if (selectedHeight === 'large' && h <= 2) match = false;
+            }
+            if (match) results.push(p);
+          }
+        }
+        setDeepFilteredList(results);
+      } catch (error) {
+        console.error("Deep filtering failed", error);
+      } finally {
+        setFiltering(false);
+      }
+    }
+    applyDeepFilters();
+  }, [baseFilteredList, selectedWeight, selectedHeight]);
+
+  const finalFilteredList = useMemo(() => {
+    let list = deepFilteredList !== null ? [...deepFilteredList] : [...baseFilteredList];
+    
     if (sortBy === "name-asc") list.sort((a, b) => a.name.localeCompare(b.name));
     else if (sortBy === "name-desc") list.sort((a, b) => b.name.localeCompare(a.name));
     else if (sortBy === "id-desc") {
@@ -146,14 +201,14 @@ export default function Home() {
     }
 
     return list;
-  }, [allPokemon, searchQuery, aiSuggestions, typeFilteredNames, sortBy, showCapturedOnly, caughtPokemon]);
+  }, [baseFilteredList, deepFilteredList, sortBy]);
 
   useEffect(() => {
     const offset = (currentPage - 1) * PAGE_SIZE;
-    const paginated = filteredList.slice(offset, offset + PAGE_SIZE);
+    const paginated = finalFilteredList.slice(offset, offset + PAGE_SIZE);
     setVisiblePokemon(paginated);
-    setTotalCount(filteredList.length);
-  }, [filteredList, currentPage]);
+    setTotalCount(finalFilteredList.length);
+  }, [finalFilteredList, currentPage]);
 
   const toggleCaught = (id: number) => {
     setCaughtPokemon(prev => {
@@ -169,9 +224,12 @@ export default function Home() {
     setSearchQuery("");
     setAiSuggestions(null);
     setTypeFilteredNames(null);
+    setSelectedWeight(null);
+    setSelectedHeight(null);
     setShowCapturedOnly(false);
     setCurrentPage(1);
     setSortBy("id-asc");
+    setDeepFilteredList(null);
   };
 
   const handleTabChange = (tab: "pokedex" | "battle" | "quiz") => {
@@ -234,7 +292,7 @@ export default function Home() {
                 <SearchPanel 
                   onSearch={setSearchQuery} 
                   onAiSuggest={setAiSuggestions} 
-                  isLoading={loading} 
+                  isLoading={loading || filtering} 
                   lang={lang} 
                 />
               </div>
@@ -270,6 +328,12 @@ export default function Home() {
                   </Button>
                 </div>
                 <div className="flex items-center gap-4">
+                  {filtering && (
+                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest opacity-60">
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                      {lang === 'es' ? 'Filtrando...' : 'Filtering...'}
+                    </div>
+                  )}
                   <Select value={sortBy} onValueChange={setSortBy}>
                     <SelectTrigger className="w-48 glass h-12 rounded-2xl font-black text-[10px] uppercase tracking-widest border-foreground/10 text-black dark:text-white hover:bg-foreground/10">
                       <SelectValue />
@@ -301,7 +365,7 @@ export default function Home() {
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
                   <AnimatePresence mode="popLayout">
-                    {!loading && !filtering && visiblePokemon.map((p) => {
+                    {visiblePokemon.map((p) => {
                       const id = parseInt(p.url.split('/').filter(Boolean).pop() || '0');
                       return (
                         <motion.div key={p.name} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
