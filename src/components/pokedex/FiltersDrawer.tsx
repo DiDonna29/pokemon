@@ -1,7 +1,7 @@
 
 "use client";
 
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetDescription, SheetClose } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetClose } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { SlidersHorizontal, RotateCcw, X, Sparkles } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -78,8 +78,14 @@ export function FiltersDrawer({
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="glass w-full sm:max-w-md border-l border-foreground/10 p-0 flex flex-col [&>button]:hidden">
+        {/* Hidden titles for accessibility */}
+        <SheetHeader className="sr-only">
+          <SheetTitle>{t.filters}</SheetTitle>
+          <SheetDescription>{t.filters_desc}</SheetDescription>
+        </SheetHeader>
+
         {/* Fixed Header */}
-        <div className="shrink-0 p-8 space-y-6">
+        <div className="shrink-0 p-6 md:p-8 space-y-6">
           <div className="flex items-center justify-between">
             <div className="relative w-32 h-10">
               <Image 
@@ -110,14 +116,14 @@ export function FiltersDrawer({
               </SheetClose>
             </div>
           </div>
-          <p className="text-muted-foreground font-medium italic text-sm text-center opacity-60">
+          <p className="text-muted-foreground font-medium italic text-xs md:text-sm text-center opacity-60">
             {t.filters_desc}
           </p>
         </div>
         
         <Separator className="bg-foreground/5" />
 
-        <ScrollArea className="flex-1 px-8 py-6">
+        <ScrollArea className="flex-1 px-6 md:px-8 py-6">
           <div className="space-y-12 pb-32">
             {/* Types section */}
             <div className="space-y-6">
