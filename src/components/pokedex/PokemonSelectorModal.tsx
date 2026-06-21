@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { PokemonSummary } from "@/lib/pokeapi";
 import { Language, translations } from "@/lib/i18n";
-import { Search, Sparkles } from "lucide-react";
+import { Search, Sparkles, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 interface PokemonSelectorModalProps {
   isOpen: boolean;
@@ -21,6 +22,13 @@ interface PokemonSelectorModalProps {
 export function PokemonSelectorModal({ isOpen, onClose, onSelect, allPokemon, lang }: PokemonSelectorModalProps) {
   const t = translations[lang];
   const [search, setSearch] = useState("");
+
+  // Clear search when modal closes or opens
+  useEffect(() => {
+    if (!isOpen) {
+      setSearch("");
+    }
+  }, [isOpen]);
 
   const filtered = useMemo(() => {
     if (!search) return allPokemon.slice(0, 100);
@@ -45,10 +53,20 @@ export function PokemonSelectorModal({ isOpen, onClose, onSelect, allPokemon, la
               placeholder={t.search_pokemon}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 h-12 rounded-2xl glass border-foreground/10 focus:ring-primary/30 text-lg"
+              className="pl-10 pr-10 h-12 rounded-2xl glass border-foreground/10 focus:ring-primary/30 text-lg"
               autoFocus
             />
             <Search className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground" />
+            {search && (
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => setSearch("")} 
+                className="absolute right-2 top-2 h-8 w-8 rounded-xl"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            )}
           </div>
         </DialogHeader>
 
@@ -68,6 +86,7 @@ export function PokemonSelectorModal({ isOpen, onClose, onSelect, allPokemon, la
                     whileTap={{ scale: 0.95 }}
                     onClick={() => {
                       onSelect(pokemon.name);
+                      setSearch(""); // Explicitly clear search on select
                       onClose();
                     }}
                     className="group glass p-4 rounded-3xl border-foreground/5 flex flex-col items-center gap-2 hover:bg-primary/5 hover:border-primary/20 transition-all duration-300"

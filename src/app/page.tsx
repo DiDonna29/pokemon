@@ -26,6 +26,7 @@ export default function Home() {
   // Localization & Theme State
   const [lang, setLang] = useState<Language>('en');
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const [activeTab, setActiveTab] = useState("pokedex");
   const t = translations[lang];
 
   // Data State
@@ -188,20 +189,42 @@ export default function Home() {
         />
       </div>
 
-      {/* Header */}
+      {/* Header with Navigation */}
       <header className="relative z-50 glass border-b border-foreground/5 py-4 sticky top-0 backdrop-blur-2xl">
         <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-3">
-            <motion.div 
-              whileHover={{ rotate: 360, scale: 1.1 }}
-              transition={{ type: "spring", stiffness: 260, damping: 20 }}
-              className="w-12 h-12 bg-gradient-to-br from-primary via-secondary to-accent rounded-2xl flex items-center justify-center shadow-2xl shadow-primary/30"
-            >
-              <Trophy className="text-white w-7 h-7" />
-            </motion.div>
-            <div>
-              <h1 className="font-headline text-2xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent">PokeNexus</h1>
-              <p className="text-[9px] text-muted-foreground uppercase tracking-widest font-black opacity-70">{t.app_subtitle}</p>
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3">
+              <motion.div 
+                whileHover={{ rotate: 360, scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                className="w-12 h-12 bg-gradient-to-br from-primary via-secondary to-accent rounded-2xl flex items-center justify-center shadow-2xl shadow-primary/30"
+              >
+                <Trophy className="text-white w-7 h-7" />
+              </motion.div>
+              <div>
+                <h1 className="font-headline text-2xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent">PokeNexus</h1>
+                <p className="text-[9px] text-muted-foreground uppercase tracking-widest font-black opacity-70">{t.app_subtitle}</p>
+              </div>
+            </div>
+            
+            {/* Desktop Tabs Navigation */}
+            <div className="hidden md:flex glass bg-foreground/5 p-1 rounded-2xl border border-foreground/5">
+              <Button 
+                variant={activeTab === "pokedex" ? "secondary" : "ghost"} 
+                onClick={() => setActiveTab("pokedex")}
+                className={cn("rounded-xl font-black uppercase text-[10px] tracking-widest h-9 px-6", activeTab === "pokedex" ? "bg-primary text-black" : "")}
+              >
+                <LayoutGrid className="w-3.5 h-3.5 mr-2" />
+                {t.infinite_dex}
+              </Button>
+              <Button 
+                variant={activeTab === "arena" ? "secondary" : "ghost"} 
+                onClick={() => setActiveTab("arena")}
+                className={cn("rounded-xl font-black uppercase text-[10px] tracking-widest h-9 px-6", activeTab === "arena" ? "bg-secondary text-white" : "")}
+              >
+                <Swords className="w-3.5 h-3.5 mr-2" />
+                {t.battle_arena}
+              </Button>
             </div>
           </div>
 
@@ -234,22 +257,29 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Main Content Tabs */}
+      {/* Content */}
       <section className="relative z-10 container mx-auto px-4 py-8">
-        <Tabs defaultValue="pokedex" className="space-y-10">
-          <div className="flex justify-center">
-            <TabsList className="glass bg-foreground/5 h-14 p-1 rounded-3xl w-full max-w-lg border border-foreground/5 shadow-lg">
-              <TabsTrigger value="pokedex" className="flex-1 rounded-2xl font-black uppercase text-xs tracking-widest gap-2 data-[state=active]:bg-primary data-[state=active]:text-black transition-all h-full">
-                <LayoutGrid className="w-4 h-4" />
-                {t.infinite_dex}
-              </TabsTrigger>
-              <TabsTrigger value="arena" className="flex-1 rounded-2xl font-black uppercase text-xs tracking-widest gap-2 data-[state=active]:bg-secondary data-[state=active]:text-white transition-all h-full">
-                <Swords className="w-4 h-4" />
-                {t.battle_arena}
-              </TabsTrigger>
-            </TabsList>
+        {/* Mobile Tabs Navigation */}
+        <div className="flex md:hidden justify-center mb-8">
+          <div className="glass bg-foreground/5 p-1 rounded-2xl border border-foreground/5 flex w-full max-w-sm">
+            <Button 
+              variant={activeTab === "pokedex" ? "secondary" : "ghost"} 
+              onClick={() => setActiveTab("pokedex")}
+              className={cn("flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest h-9", activeTab === "pokedex" ? "bg-primary text-black" : "")}
+            >
+              {t.infinite_dex}
+            </Button>
+            <Button 
+              variant={activeTab === "arena" ? "secondary" : "ghost"} 
+              onClick={() => setActiveTab("arena")}
+              className={cn("flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest h-9", activeTab === "arena" ? "bg-secondary text-white" : "")}
+            >
+              {t.battle_arena}
+            </Button>
           </div>
+        </div>
 
+        <Tabs value={activeTab} className="space-y-10">
           <TabsContent value="pokedex" className="mt-0 space-y-10 outline-none">
             <div className="max-w-xl mx-auto">
               <SearchPanel onSearch={handleSearch} onAiSuggest={handleAiSuggest} isLoading={loading} lang={lang} />

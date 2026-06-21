@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Sparkles, X } from "lucide-react";
+import { Search, Sparkles, X, Eraser } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { intelligentPokemonDiscovery } from "@/ai/flows/intelligent-pokemon-discovery-flow";
@@ -22,7 +22,6 @@ export function SearchPanel({ onSearch, onAiSuggest, isLoading, lang }: SearchPa
   const [aiLoading, setAiLoading] = useState(false);
   const t = translations[lang];
 
-  // Automatic search for classic mode
   useEffect(() => {
     if (!aiMode) {
       onSearch(query);
@@ -50,6 +49,11 @@ export function SearchPanel({ onSearch, onAiSuggest, isLoading, lang }: SearchPa
     }
   };
 
+  const clearSearch = () => {
+    setQuery("");
+    onSearch("");
+  };
+
   return (
     <div className="w-full max-w-2xl mx-auto space-y-4">
       <form onSubmit={handleSearch} className="relative">
@@ -75,10 +79,11 @@ export function SearchPanel({ onSearch, onAiSuggest, isLoading, lang }: SearchPa
                  type="button" 
                  variant="ghost" 
                  size="icon" 
-                 onClick={() => { setQuery(""); onSearch(""); }}
-                 className="rounded-xl w-8 h-8"
+                 onClick={clearSearch}
+                 className="rounded-xl w-8 h-8 text-muted-foreground hover:text-primary"
+                 title={t.reset}
                >
-                 <X className="w-4 h-4" />
+                 <Eraser className="w-4 h-4" />
                </Button>
              )}
              {aiMode && (
