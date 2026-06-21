@@ -3,13 +3,14 @@
 
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetDescription, SheetClose } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { SlidersHorizontal, RotateCcw, X } from "lucide-react";
+import { SlidersHorizontal, RotateCcw, X, Sparkles } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Language, translations } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 const TYPES = [
   "normal", "fire", "water", "electric", "grass", "ice", "fighting", "poison",
@@ -77,40 +78,61 @@ export function FiltersDrawer({
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="glass w-full sm:max-w-md border-l border-foreground/10 p-0 flex flex-col [&>button]:hidden">
-        <SheetHeader className="p-8">
+        {/* Fixed Header */}
+        <div className="shrink-0 p-8 space-y-6">
           <div className="flex items-center justify-between">
-            <SheetTitle className="font-headline text-2xl font-black uppercase tracking-tight">{t.advanced_search}</SheetTitle>
+            <div className="relative w-32 h-10">
+              <Image 
+                src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg"
+                alt="Pokemon Logo"
+                fill
+                className="object-contain"
+              />
+            </div>
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" onClick={onClear} className="text-primary gap-2 h-10 font-black uppercase text-[10px] tracking-widest hover:bg-primary/5 rounded-xl">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={onClear} 
+                className="text-primary gap-2 h-10 font-black uppercase text-[10px] tracking-widest hover:bg-primary/5 rounded-xl"
+              >
                 <RotateCcw className="w-4 h-4" />
                 {t.reset}
               </Button>
               <SheetClose asChild>
-                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl glass border-foreground/5 text-muted-foreground hover:text-foreground transition-all">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-10 w-10 rounded-xl glass border-foreground/5 text-muted-foreground hover:text-foreground transition-all"
+                >
                   <X className="w-5 h-5" />
                 </Button>
               </SheetClose>
             </div>
           </div>
-          <SheetDescription className="text-muted-foreground font-medium italic mt-2">
+          <p className="text-muted-foreground font-medium italic text-sm text-center opacity-60">
             {t.filters_desc}
-          </SheetDescription>
-        </SheetHeader>
+          </p>
+        </div>
         
         <Separator className="bg-foreground/5" />
 
         <ScrollArea className="flex-1 px-8 py-6">
-          <div className="space-y-10 pb-32">
+          <div className="space-y-12 pb-32">
             {/* Types section */}
             <div className="space-y-6">
-              <h3 className="font-headline text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] bg-foreground/5 px-4 py-2 rounded-lg inline-block">{t.pokemon_types}</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="flex justify-center">
+                <h3 className="font-headline text-[10px] font-black text-white bg-white/10 px-6 py-2 rounded-full uppercase tracking-[0.3em] inline-block">
+                  {t.pokemon_types}
+                </h3>
+              </div>
+              <div className="space-y-3">
                 {TYPES.map(type => (
                   <div 
                     key={type} 
                     className={cn(
-                      "flex items-center space-x-3 glass p-3 rounded-2xl border-foreground/5 hover:border-primary/30 transition-all cursor-pointer group",
-                      selectedTypes.includes(type) && "border-primary/40 bg-primary/5"
+                      "flex items-center space-x-4 glass bg-black/40 p-4 rounded-3xl border-foreground/5 hover:border-primary/30 transition-all cursor-pointer group",
+                      selectedTypes.includes(type) && "border-primary/40 bg-primary/10"
                     )}
                     onClick={() => toggleType(type)}
                   >
@@ -118,9 +140,9 @@ export function FiltersDrawer({
                       id={`type-${type}`} 
                       checked={selectedTypes.includes(type)}
                       onCheckedChange={() => toggleType(type)}
-                      className="border-foreground/20 data-[state=checked]:bg-primary data-[state=checked]:text-black rounded-full w-5 h-5 transition-all group-hover:scale-110"
+                      className="border-foreground/30 rounded-full w-6 h-6 data-[state=checked]:bg-primary data-[state=checked]:text-black transition-all"
                     />
-                    <Label htmlFor={`type-${type}`} className="capitalize text-[11px] font-black tracking-widest cursor-pointer group-hover:text-primary transition-colors flex-1">
+                    <Label htmlFor={`type-${type}`} className="capitalize text-sm font-black tracking-widest cursor-pointer group-hover:text-primary transition-colors flex-1 text-white">
                       {t[type as keyof typeof t] || type}
                     </Label>
                   </div>
@@ -130,14 +152,18 @@ export function FiltersDrawer({
 
             {/* Weight section */}
             <div className="space-y-6">
-              <h3 className="font-headline text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] bg-foreground/5 px-4 py-2 rounded-lg inline-block">{t.weight_class}</h3>
+              <div className="flex justify-center">
+                <h3 className="font-headline text-[10px] font-black text-white bg-white/10 px-6 py-2 rounded-full uppercase tracking-[0.3em] inline-block">
+                  {t.weight_class}
+                </h3>
+              </div>
               <div className="space-y-3">
                 {WEIGHTS.map(w => (
                   <div 
                     key={w.value} 
                     className={cn(
-                      "flex items-center space-x-3 glass p-4 rounded-2xl border-foreground/5 hover:border-primary/30 transition-all cursor-pointer group",
-                      selectedWeight === w.value && "border-primary/40 bg-primary/5"
+                      "flex items-center space-x-4 glass bg-black/40 p-5 rounded-3xl border-foreground/5 hover:border-primary/30 transition-all cursor-pointer group",
+                      selectedWeight === w.value && "border-primary/40 bg-primary/10"
                     )}
                     onClick={() => setSelectedWeight(selectedWeight === w.value ? null : w.value)}
                   >
@@ -145,9 +171,9 @@ export function FiltersDrawer({
                       id={`weight-${w.value}`} 
                       checked={selectedWeight === w.value}
                       onCheckedChange={() => setSelectedWeight(selectedWeight === w.value ? null : w.value)}
-                      className="border-foreground/20 data-[state=checked]:bg-primary data-[state=checked]:text-black rounded-full w-5 h-5"
+                      className="border-foreground/30 rounded-full w-6 h-6 data-[state=checked]:bg-primary data-[state=checked]:text-black"
                     />
-                    <Label htmlFor={`weight-${w.value}`} className="text-[11px] font-black tracking-widest cursor-pointer group-hover:text-primary flex-1">
+                    <Label htmlFor={`weight-${w.value}`} className="text-sm font-black tracking-widest cursor-pointer group-hover:text-primary flex-1 text-white">
                       {w.label}
                     </Label>
                   </div>
@@ -157,14 +183,18 @@ export function FiltersDrawer({
 
             {/* Height section */}
             <div className="space-y-6">
-              <h3 className="font-headline text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] bg-foreground/5 px-4 py-2 rounded-lg inline-block">{t.height_class}</h3>
+              <div className="flex justify-center">
+                <h3 className="font-headline text-[10px] font-black text-white bg-white/10 px-6 py-2 rounded-full uppercase tracking-[0.3em] inline-block">
+                  {t.height_class}
+                </h3>
+              </div>
               <div className="space-y-3">
                 {HEIGHTS.map(h => (
                   <div 
                     key={h.value} 
                     className={cn(
-                      "flex items-center space-x-3 glass p-4 rounded-2xl border-foreground/5 hover:border-primary/30 transition-all cursor-pointer group",
-                      selectedHeight === h.value && "border-primary/40 bg-primary/5"
+                      "flex items-center space-x-4 glass bg-black/40 p-5 rounded-3xl border-foreground/5 hover:border-primary/30 transition-all cursor-pointer group",
+                      selectedHeight === h.value && "border-primary/40 bg-primary/10"
                     )}
                     onClick={() => setSelectedHeight(selectedHeight === h.value ? null : h.value)}
                   >
@@ -172,9 +202,9 @@ export function FiltersDrawer({
                       id={`height-${h.value}`} 
                       checked={selectedHeight === h.value}
                       onCheckedChange={() => setSelectedHeight(selectedHeight === h.value ? null : h.value)}
-                      className="border-foreground/20 data-[state=checked]:bg-primary data-[state=checked]:text-black rounded-full w-5 h-5"
+                      className="border-foreground/30 rounded-full w-6 h-6 data-[state=checked]:bg-primary data-[state=checked]:text-black"
                     />
-                    <Label htmlFor={`height-${h.value}`} className="text-[11px] font-black tracking-widest cursor-pointer group-hover:text-primary flex-1">
+                    <Label htmlFor={`height-${h.value}`} className="text-sm font-black tracking-widest cursor-pointer group-hover:text-primary flex-1 text-white">
                       {h.label}
                     </Label>
                   </div>
