@@ -224,14 +224,14 @@ export default function Home() {
                     onClear={handleClearFilters} lang={lang}
                   />
                   <Button 
-                    variant={showCapturedOnly ? "secondary" : "ghost"} 
+                    variant="ghost" 
                     size="sm" 
                     onClick={() => setShowCapturedOnly(!showCapturedOnly)} 
                     className={cn(
-                      "rounded-2xl font-black text-[10px] uppercase tracking-widest h-12 px-6 glass transition-all",
+                      "rounded-2xl font-black text-[10px] uppercase tracking-widest h-12 px-6 glass transition-all border border-foreground/5",
                       showCapturedOnly 
-                        ? "bg-primary shadow-lg text-black dark:text-black hover:bg-primary/90 border-primary" 
-                        : "hover:bg-foreground/10 text-black dark:text-white"
+                        ? "bg-primary shadow-lg text-black hover:bg-primary/90 border-primary" 
+                        : "text-black dark:text-white hover:bg-foreground/10"
                     )}
                   >
                     <div className="relative w-4 h-4 mr-2">

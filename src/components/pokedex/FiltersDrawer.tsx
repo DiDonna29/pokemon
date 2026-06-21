@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetDescription } from "@/components/ui/sheet";
@@ -63,8 +62,8 @@ export function FiltersDrawer({
         <Button 
           variant="outline" 
           className={cn(
-            "relative glass border-foreground/10 hover:bg-foreground/5 hover:text-foreground transition-all duration-300 gap-2 h-12 px-8 rounded-2xl font-black text-[10px] uppercase tracking-widest",
-            activeCount > 0 ? "border-primary/40 bg-primary/5" : ""
+            "relative glass border-foreground/10 hover:bg-foreground/5 transition-all duration-300 gap-2 h-12 px-8 rounded-2xl font-black text-[10px] uppercase tracking-widest",
+            activeCount > 0 ? "border-primary/40 bg-primary/5" : "text-black dark:text-white"
           )}
         >
           <SlidersHorizontal className="w-4 h-4" />

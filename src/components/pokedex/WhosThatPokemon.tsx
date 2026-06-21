@@ -150,7 +150,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
           <Button 
             onClick={handleGuess}
             disabled={isRevealed || loading || !guess}
-            className="h-14 px-8 rounded-2xl bg-primary text-black dark:text-black font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all w-full sm:w-auto hover:bg-primary/90"
+            className="h-14 px-8 rounded-2xl bg-primary text-black font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all w-full sm:w-auto hover:bg-primary/90"
           >
             {t.check_guess}
           </Button>
