@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
@@ -39,7 +40,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
   const fireVictoryConfetti = useCallback(() => {
     const duration = 5 * 1000;
     const animationEnd = Date.now() + duration;
-    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
 
     const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
 
@@ -115,7 +116,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
         setHp2(currentHp2);
         currentLogs = [{ 
           turn: turnCount, 
-          message: `${p1.name.toUpperCase()} ${t.took_damage} ${dmg} ${t.damage} -> ${p2.name.toUpperCase()}` 
+          message: `${p1.name.toUpperCase()} -> ${dmg} ${t.damage_unit} -> ${p2.name.toUpperCase()}` 
         }, ...currentLogs];
         turn = 2;
       } else {
@@ -124,7 +125,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
         setHp1(currentHp1);
         currentLogs = [{ 
           turn: turnCount, 
-          message: `${p2.name.toUpperCase()} ${t.took_damage} ${dmg} ${t.damage} -> ${p1.name.toUpperCase()}` 
+          message: `${p2.name.toUpperCase()} -> ${dmg} ${t.damage_unit} -> ${p1.name.toUpperCase()}` 
         }, ...currentLogs];
         turn = 1;
       }
@@ -167,15 +168,15 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
   return (
     <div className="space-y-12">
       <div className="flex flex-col items-center gap-6 text-center">
-        {/* Pixel Pokedex Game Logo */}
+        {/* Pixel Ball Icon for Game Feel */}
         <motion.div 
           animate={{ y: [0, -10, 0] }}
           transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          className="relative w-20 h-20 md:w-28 md:h-28 drop-shadow-2xl"
+          className="relative w-20 h-20 md:w-24 md:h-24 drop-shadow-2xl"
         >
           <Image 
-            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/pokedex.png"
-            alt="Pixel Pokedex Game Icon"
+            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
+            alt="Pixel Ball Game Icon"
             fill
             className="object-contain"
             style={{ imageRendering: 'pixelated' }}

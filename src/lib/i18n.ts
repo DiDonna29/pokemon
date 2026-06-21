@@ -1,3 +1,4 @@
+
 export type Language = 'en' | 'es';
 
 export const translations = {
@@ -64,6 +65,7 @@ export const translations = {
     turn: "Turn",
     took_damage: "took",
     damage: "damage",
+    damage_unit: "DMG",
     victory_for: "Victory for",
     arena_subtitle: "Combat Simulator",
     choose_your_fighter: "Choose Your Fighter",
@@ -151,6 +153,7 @@ export const translations = {
     turn: "Turno",
     took_damage: "recibió",
     damage: "de daño",
+    damage_unit: "DMG",
     victory_for: "¡Victoria para",
     arena_subtitle: "Simulador de Combate",
     choose_your_fighter: "Elige tu Luchador",
