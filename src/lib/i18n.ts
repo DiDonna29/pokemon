@@ -71,6 +71,10 @@ export const translations = {
     choose_your_fighter: "Choose Your Fighter",
     search_pokemon: "Search Pokemon...",
     go_back: "Go Back",
+    // Footer
+    developed_by: "Developed by",
+    rights_reserved: "All rights reserved.",
+    portfolio: "Portfolio",
     // Types
     normal: "Normal",
     fire: "Fire",
@@ -160,6 +164,10 @@ export const translations = {
     choose_your_fighter: "Elige tu Luchador",
     search_pokemon: "Buscar Pokémon...",
     go_back: "Regresar",
+    // Footer
+    developed_by: "Desarrollado por",
+    rights_reserved: "Todos los derechos reservados.",
+    portfolio: "Portafolio",
     // Tipos
     normal: "Normal",
     fire: "Fuego",

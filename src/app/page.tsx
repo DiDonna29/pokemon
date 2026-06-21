@@ -13,6 +13,7 @@ import { SearchPanel } from "@/components/pokedex/SearchPanel";
 import { FiltersDrawer } from "@/components/pokedex/FiltersDrawer";
 import { PokemonDetailsView } from "@/components/pokedex/PokemonDetails";
 import { BattleArena } from "@/components/pokedex/BattleArena";
+import { Footer } from "@/components/pokedex/Footer";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -247,7 +248,7 @@ export default function Home() {
   const skipBackward = () => setCurrentPage(p => Math.max(1, p - 3));
 
   return (
-    <main className="min-h-screen bg-background text-foreground relative pb-20 transition-colors duration-500">
+    <main className="min-h-screen bg-background text-foreground relative transition-colors duration-500">
       {/* Background Decor */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <motion.div 
@@ -450,6 +451,9 @@ export default function Home() {
           </TabsContent>
         </Tabs>
       </section>
+
+      {/* Footer */}
+      <Footer lang={lang} />
 
       {/* Global Pokemon Detail View */}
       <PokemonDetailsView pokemon={selectedDetails} onClose={() => setSelectedDetails(null)} lang={lang} />
