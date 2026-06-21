@@ -158,6 +158,7 @@ export default function Home() {
   const handleTabChange = (tab: "pokedex" | "battle" | "quiz") => {
     setSelectedDetails(null);
     setActiveTab(tab);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE) || 1;
@@ -165,19 +166,20 @@ export default function Home() {
   const jumpToPage = (p: number) => {
     const target = Math.max(1, Math.min(p, totalPages));
     setCurrentPage(target);
+    window.scrollTo({ top: 300, behavior: 'smooth' });
   };
 
   return (
-    <main className="min-h-screen bg-background text-foreground transition-colors duration-500 pb-20 md:pb-32">
+    <main className="min-h-screen bg-background text-foreground transition-colors duration-500 pb-32 md:pb-40">
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.05, 0.1, 0.05] }} transition={{ duration: 15, repeat: Infinity }} className="absolute top-[-10%] left-[-10%] w-full h-full bg-primary/20 rounded-full blur-[200px]" />
         <motion.div animate={{ scale: [1, 1.3, 1], opacity: [0.05, 0.08, 0.05] }} transition={{ duration: 18, repeat: Infinity, delay: 2 }} className="absolute bottom-[-10%] right-[-10%] w-full h-full bg-secondary/20 rounded-full blur-[200px]" />
       </div>
 
-      <header className="relative z-50 px-6 py-8 md:px-12">
-        <div className="container mx-auto flex items-center justify-between">
+      <header className="relative z-[100] px-6 py-6 md:py-8 border-b border-foreground/5 bg-background/50 backdrop-blur-xl">
+        <div className="container mx-auto max-w-7xl flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="relative w-24 h-10 md:w-32 md:h-12">
+            <div className="relative w-28 h-10 md:w-36 md:h-12 cursor-pointer" onClick={() => handleTabChange('pokedex')}>
               <Image 
                 src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg"
                 alt="Pokemon Logo"
@@ -191,22 +193,22 @@ export default function Home() {
           </div>
           
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="rounded-xl glass w-11 h-11 border-foreground/5 hover:bg-foreground/10">
+            <Button variant="ghost" size="icon" onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="rounded-xl glass w-10 h-10 md:w-11 md:h-11 border-foreground/5">
               <Globe className="w-5 h-5" />
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-xl glass w-11 h-11 border-foreground/5 hover:bg-foreground/10">
+            <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-xl glass w-10 h-10 md:w-11 md:h-11 border-foreground/5">
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </Button>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-6 md:px-12 relative z-10">
+      <div className="container mx-auto px-6 md:px-12 max-w-7xl relative z-10 pt-10">
         <AnimatePresence mode="wait">
           {activeTab === "pokedex" && (
             <motion.div key="dex" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-12">
               <div className="max-w-3xl mx-auto space-y-6">
-                <h2 className="text-4xl md:text-5xl font-black tracking-tight text-center md:text-left">
+                <h2 className="text-4xl md:text-6xl font-black tracking-tight text-center md:text-left leading-tight">
                   {t.looking_for} <span className="text-primary">{t.looking_for_span}</span>
                 </h2>
                 <SearchPanel onSearch={setSearchQuery} onAiSuggest={setAiSuggestions} isLoading={loading} lang={lang} />
@@ -224,9 +226,16 @@ export default function Home() {
                     variant={showCapturedOnly ? "secondary" : "ghost"} 
                     size="sm" 
                     onClick={() => setShowCapturedOnly(!showCapturedOnly)} 
-                    className="rounded-2xl font-black text-[10px] uppercase tracking-widest h-12 px-6 glass hover:bg-foreground/10 hover:text-foreground"
+                    className="rounded-2xl font-black text-[10px] uppercase tracking-widest h-12 px-6 glass hover:bg-foreground/5 transition-all"
                   >
-                    <Star className={cn("w-4 h-4 mr-2", showCapturedOnly ? "fill-current" : "")} />
+                    <div className="relative w-4 h-4 mr-2">
+                       <Image 
+                        src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
+                        alt="Caught Icon"
+                        fill
+                        className={cn("object-contain", showCapturedOnly ? "" : "grayscale opacity-40")}
+                      />
+                    </div>
                     {t.my_collection}
                   </Button>
                 </div>
@@ -245,7 +254,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
                 <AnimatePresence mode="popLayout">
                   {!loading && !filtering && visiblePokemon.map((p) => {
                     const id = parseInt(p.url.split('/').filter(Boolean).pop() || '0');
@@ -264,7 +273,7 @@ export default function Home() {
                    <Button variant="outline" size="icon" disabled={currentPage <= 3} onClick={() => jumpToPage(currentPage - 3)} className="rounded-xl glass h-10 w-10 flex items-center justify-center font-black text-[10px]">-3</Button>
                    <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="rounded-xl glass h-10 w-10"><ChevronLeft className="w-4 h-4" /></Button>
                    
-                   <div className="glass px-6 h-10 flex items-center rounded-xl font-black text-[10px] uppercase tracking-widest">
+                   <div className="glass px-6 h-10 flex items-center rounded-xl font-black text-[10px] uppercase tracking-widest min-w-[120px] justify-center">
                     {t.page} {currentPage} / {totalPages}
                    </div>
                    
@@ -334,9 +343,8 @@ export default function Home() {
         </button>
       </nav>
 
-      <div className="mt-4">
-        <Footer lang={lang} />
-      </div>
+      <Footer lang={lang} />
+
       <PokemonDetailsView 
         pokemon={selectedDetails} 
         onClose={() => setSelectedDetails(null)} 
