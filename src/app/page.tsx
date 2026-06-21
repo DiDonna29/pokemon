@@ -155,6 +155,11 @@ export default function Home() {
     setShowCapturedOnly(false);
   };
 
+  const handleTabChange = (tab: "pokedex" | "battle" | "quiz") => {
+    setSelectedDetails(null);
+    setActiveTab(tab);
+  };
+
   const totalPages = Math.ceil(totalCount / PAGE_SIZE) || 1;
 
   const jumpToPage = (p: number) => {
@@ -186,10 +191,10 @@ export default function Home() {
           </div>
           
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="rounded-xl glass w-11 h-11 border-foreground/5">
+            <Button variant="ghost" size="icon" onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="rounded-xl glass w-11 h-11 border-foreground/5 hover:bg-foreground/10">
               <Globe className="w-5 h-5" />
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-xl glass w-11 h-11 border-foreground/5">
+            <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-xl glass w-11 h-11 border-foreground/5 hover:bg-foreground/10">
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </Button>
           </div>
@@ -215,7 +220,12 @@ export default function Home() {
                     selectedHeight={selectedHeight} setSelectedHeight={setSelectedHeight}
                     onClear={handleClearFilters} lang={lang}
                   />
-                  <Button variant={showCapturedOnly ? "secondary" : "ghost"} size="sm" onClick={() => setShowCapturedOnly(!showCapturedOnly)} className="rounded-2xl font-black text-[10px] uppercase tracking-widest h-12 px-6 glass">
+                  <Button 
+                    variant={showCapturedOnly ? "secondary" : "ghost"} 
+                    size="sm" 
+                    onClick={() => setShowCapturedOnly(!showCapturedOnly)} 
+                    className="rounded-2xl font-black text-[10px] uppercase tracking-widest h-12 px-6 glass hover:bg-foreground/10 hover:text-foreground"
+                  >
                     <Star className={cn("w-4 h-4 mr-2", showCapturedOnly ? "fill-current" : "")} />
                     {t.my_collection}
                   </Button>
@@ -282,7 +292,7 @@ export default function Home() {
 
       <nav className="fixed bottom-0 left-0 right-0 md:bottom-8 md:left-1/2 md:-translate-x-1/2 z-[100] w-full md:w-[90%] md:max-w-md h-20 glass md:rounded-[2.5rem] border-t md:border border-foreground/10 shadow-[0_20px_50px_rgba(0,0,0,0.3)] flex items-center justify-around px-4">
         <button 
-          onClick={() => setActiveTab("pokedex")}
+          onClick={() => handleTabChange("pokedex")}
           className={cn(
             "flex flex-col items-center gap-1 transition-all duration-300",
             activeTab === 'pokedex' ? "text-primary scale-110" : "text-muted-foreground opacity-40"
@@ -296,7 +306,7 @@ export default function Home() {
           <motion.button 
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            onClick={() => setActiveTab("battle")}
+            onClick={() => handleTabChange("battle")}
             className={cn(
               "w-16 h-16 md:w-20 md:h-20 rounded-full border-4 shadow-2xl transition-all duration-500 flex items-center justify-center overflow-hidden bg-background",
               activeTab === 'battle' ? "border-primary bg-primary/20 scale-110" : "border-foreground/10 glass"
@@ -313,7 +323,7 @@ export default function Home() {
         </div>
 
         <button 
-          onClick={() => setActiveTab("quiz")}
+          onClick={() => handleTabChange("quiz")}
           className={cn(
             "flex flex-col items-center gap-1 transition-all duration-300",
             activeTab === 'quiz' ? "text-secondary scale-110" : "text-muted-foreground opacity-40"

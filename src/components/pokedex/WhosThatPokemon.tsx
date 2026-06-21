@@ -172,7 +172,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
                 <Button 
                   variant="ghost" 
                   onClick={getHint}
-                  className="w-full h-12 rounded-xl glass border-foreground/5 text-primary font-black uppercase text-[10px] tracking-widest gap-2"
+                  className="w-full h-12 rounded-xl glass border-foreground/5 text-primary font-black uppercase text-[10px] tracking-widest gap-2 hover:bg-primary/10 hover:text-primary"
                 >
                   <Lightbulb className="w-4 h-4" />
                   {t.get_hint}
@@ -199,7 +199,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
         <Button 
           variant="outline" 
           onClick={loadRandomPokemon}
-          className="w-full h-14 rounded-2xl glass border-foreground/5 hover:bg-foreground/5 font-black uppercase text-xs tracking-widest flex items-center gap-3"
+          className="w-full h-14 rounded-2xl glass border-foreground/5 hover:bg-foreground/10 hover:text-foreground font-black uppercase text-xs tracking-widest flex items-center gap-3 transition-all"
         >
           <Sparkles className="w-5 h-5 text-secondary" />
           {t.next_pokemon}
