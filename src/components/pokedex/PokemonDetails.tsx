@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -56,8 +55,7 @@ export function PokemonDetailsView({ pokemon, onClose, lang }: PokemonDetailsVie
     }
   };
 
-  const currentLangCode = lang === 'en' ? 'en' : 'es';
-  const flavorText = species?.flavor_text_entries.find(e => e.language.name === currentLangCode)?.flavor_text.replace(/\f/g, ' ') 
+  const flavorText = species?.flavor_text_entries.find(e => e.language.name === (lang === 'en' ? 'en' : 'es'))?.flavor_text.replace(/\f/g, ' ') 
     || species?.flavor_text_entries.find(e => e.language.name === 'en')?.flavor_text.replace(/\f/g, ' ')
     || "No data available.";
 
@@ -71,7 +69,6 @@ export function PokemonDetailsView({ pokemon, onClose, lang }: PokemonDetailsVie
               animate={{ opacity: 1, scale: 1 }}
               className="relative"
             >
-              {/* Header with Type Background */}
               <div className={cn(
                 "relative h-64 w-full flex flex-col items-center justify-center p-6 overflow-hidden",
                 getTypeColorClass(mainType)
@@ -88,9 +85,9 @@ export function PokemonDetailsView({ pokemon, onClose, lang }: PokemonDetailsVie
                     {flavorText}
                   </DialogDescription>
                   <div className="flex gap-2 mt-4">
-                    {pokemon.types.map(t => (
-                      <Badge key={t.type.name} variant="secondary" className="glass bg-white/20 border-none px-4 py-1 text-white capitalize text-sm font-bold">
-                        {t.type.name}
+                    {pokemon.types.map(typeInfo => (
+                      <Badge key={typeInfo.type.name} variant="secondary" className="glass bg-white/20 border-none px-4 py-1 text-white capitalize text-sm font-bold">
+                        {t[typeInfo.type.name as keyof typeof t] || typeInfo.type.name}
                       </Badge>
                     ))}
                   </div>
@@ -106,7 +103,6 @@ export function PokemonDetailsView({ pokemon, onClose, lang }: PokemonDetailsVie
                 </motion.div>
               </div>
 
-              {/* Content Area */}
               <div className="px-8 pt-28 pb-10 bg-card">
                 <Tabs defaultValue="about" className="w-full">
                   <TabsList className="grid w-full grid-cols-2 glass bg-foreground/5 h-12 p-1 rounded-2xl">
@@ -153,7 +149,7 @@ export function PokemonDetailsView({ pokemon, onClose, lang }: PokemonDetailsVie
                         <div className="flex items-center justify-between text-sm">
                           <div className="flex items-center gap-2 capitalize font-bold text-muted-foreground group-hover:text-primary transition-colors">
                             {getStatIcon(s.stat.name)}
-                            {s.stat.name.replace('-', ' ')}
+                            {t[s.stat.name as keyof typeof t] || s.stat.name.replace('-', ' ')}
                           </div>
                           <span className="font-headline font-bold">{s.base_stat}</span>
                         </div>

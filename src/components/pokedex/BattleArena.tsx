@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { PokemonDetails, fetchPokemonDetails, PokemonSummary } from "@/lib/pokeapi";
 import { Language, translations } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
@@ -54,16 +54,16 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
     setWinner(null);
     setBattleLogs([]);
     
-    let hp1 = getStat(p1, 'hp');
-    let hp2 = getStat(p2, 'hp');
+    let hp1 = getStatValue(p1, 'hp');
+    let hp2 = getStatValue(p2, 'hp');
     
-    const atk1 = getStat(p1, 'attack');
-    const def1 = getStat(p1, 'defense');
-    const spd1 = getStat(p1, 'speed');
+    const atk1 = getStatValue(p1, 'attack');
+    const def1 = getStatValue(p1, 'defense');
+    const spd1 = getStatValue(p1, 'speed');
     
-    const atk2 = getStat(p2, 'attack');
-    const def2 = getStat(p2, 'defense');
-    const spd2 = getStat(p2, 'speed');
+    const atk2 = getStatValue(p2, 'attack');
+    const def2 = getStatValue(p2, 'defense');
+    const spd2 = getStatValue(p2, 'speed');
     
     let currentLogs: {turn: number, message: string}[] = [];
     let turnCount = 1;
@@ -72,18 +72,23 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
     while (hp1 > 0 && hp2 > 0 && turnCount < 20) {
       setAttackingPlayer(turn as 1 | 2);
       
-      // Artificial delay for visual battle effect
       await new Promise(resolve => setTimeout(resolve, 600));
       
       if (turn === 1) {
         const dmg = Math.max(10, Math.floor((atk1 * 2) / (def2 / 10 + 1)));
         hp2 -= dmg;
-        currentLogs = [{ turn: turnCount, message: `${p1.name.toUpperCase()} -> ${dmg} DMG -> ${p2.name.toUpperCase()}` }, ...currentLogs];
+        currentLogs = [{ 
+          turn: turnCount, 
+          message: `${p1.name.toUpperCase()} -> ${t.took_damage} ${dmg} ${t.damage} -> ${p2.name.toUpperCase()}` 
+        }, ...currentLogs];
         turn = 2;
       } else {
         const dmg = Math.max(10, Math.floor((atk2 * 2) / (def1 / 10 + 1)));
         hp1 -= dmg;
-        currentLogs = [{ turn: turnCount, message: `${p2.name.toUpperCase()} -> ${dmg} DMG -> ${p1.name.toUpperCase()}` }, ...currentLogs];
+        currentLogs = [{ 
+          turn: turnCount, 
+          message: `${p2.name.toUpperCase()} -> ${t.took_damage} ${dmg} ${t.damage} -> ${p1.name.toUpperCase()}` 
+        }, ...currentLogs];
         turn = 1;
       }
       
@@ -97,7 +102,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
     else if (hp2 <= 0) setWinner(1);
   };
 
-  const getStat = (p: PokemonDetails, name: string) => p.stats.find(s => s.stat.name === name)?.base_stat || 0;
+  const getStatValue = (p: PokemonDetails, name: string) => p.stats.find(s => s.stat.name === name)?.base_stat || 0;
 
   return (
     <div className="space-y-12">
@@ -153,10 +158,10 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                   <h3 className="text-2xl font-black capitalize mb-6">{p1.name}</h3>
                   
                   <div className="w-full space-y-4">
-                    <StatBar label={t.hp} value={getStat(p1, 'hp')} max={255} icon={<Heart className="w-3 h-3" />} color="bg-red-500" />
-                    <StatBar label={t.attack} value={getStat(p1, 'attack')} max={255} icon={<Swords className="w-3 h-3" />} color="bg-orange-500" />
-                    <StatBar label={t.defense} value={getStat(p1, 'defense')} max={255} icon={<Shield className="w-3 h-3" />} color="bg-blue-500" />
-                    <StatBar label={t.speed} value={getStat(p1, 'speed')} max={255} icon={<Zap className="w-3 h-3" />} color="bg-yellow-500" />
+                    <StatBar label={t.hp} value={getStatValue(p1, 'hp')} max={255} icon={<Heart className="w-3 h-3" />} color="bg-red-500" />
+                    <StatBar label={t.attack} value={getStatValue(p1, 'attack')} max={255} icon={<Swords className="w-3 h-3" />} color="bg-orange-500" />
+                    <StatBar label={t.defense} value={getStatValue(p1, 'defense')} max={255} icon={<Shield className="w-3 h-3" />} color="bg-blue-500" />
+                    <StatBar label={t.speed} value={getStatValue(p1, 'speed')} max={255} icon={<Zap className="w-3 h-3" />} color="bg-yellow-500" />
                   </div>
                 </div>
               </motion.div>
@@ -240,10 +245,10 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                   <h3 className="text-2xl font-black capitalize mb-6">{p2.name}</h3>
                   
                   <div className="w-full space-y-4">
-                    <StatBar label={t.hp} value={getStat(p2, 'hp')} max={255} icon={<Heart className="w-3 h-3" />} color="bg-red-500" />
-                    <StatBar label={t.attack} value={getStat(p2, 'attack')} max={255} icon={<Swords className="w-3 h-3" />} color="bg-orange-500" />
-                    <StatBar label={t.defense} value={getStat(p2, 'defense')} max={255} icon={<Shield className="w-3 h-3" />} color="bg-blue-500" />
-                    <StatBar label={t.speed} value={getStat(p2, 'speed')} max={255} icon={<Zap className="w-3 h-3" />} color="bg-yellow-500" />
+                    <StatBar label={t.hp} value={getStatValue(p2, 'hp')} max={255} icon={<Heart className="w-3 h-3" />} color="bg-red-500" />
+                    <StatBar label={t.attack} value={getStatValue(p2, 'attack')} max={255} icon={<Swords className="w-3 h-3" />} color="bg-orange-500" />
+                    <StatBar label={t.defense} value={getStatValue(p2, 'defense')} max={255} icon={<Shield className="w-3 h-3" />} color="bg-blue-500" />
+                    <StatBar label={t.speed} value={getStatValue(p2, 'speed')} max={255} icon={<Zap className="w-3 h-3" />} color="bg-yellow-500" />
                   </div>
                 </div>
               </motion.div>
@@ -281,7 +286,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                   animate={{ scale: 1, opacity: 1 }}
                   className="pt-4 text-center font-black text-2xl text-primary animate-pulse"
                 >
-                  {t.victory_for} {winner === 1 ? p1?.name : p2?.name}!
+                  {t.victory_for} {(winner === 1 ? p1?.name : p2?.name)?.toUpperCase()}!
                 </motion.div>
               )}
             </div>
