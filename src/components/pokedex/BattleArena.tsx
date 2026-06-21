@@ -252,7 +252,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                     </div>
                     <Button 
                       onClick={resetBattle} 
-                      className="glass border-primary/20 rounded-full px-10 h-16 font-black uppercase text-sm tracking-[0.2em] hover:bg-primary/20 hover:scale-105 transition-all shadow-2xl"
+                      className="bg-primary text-black rounded-full px-12 h-16 font-black uppercase text-sm tracking-[0.2em] hover:bg-primary/90 hover:scale-105 transition-all shadow-2xl shadow-primary/40 border-none"
                     >
                       <RotateCcw className="w-5 h-5 mr-3" />
                       {lang === 'es' ? 'NUEVA BATALLA' : 'NEW BATTLE'}
