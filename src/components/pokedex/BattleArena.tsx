@@ -167,22 +167,38 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
 
   return (
     <div className="space-y-12">
-      <div className="flex flex-col items-center gap-6 text-center">
-        {/* Pixel Ball Icon for Game Feel */}
-        <motion.div 
-          animate={{ y: [0, -10, 0] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          className="relative w-20 h-20 md:w-24 md:h-24 drop-shadow-2xl"
-        >
-          <Image 
-            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
-            alt="Pixel Ball Game Icon"
-            fill
-            className="object-contain"
-            style={{ imageRendering: 'pixelated' }}
-            priority
-          />
-        </motion.div>
+      <div className="flex flex-col items-center gap-8 text-center">
+        {/* Representative Gaming Icons */}
+        <div className="flex items-center gap-6 md:gap-12">
+           <motion.div 
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            className="relative w-16 h-16 md:w-20 md:h-20 drop-shadow-2xl"
+          >
+            <Image 
+              src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
+              alt="Pixel Ball Game Icon"
+              fill
+              className="object-contain"
+              style={{ imageRendering: 'pixelated' }}
+              priority
+            />
+          </motion.div>
+          <motion.div 
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+            className="relative w-16 h-16 md:w-20 md:h-20 drop-shadow-2xl"
+          >
+            <Image 
+              src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/pokedex.png"
+              alt="Pokedex Game Icon"
+              fill
+              className="object-contain"
+              style={{ imageRendering: 'pixelated' }}
+              priority
+            />
+          </motion.div>
+        </div>
 
         <div className="space-y-4">
           <h2 className="text-4xl md:text-6xl font-headline font-black bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent uppercase tracking-tighter">
@@ -201,7 +217,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
         </div>
 
         <AnimatePresence mode="wait">
-          {isBattling ? (
+          {isBattling || attackingPlayer !== null || (winner !== null && battleLogs.length > 0) ? (
             <motion.div 
               key="battle-stage"
               initial={{ opacity: 0, scale: 0.9 }}
@@ -211,8 +227,8 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
             >
               {/* Player 1 Battle View */}
               <div className="flex flex-col items-center gap-6 md:gap-8 relative w-full md:w-auto">
-                <div className="w-full max-w-[200px] md:max-w-none md:absolute md:-top-24 md:w-56 space-y-3">
-                  <div className="flex justify-between text-[11px] font-black uppercase text-white drop-shadow-md tracking-widest">
+                <div className="w-full max-w-[200px] md:max-w-none md:absolute md:-top-24 md:w-56 space-y-3 z-30">
+                  <div className="flex justify-between text-[11px] font-black uppercase text-white drop-shadow-md tracking-widest bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm">
                     <span className="truncate">{p1?.name}</span>
                     <span>{hp1} HP</span>
                   </div>
@@ -246,8 +262,8 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
 
               {/* Player 2 Battle View */}
               <div className="flex flex-col items-center gap-6 md:gap-8 relative w-full md:w-auto">
-                <div className="w-full max-w-[200px] md:max-w-none md:absolute md:-top-24 md:w-56 space-y-3">
-                   <div className="flex justify-between text-[11px] font-black uppercase text-white drop-shadow-md tracking-widest">
+                <div className="w-full max-w-[200px] md:max-w-none md:absolute md:-top-24 md:w-56 space-y-3 z-30">
+                   <div className="flex justify-between text-[11px] font-black uppercase text-white drop-shadow-md tracking-widest bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm">
                     <span className="truncate">{p2?.name}</span>
                     <span>{hp2} HP</span>
                   </div>
@@ -404,7 +420,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            className="glass rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 max-w-4xl mx-auto border-foreground/5 shadow-2xl"
+            className="glass rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 max-w-4xl mx-auto border-foreground/5 shadow-2xl overflow-hidden"
           >
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
                <h3 className="text-xl md:text-2xl font-headline font-black uppercase tracking-tighter flex items-center gap-4">
@@ -426,7 +442,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                   i === 0 ? "text-primary scale-[1.02] origin-left" : "opacity-40"
                 )}>
                   <div className="flex flex-col items-center justify-center shrink-0 w-12 h-12 rounded-xl bg-foreground/5 text-[9px] font-black text-muted-foreground">
-                    <span className="opacity-50">T.</span>
+                    <span className="opacity-50">{t.turn.charAt(0)}.</span>
                     <span>{log.turn}</span>
                   </div>
                   <span className="capitalize leading-tight">{log.message}</span>
