@@ -145,7 +145,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
             onKeyDown={(e) => e.key === 'Enter' && handleGuess()}
             placeholder={t.guess_placeholder}
             disabled={isRevealed || loading}
-            className="h-14 rounded-2xl glass border-foreground/10 text-lg font-bold px-6 focus:ring-primary/40"
+            className="h-14 rounded-2xl glass border-foreground/10 text-lg font-bold px-6 focus:ring-primary/40 text-black dark:text-white"
           />
           <Button 
             onClick={handleGuess}
@@ -171,7 +171,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
                 <Button 
                   variant="ghost" 
                   onClick={getHint}
-                  className="w-full h-12 rounded-xl glass border-foreground/5 text-primary font-black uppercase text-[10px] tracking-widest gap-2 hover:bg-primary/10 hover:text-primary transition-colors"
+                  className="w-full h-12 rounded-xl glass border-foreground/5 font-black uppercase text-[10px] tracking-widest gap-2 bg-primary/10 text-primary hover:bg-primary hover:text-black transition-all"
                 >
                   <Lightbulb className="w-4 h-4" />
                   {t.get_hint}
@@ -198,7 +198,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
         <Button 
           variant="outline" 
           onClick={loadRandomPokemon}
-          className="w-full h-14 rounded-2xl glass border-foreground/5 hover:bg-foreground/10 hover:text-black dark:hover:text-white text-black dark:text-white font-black uppercase text-xs tracking-widest flex items-center gap-3 transition-all"
+          className="w-full h-14 rounded-2xl glass border-foreground/5 hover:bg-foreground/20 text-black dark:text-white font-black uppercase text-xs tracking-widest flex items-center gap-3 transition-all"
         >
           <Sparkles className="w-5 h-5 text-secondary" />
           {t.next_pokemon}
