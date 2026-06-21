@@ -5,7 +5,7 @@ import { PokemonDetails, fetchPokemonDetails, PokemonSummary } from "@/lib/pokea
 import { Language, translations } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Sparkles, HelpCircle, RotateCcw, CheckCircle2, AlertCircle, Lightbulb, Eye } from "lucide-react";
+import { HelpCircle, RotateCcw, CheckCircle2, AlertCircle, Lightbulb, Eye, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -21,6 +21,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
   const [currentPokemon, setCurrentPokemon] = useState<PokemonDetails | null>(null);
   const [guess, setGuess] = useState("");
   const [isRevealed, setIsRevealed] = useState(false);
+  const [isRevealing, setIsRevealing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [status, setStatus] = useState<'idle' | 'correct' | 'wrong'>('idle');
@@ -30,6 +31,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
   const loadRandomPokemon = useCallback(async () => {
     setLoading(true);
     setIsRevealed(false);
+    setIsRevealing(false);
     setGuess("");
     setMessage(null);
     setStatus('idle');
@@ -70,7 +72,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
   };
 
   const handleGuess = () => {
-    if (!currentPokemon || isRevealed) return;
+    if (!currentPokemon || isRevealed || isRevealing) return;
     
     const similarity = calculateSimilarity(guess, currentPokemon.name);
     
@@ -93,10 +95,25 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
   };
 
   const handleReveal = () => {
-    if (!currentPokemon) return;
-    setIsRevealed(true);
-    setStatus('correct');
-    setMessage(`${t.revealed_msg}${currentPokemon.name.toUpperCase()}`);
+    if (!currentPokemon || isRevealed || isRevealing) return;
+    
+    setIsRevealing(true);
+    setMessage(null);
+    
+    // Suspense delay
+    setTimeout(() => {
+      setIsRevealed(true);
+      setIsRevealing(false);
+      setStatus('correct');
+      setMessage(`${t.revealed_msg}${currentPokemon.name.toUpperCase()}`);
+      
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#FFD700', '#FF0000', '#3B4CCA', '#FFFFFF']
+      });
+    }, 1200);
   };
 
   const getHint = () => {
@@ -126,14 +143,31 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
             </motion.div>
           ) : (
             artwork && (
-              <motion.div key={currentPokemon?.id} initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative w-full h-full">
+              <motion.div 
+                key={currentPokemon?.id} 
+                initial={{ scale: 0.5, opacity: 0 }} 
+                animate={{ 
+                  scale: isRevealing ? [1, 1.1, 1] : 1,
+                  opacity: 1,
+                }}
+                transition={{
+                  scale: isRevealing ? { duration: 0.2, repeat: Infinity } : { duration: 0.5 }
+                }}
+                className="relative w-full h-full"
+              >
+                <div className={cn(
+                  "absolute inset-0 bg-white rounded-full blur-[100px] opacity-0 transition-opacity duration-300",
+                  isRevealing && "opacity-40 animate-pulse"
+                )} />
                 <Image 
                   src={artwork}
                   alt="Quiz Pokemon"
                   fill
                   className={cn(
                     "object-contain transition-all duration-700 animate-float",
-                    !isRevealed ? "brightness-0" : "drop-shadow-[0_20px_40px_rgba(0,0,0,0.4)]"
+                    !isRevealed && !isRevealing && "brightness-0",
+                    isRevealing && "brightness-0 blur-[2px] opacity-70",
+                    isRevealed && "drop-shadow-[0_20px_40px_rgba(0,0,0,0.4)] brightness-100"
                   )}
                 />
               </motion.div>
@@ -141,7 +175,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
           )}
         </AnimatePresence>
 
-        {!isRevealed && !loading && (
+        {!isRevealed && !isRevealing && !loading && (
           <div className="absolute top-6 left-6 text-primary/20">
             <HelpCircle className="w-12 h-12 md:w-16 md:h-16" />
           </div>
@@ -155,12 +189,12 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
             onChange={(e) => setGuess(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleGuess()}
             placeholder={t.guess_placeholder}
-            disabled={isRevealed || loading}
+            disabled={isRevealed || isRevealing || loading}
             className="h-14 rounded-2xl glass border-foreground/10 text-lg font-bold px-6 focus:ring-primary/40 text-black dark:text-white"
           />
           <Button 
             onClick={handleGuess}
-            disabled={isRevealed || loading || !guess}
+            disabled={isRevealed || isRevealing || loading || !guess}
             className="h-14 px-8 rounded-2xl bg-primary text-black font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all w-full sm:w-auto hover:bg-primary/90"
           >
             {t.check_guess}
@@ -193,6 +227,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
                     <Button 
                       variant="outline" 
                       onClick={handleReveal}
+                      disabled={isRevealing}
                       className="w-full h-12 rounded-xl glass border-primary/20 font-black uppercase text-[10px] tracking-widest gap-2 text-primary hover:bg-primary/5"
                     >
                       <Eye className="w-4 h-4" />
@@ -206,7 +241,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
         </AnimatePresence>
 
         <AnimatePresence>
-          {hintType !== 'none' && !isRevealed && (
+          {hintType !== 'none' && !isRevealed && !isRevealing && (
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="glass p-4 rounded-2xl border-primary/20 text-center">
               <p className="text-xs font-black uppercase tracking-widest text-primary">
                 {hintType === 'letter' ? (
@@ -222,6 +257,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
         <Button 
           variant="outline" 
           onClick={loadRandomPokemon}
+          disabled={isRevealing}
           className="w-full h-14 rounded-2xl glass border-foreground/5 hover:bg-foreground/20 text-black dark:text-white font-black uppercase text-xs tracking-widest flex items-center gap-3 transition-all"
         >
           <Sparkles className="w-5 h-5 text-secondary" />
