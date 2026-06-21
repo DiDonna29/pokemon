@@ -62,7 +62,9 @@ export const translations = {
     turn: "Turn",
     took_damage: "took damage",
     victory_for: "Victory for",
-    arena_subtitle: "Combat Simulator"
+    arena_subtitle: "Combat Simulator",
+    choose_your_fighter: "Choose Your Fighter",
+    search_pokemon: "Search Pokemon..."
   },
   es: {
     app_subtitle: "La Pokédex Digital Definitiva",
@@ -125,6 +127,8 @@ export const translations = {
     turn: "Turno",
     took_damage: "recibió daño",
     victory_for: "Victoria para",
-    arena_subtitle: "Simulador de Combate"
+    arena_subtitle: "Simulador de Combate",
+    choose_your_fighter: "Elige tu Luchador",
+    search_pokemon: "Buscar Pokémon..."
   }
 };
