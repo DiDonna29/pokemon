@@ -16,7 +16,20 @@ import { BattleArena } from "@/components/pokedex/BattleArena";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trophy, Globe, Sun, Moon, LayoutGrid, Info, ChevronLeft, ChevronRight, Loader2, Sparkles, Star, Swords } from "lucide-react";
+import { 
+  Trophy, 
+  Globe, 
+  Sun, 
+  Moon, 
+  LayoutGrid, 
+  ChevronLeft, 
+  ChevronRight, 
+  ChevronsLeft, 
+  ChevronsRight, 
+  Loader2, 
+  Star, 
+  Swords 
+} from "lucide-react";
 import { Language, translations } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -174,6 +187,12 @@ export default function Home() {
   };
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE) || 1;
+
+  // Pagination Handlers
+  const goToFirstPage = () => setCurrentPage(1);
+  const goToLastPage = () => setCurrentPage(totalPages);
+  const skipForward = () => setCurrentPage(p => Math.min(totalPages, p + 3));
+  const skipBackward = () => setCurrentPage(p => Math.max(1, p - 3));
 
   return (
     <main className="min-h-screen bg-background text-foreground relative pb-20 overflow-x-hidden transition-colors duration-500">
@@ -339,14 +358,24 @@ export default function Home() {
             </div>
 
             {!loading && !filtering && visiblePokemon.length > 0 && (
-              <div className="flex justify-center gap-4 pt-10">
-                <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="rounded-2xl glass h-12 w-12 border-foreground/10 hover:border-primary transition-colors"><ChevronLeft className="w-6 h-6" /></Button>
-                <div className="glass px-8 py-3 rounded-2xl font-black text-sm tracking-tighter flex items-center gap-2 border-foreground/10 shadow-inner">
+              <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-4 pt-10">
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={goToFirstPage} className="rounded-xl glass h-10 w-10 border-foreground/10 hover:border-primary transition-colors" title={lang === 'en' ? 'First Page' : 'Primera Página'}><ChevronsLeft className="w-5 h-5" /></Button>
+                  <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={skipBackward} className="rounded-xl glass h-10 w-10 border-foreground/10 hover:border-primary transition-colors font-bold text-[10px]" title={lang === 'en' ? 'Back 3' : 'Retroceder 3'}>-3</Button>
+                  <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="rounded-xl glass h-10 w-10 border-foreground/10 hover:border-primary transition-colors"><ChevronLeft className="w-5 h-5" /></Button>
+                </div>
+
+                <div className="glass px-6 py-2 rounded-xl font-black text-xs sm:text-sm tracking-tighter flex items-center gap-2 border-foreground/10 shadow-inner min-w-[120px] justify-center">
                   <span className="text-primary">{t.page} {currentPage}</span>
                   <span className="opacity-30">{t.of}</span>
                   <span>{totalPages}</span>
                 </div>
-                <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="rounded-2xl glass h-12 w-12 border-foreground/10 hover:border-primary transition-colors"><ChevronRight className="w-6 h-6" /></Button>
+
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="rounded-xl glass h-10 w-10 border-foreground/10 hover:border-primary transition-colors"><ChevronRight className="w-5 h-5" /></Button>
+                  <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={skipForward} className="rounded-xl glass h-10 w-10 border-foreground/10 hover:border-primary transition-colors font-bold text-[10px]" title={lang === 'en' ? 'Forward 3' : 'Adelantar 3'}>+3</Button>
+                  <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={goToLastPage} className="rounded-xl glass h-10 w-10 border-foreground/10 hover:border-primary transition-colors" title={lang === 'en' ? 'Last Page' : 'Última Página'}><ChevronsRight className="w-5 h-5" /></Button>
+                </div>
               </div>
             )}
           </TabsContent>
