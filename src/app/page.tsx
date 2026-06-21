@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState, useMemo, useCallback } from "react";
@@ -35,6 +36,11 @@ import { cn } from "@/lib/utils";
 
 const PAGE_SIZE = 20;
 
+const POKEMON_TYPES = [
+  "normal", "fire", "water", "electric", "grass", "ice", "fighting", "poison",
+  "ground", "flying", "psychic", "bug", "rock", "ghost", "dragon", "dark", "steel", "fairy"
+];
+
 export default function Home() {
   // Localization & Theme State
   const [lang, setLang] = useState<Language>('en');
@@ -55,6 +61,7 @@ export default function Home() {
   const [aiSuggestions, setAiSuggestions] = useState<string[] | null>(null);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [typeFilteredNames, setTypeFilteredNames] = useState<Set<string> | null>(null);
+  const [searchTypeFilteredNames, setSearchTypeFilteredNames] = useState<Set<string> | null>(null);
   const [selectedWeight, setSelectedWeight] = useState<string | null>(null);
   const [selectedHeight, setSelectedHeight] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState("id-asc");
@@ -84,7 +91,32 @@ export default function Home() {
     loadInitial();
   }, []);
 
-  // Update Type Filters
+  // Detect if search query is a type and fetch
+  useEffect(() => {
+    async function checkSearchForType() {
+      const q = searchQuery.toLowerCase().trim();
+      if (POKEMON_TYPES.includes(q)) {
+        setFiltering(true);
+        try {
+          const typeList = await fetchPokemonByType(q);
+          setSearchTypeFilteredNames(new Set(typeList.map(p => p.pokemon.name)));
+        } catch (error) {
+          console.error("Search type filter failed", error);
+        } finally {
+          setFiltering(false);
+        }
+      } else {
+        setSearchTypeFilteredNames(null);
+      }
+    }
+    if (searchQuery) {
+      checkSearchForType();
+    } else {
+      setSearchTypeFilteredNames(null);
+    }
+  }, [searchQuery]);
+
+  // Update Drawer Type Filters
   useEffect(() => {
     async function updateTypeFilters() {
       if (selectedTypes.length === 0) {
@@ -116,25 +148,43 @@ export default function Home() {
     setCurrentPage(1);
   }, [searchQuery, aiSuggestions, selectedTypes, selectedWeight, selectedHeight, sortBy, showCapturedOnly]);
 
-  // Filtered List
+  // Filtered List Logic (Supports Name, ID, Type, AI, Captured)
   const filteredList = useMemo(() => {
     let list = [...allPokemon];
+    
     if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      list = list.filter(p => p.name.includes(q));
+      const q = searchQuery.toLowerCase().trim();
+      list = list.filter(p => {
+        // Extract ID from URL
+        const id = p.url.split('/').filter(Boolean).pop() || '0';
+        
+        // Match by Name
+        const nameMatch = p.name.includes(q);
+        // Match by ID
+        const idMatch = id === q || id.startsWith(q);
+        // Match by Type (if search query matched a type name in useEffect)
+        const typeMatch = searchTypeFilteredNames?.has(p.name);
+        
+        return nameMatch || idMatch || typeMatch;
+      });
     }
+
     if (aiSuggestions) {
       list = list.filter(p => aiSuggestions.includes(p.name.toLowerCase()));
     }
+
     if (typeFilteredNames) {
       list = list.filter(p => typeFilteredNames.has(p.name));
     }
+
     if (showCapturedOnly) {
       list = list.filter(p => {
         const id = parseInt(p.url.split('/').filter(Boolean).pop() || '0');
         return caughtPokemon.has(id);
       });
     }
+
+    // Sorting
     if (sortBy === "name-asc") {
       list.sort((a, b) => a.name.localeCompare(b.name));
     } else if (sortBy === "name-desc") {
@@ -142,8 +192,10 @@ export default function Home() {
     } else if (sortBy === "id-desc") {
       list = [...list].reverse();
     }
+    // id-asc is default (pokeapi list is already sorted by id)
+    
     return list;
-  }, [allPokemon, searchQuery, aiSuggestions, typeFilteredNames, sortBy, showCapturedOnly, caughtPokemon]);
+  }, [allPokemon, searchQuery, searchTypeFilteredNames, aiSuggestions, typeFilteredNames, sortBy, showCapturedOnly, caughtPokemon]);
 
   useEffect(() => {
     const offset = (currentPage - 1) * PAGE_SIZE;
@@ -182,6 +234,7 @@ export default function Home() {
     setSearchQuery("");
     setAiSuggestions(null);
     setTypeFilteredNames(null);
+    setSearchTypeFilteredNames(null);
     setShowCapturedOnly(false);
   };
 
