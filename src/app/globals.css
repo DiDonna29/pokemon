@@ -26,15 +26,15 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 45 93% 47%;
-    --radius: 2rem;
+    --radius: 2.5rem;
   }
 
   .dark {
-    --background: 222 47% 4%;
+    --background: 222 47% 2%;
     --foreground: 210 40% 98%;
-    --card: 222 47% 6%;
+    --card: 222 47% 4%;
     --card-foreground: 210 40% 98%;
-    --popover: 222 47% 4%;
+    --popover: 222 47% 2%;
     --popover-foreground: 210 40% 98%;
     
     --primary: 48 100% 50%;
@@ -45,80 +45,100 @@
     --secondary-foreground: 210 40% 98%;
     --accent-foreground: 222 47% 11%;
     
-    --muted: 222 47% 10%;
+    --muted: 222 47% 8%;
     --muted-foreground: 215 20.2% 65.1%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    --border: 222 47% 12%;
-    --input: 222 47% 12%;
+    --border: 222 47% 10%;
+    --input: 222 47% 10%;
     --ring: 48 100% 50%;
   }
 }
 
 @layer base {
   * {
-    @apply border-border outline-none transition-all duration-300;
+    @apply border-border outline-none transition-all duration-500 ease-in-out;
   }
   body {
-    @apply bg-background text-foreground antialiased selection:bg-primary/30;
+    @apply bg-background text-foreground antialiased selection:bg-primary/30 selection:text-foreground;
     font-feature-settings: "cv02", "cv03", "cv04", "ss01";
+    letter-spacing: -0.01em;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-headline tracking-tighter;
+    line-height: 0.9;
   }
 }
 
-/* Taste Skill: Premium Glassmorphism */
+/* Taste Skill: Anti-Slop Premium Surfaces */
 .glass {
-  @apply bg-white/40 dark:bg-black/40 backdrop-blur-3xl border border-white/20 dark:border-white/5 shadow-[0_8px_32px_0_rgba(0,0,0,0.1)];
+  @apply bg-white/40 dark:bg-black/40 backdrop-blur-[40px] border border-white/20 dark:border-white/5 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)];
 }
 
-.glass-dark {
-  @apply bg-black/60 backdrop-blur-3xl border border-white/10 shadow-2xl;
+.glass-card {
+  @apply bg-white/60 dark:bg-white/[0.03] backdrop-blur-[30px] border border-white/30 dark:border-white/10 shadow-2xl;
 }
 
-/* Premium Motion Curves */
-.spring-hover {
-  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+.nav-glass {
+  @apply bg-background/60 backdrop-blur-3xl border-t border-foreground/[0.03];
 }
 
-.spring-hover:hover {
-  transform: scale(1.02) translateY(-4px);
-}
-
-/* PokeAPI Type Colors with Depth */
-.type-normal { @apply bg-slate-400 text-white shadow-lg shadow-slate-400/20; }
-.type-fire { @apply bg-orange-500 text-white shadow-lg shadow-orange-500/20; }
-.type-water { @apply bg-blue-500 text-white shadow-lg shadow-blue-500/20; }
-.type-electric { @apply bg-yellow-400 text-black shadow-lg shadow-yellow-400/20; }
-.type-grass { @apply bg-green-500 text-white shadow-lg shadow-green-500/20; }
-.type-ice { @apply bg-cyan-300 text-black shadow-lg shadow-cyan-300/20; }
-.type-fighting { @apply bg-red-700 text-white shadow-lg shadow-red-700/20; }
-.type-poison { @apply bg-purple-500 text-white shadow-lg shadow-purple-500/20; }
-.type-ground { @apply bg-amber-600 text-white shadow-lg shadow-amber-600/20; }
-.type-flying { @apply bg-indigo-400 text-white shadow-lg shadow-indigo-400/20; }
-.type-psychic { @apply bg-pink-500 text-white shadow-lg shadow-pink-500/20; }
-.type-bug { @apply bg-lime-600 text-white shadow-lg shadow-lime-600/20; }
-.type-rock { @apply bg-stone-600 text-white shadow-lg shadow-stone-600/20; }
-.type-ghost { @apply bg-violet-700 text-white shadow-lg shadow-violet-700/20; }
-.type-dragon { @apply bg-indigo-700 text-white shadow-lg shadow-indigo-700/20; }
-.type-dark { @apply bg-zinc-800 text-white shadow-lg shadow-zinc-800/20; }
-.type-steel { @apply bg-slate-500 text-white shadow-lg shadow-slate-500/20; }
-.type-fairy { @apply bg-rose-400 text-white shadow-lg shadow-rose-400/20; }
-
-@keyframes float-premium {
+/* Cinematic Animations */
+@keyframes float-hero {
   0% { transform: translateY(0px) rotate(0deg); }
-  33% { transform: translateY(-10px) rotate(2deg); }
-  66% { transform: translateY(-5px) rotate(-1deg); }
+  50% { transform: translateY(-20px) rotate(1deg); }
   100% { transform: translateY(0px) rotate(0deg); }
 }
 
-.animate-float-premium {
-  animation: float-premium 6s ease-in-out infinite;
+.animate-float-hero {
+  animation: float-hero 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
+@keyframes pulsate-glow {
+  0% { filter: drop-shadow(0 0 10px rgba(var(--primary), 0.2)); transform: scale(1); }
+  50% { filter: drop-shadow(0 0 30px rgba(var(--primary), 0.6)); transform: scale(1.02); }
+  100% { filter: drop-shadow(0 0 10px rgba(var(--primary), 0.2)); transform: scale(1); }
+}
+
+.animate-pulsate-glow {
+  animation: pulsate-glow 2s ease-in-out infinite;
+}
+
+@keyframes vibrate {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
+.animate-vibrate {
+  animation: vibrate 0.1s linear infinite;
+}
+
+/* PokeAPI Type Colors with Depth */
+.type-normal { @apply bg-slate-400 text-white shadow-lg shadow-slate-400/30; }
+.type-fire { @apply bg-orange-500 text-white shadow-lg shadow-orange-500/30; }
+.type-water { @apply bg-blue-500 text-white shadow-lg shadow-blue-500/30; }
+.type-electric { @apply bg-yellow-400 text-black shadow-lg shadow-yellow-400/30; }
+.type-grass { @apply bg-green-500 text-white shadow-lg shadow-green-500/30; }
+.type-ice { @apply bg-cyan-300 text-black shadow-lg shadow-cyan-300/30; }
+.type-fighting { @apply bg-red-700 text-white shadow-lg shadow-red-700/30; }
+.type-poison { @apply bg-purple-500 text-white shadow-lg shadow-purple-500/30; }
+.type-ground { @apply bg-amber-600 text-white shadow-lg shadow-amber-600/30; }
+.type-flying { @apply bg-indigo-400 text-white shadow-lg shadow-indigo-400/30; }
+.type-psychic { @apply bg-pink-500 text-white shadow-lg shadow-pink-500/30; }
+.type-bug { @apply bg-lime-600 text-white shadow-lg shadow-lime-600/30; }
+.type-rock { @apply bg-stone-600 text-white shadow-lg shadow-stone-600/30; }
+.type-ghost { @apply bg-violet-700 text-white shadow-lg shadow-violet-700/30; }
+.type-dragon { @apply bg-indigo-700 text-white shadow-lg shadow-indigo-700/30; }
+.type-dark { @apply bg-zinc-800 text-white shadow-lg shadow-zinc-800/30; }
+.type-steel { @apply bg-slate-500 text-white shadow-lg shadow-slate-500/30; }
+.type-fairy { @apply bg-rose-400 text-white shadow-lg shadow-rose-400/30; }
+
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-thumb {

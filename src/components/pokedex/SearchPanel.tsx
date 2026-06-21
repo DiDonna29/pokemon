@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -77,48 +76,48 @@ export function SearchPanel({ onSearch, onAiSuggest, isLoading, lang }: SearchPa
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-6">
+    <div className="w-full max-w-3xl mx-auto space-y-10">
       <form onSubmit={handleSearch} className="relative group">
         <motion.div 
           layout
           className={cn(
-            "glass flex items-center p-1.5 rounded-2xl transition-all duration-500 border-2",
+            "glass flex items-center p-2 rounded-[2.5rem] transition-all duration-1000 border-2",
             aiMode 
-              ? "border-secondary/30 ring-4 ring-secondary/10 shadow-2xl shadow-secondary/20 bg-secondary/5" 
-              : "border-foreground/10 hover:border-primary/40 focus-within:border-primary/60 shadow-xl"
+              ? "border-secondary/40 ring-[12px] ring-secondary/5 shadow-[0_40px_80px_-20px_rgba(var(--secondary),0.3)] bg-secondary/[0.03]" 
+              : "border-foreground/10 hover:border-primary/40 focus-within:border-primary/60 shadow-2xl"
           )}
         >
-          <div className="pl-4 text-muted-foreground group-focus-within:text-primary transition-colors">
-            {aiMode ? <Sparkles className="w-6 h-6 text-secondary animate-pulse" /> : <Search className="w-6 h-6" />}
+          <div className="pl-6 text-muted-foreground group-focus-within:text-primary transition-colors">
+            {aiMode ? <Sparkles className="w-8 h-8 text-secondary animate-pulse" /> : <Search className="w-8 h-8" />}
           </div>
           <Input 
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={aiMode ? t.ai_placeholder : t.search_placeholder}
             className={cn(
-              "border-none focus-visible:ring-0 text-lg h-12 bg-transparent font-bold tracking-tight",
-              "placeholder:text-muted-foreground/50 placeholder:font-medium",
+              "border-none focus-visible:ring-0 text-xl h-16 bg-transparent font-black tracking-tight",
+              "placeholder:text-muted-foreground/30 placeholder:font-medium",
               aiMode ? "text-secondary" : "text-foreground"
             )}
           />
-          <div className="flex items-center pr-1 gap-2">
+          <div className="flex items-center pr-2 gap-3">
              {query && (
                <Button 
                  type="button" 
                  variant="ghost" 
                  size="icon" 
                  onClick={clearSearch}
-                 className="rounded-xl w-10 h-10 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
+                 className="rounded-2xl w-12 h-12 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
                  title={t.reset}
                >
-                 <Eraser className="w-5 h-5" />
+                 <Eraser className="w-6 h-6" />
                </Button>
              )}
              {aiMode && (
                <Button 
                  type="submit" 
                  disabled={isLoading || aiLoading}
-                 className="rounded-xl px-6 h-11 font-black uppercase text-[10px] tracking-widest bg-secondary hover:bg-secondary/90 text-white transition-all shadow-lg hover:shadow-secondary/30 active:scale-95"
+                 className="rounded-2xl px-10 h-14 font-black uppercase text-[11px] tracking-[0.3em] bg-secondary hover:bg-secondary/90 text-white transition-all shadow-xl hover:shadow-secondary/40 active:scale-95"
                >
                  {aiLoading ? t.thinking : t.discover}
                </Button>
@@ -127,35 +126,35 @@ export function SearchPanel({ onSearch, onAiSuggest, isLoading, lang }: SearchPa
         </motion.div>
       </form>
 
-      <div className="flex items-center justify-center gap-8">
+      <div className="flex items-center justify-center gap-12">
         <button 
           onClick={() => toggleAiMode(false)}
           className={cn(
-            "text-[10px] font-black uppercase tracking-[0.2em] transition-all relative pb-2 px-2",
-            !aiMode ? "text-primary scale-110" : "text-muted-foreground hover:text-foreground opacity-60"
+            "text-[11px] font-black uppercase tracking-[0.4em] transition-all relative pb-3 px-3",
+            !aiMode ? "text-primary scale-110" : "text-muted-foreground hover:text-foreground opacity-40"
           )}
         >
           {t.classic_search}
           {!aiMode && (
             <motion.div 
               layoutId="underline" 
-              className="absolute bottom-0 left-0 w-full h-1 bg-primary rounded-full shadow-[0_0_10px_rgba(var(--primary),0.5)]" 
+              className="absolute bottom-0 left-0 w-full h-1 bg-primary rounded-full shadow-[0_10px_20px_rgba(var(--primary),0.6)]" 
             />
           )}
         </button>
         <button 
           onClick={() => toggleAiMode(true)}
           className={cn(
-            "text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 relative pb-2 px-2",
-            aiMode ? "text-secondary scale-110" : "text-muted-foreground hover:text-foreground opacity-60"
+            "text-[11px] font-black uppercase tracking-[0.4em] transition-all flex items-center gap-3 relative pb-3 px-3",
+            aiMode ? "text-secondary scale-110" : "text-muted-foreground hover:text-foreground opacity-40"
           )}
         >
-          <Sparkles className="w-3.5 h-3.5" />
+          <Sparkles className="w-4 h-4" />
           {t.ai_discovery}
           {aiMode && (
             <motion.div 
               layoutId="underline" 
-              className="absolute bottom-0 left-0 w-full h-1 bg-secondary rounded-full shadow-[0_0_10px_rgba(var(--secondary),0.5)]" 
+              className="absolute bottom-0 left-0 w-full h-1 bg-secondary rounded-full shadow-[0_10px_20px_rgba(var(--secondary),0.6)]" 
             />
           )}
         </button>

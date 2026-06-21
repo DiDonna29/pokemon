@@ -30,13 +30,13 @@ export function PokemonCard({ name, isCaught, onToggleCaught, onClick }: Pokemon
 
   if (loading) {
     return (
-      <div className="glass rounded-[3rem] p-8 h-[380px] flex flex-col items-center justify-between animate-pulse">
-        <Skeleton className="h-48 w-48 rounded-full bg-foreground/5" />
-        <div className="space-y-3 w-full">
-          <Skeleton className="h-8 w-3/4 mx-auto rounded-xl bg-foreground/5" />
-          <div className="flex gap-2 justify-center">
-            <Skeleton className="h-6 w-16 rounded-full bg-foreground/5" />
-            <Skeleton className="h-6 w-16 rounded-full bg-foreground/5" />
+      <div className="glass rounded-[4rem] p-10 h-[450px] flex flex-col items-center justify-between animate-pulse">
+        <Skeleton className="h-56 w-56 rounded-full bg-foreground/5" />
+        <div className="space-y-4 w-full">
+          <Skeleton className="h-10 w-3/4 mx-auto rounded-2xl bg-foreground/5" />
+          <div className="flex gap-3 justify-center">
+            <Skeleton className="h-7 w-20 rounded-full bg-foreground/5" />
+            <Skeleton className="h-7 w-20 rounded-full bg-foreground/5" />
           </div>
         </div>
       </div>
@@ -49,65 +49,65 @@ export function PokemonCard({ name, isCaught, onToggleCaught, onClick }: Pokemon
 
   return (
     <motion.div 
-      whileHover={{ y: -10 }}
-      className="group relative glass rounded-[3.5rem] p-8 h-[380px] flex flex-col items-center justify-between cursor-pointer overflow-hidden spring-hover"
+      whileHover={{ y: -15, scale: 1.02 }}
+      className="group relative glass-card rounded-[4rem] p-10 h-[450px] flex flex-col items-center justify-between cursor-pointer overflow-hidden transition-all duration-700"
       onClick={() => onClick(pokemon)}
     >
-      <div className="absolute top-8 left-8 flex flex-col items-start gap-1">
-        <span className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.2em]">Pokedex</span>
-        <span className="font-headline text-xl font-black text-primary/60 tracking-tighter">
+      <div className="absolute top-10 left-10 flex flex-col items-start gap-1 z-20">
+        <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.3em]">Entry</span>
+        <span className="font-headline text-2xl font-black text-primary/60 tracking-tighter italic">
           #{String(pokemon.id).padStart(3, '0')}
         </span>
       </div>
 
       <motion.button
-        whileHover={{ scale: 1.2, rotate: 12 }}
-        whileTap={{ scale: 0.9 }}
+        whileHover={{ scale: 1.25, rotate: 15 }}
+        whileTap={{ scale: 0.85 }}
         onClick={(e) => {
           e.stopPropagation();
           onToggleCaught(pokemon.id);
         }}
         className={cn(
-          "absolute top-8 right-8 z-20 w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500",
-          isCaught ? "bg-primary shadow-xl shadow-primary/40" : "bg-foreground/5 hover:bg-foreground/10"
+          "absolute top-10 right-10 z-30 w-14 h-14 rounded-3xl flex items-center justify-center transition-all duration-1000",
+          isCaught ? "bg-primary shadow-[0_15px_30px_-5px_rgba(var(--primary),0.5)]" : "glass hover:bg-foreground/10"
         )}
       >
         <Image 
           src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
           alt="Caught"
-          width={24}
-          height={24}
-          className={cn("transition-all duration-500", isCaught ? "grayscale-0" : "grayscale opacity-30")}
+          width={28}
+          height={28}
+          className={cn("transition-all duration-1000", isCaught ? "rotate-[360deg] grayscale-0" : "grayscale opacity-30")}
         />
       </motion.button>
 
-      <div className="relative mt-8">
+      <div className="relative mt-12 flex-1 flex items-center justify-center w-full">
         <div className={cn(
-          "absolute inset-0 blur-[100px] opacity-10 group-hover:opacity-40 transition-opacity duration-1000 rounded-full",
+          "absolute inset-0 blur-[100px] opacity-10 group-hover:opacity-40 transition-opacity duration-1000 rounded-full scale-125",
           getTypeColorClass(pokemon.types[0].type.name)
         )} />
         {artwork && (
           <Image 
             src={artwork} 
             alt={pokemon.name} 
-            width={220} 
-            height={220} 
-            className="relative z-10 drop-shadow-[0_40px_40px_rgba(0,0,0,0.3)] group-hover:scale-110 transition-transform duration-700 animate-float-premium"
-            priority={pokemon.id < 50}
+            width={300} 
+            height={300} 
+            className="relative z-10 drop-shadow-[0_60px_60px_rgba(0,0,0,0.5)] group-hover:scale-125 transition-transform duration-1000 animate-float-hero w-auto h-full max-h-[220px]"
+            priority={pokemon.id < 30}
           />
         )}
       </div>
 
-      <div className="w-full text-center mt-auto">
-        <h3 className="text-3xl font-black capitalize tracking-tighter group-hover:text-primary mb-4">
+      <div className="w-full text-center mt-auto z-10">
+        <h3 className="text-4xl md:text-5xl font-black capitalize tracking-tighter group-hover:text-primary mb-5 group-hover:italic transition-all duration-700">
           {pokemon.name}
         </h3>
-        <div className="flex gap-2 justify-center">
+        <div className="flex gap-3 justify-center">
           {pokemon.types.map((t) => (
             <Badge 
               key={t.type.name} 
               className={cn(
-                "capitalize text-[9px] py-1.5 px-5 rounded-full border-none font-black text-white shadow-xl tracking-widest",
+                "capitalize text-[10px] py-2 px-6 rounded-full border-none font-black text-white shadow-2xl tracking-[0.2em]",
                 getTypeColorClass(t.type.name)
               )}
             >
@@ -117,7 +117,7 @@ export function PokemonCard({ name, isCaught, onToggleCaught, onClick }: Pokemon
         </div>
       </div>
 
-      <div className="absolute -bottom-10 -right-10 text-[12rem] font-black text-foreground/[0.02] pointer-events-none select-none uppercase tracking-tighter group-hover:text-primary/[0.04] transition-colors duration-1000">
+      <div className="absolute -bottom-16 -right-16 text-[18rem] font-black text-foreground/[0.02] pointer-events-none select-none uppercase tracking-tighter group-hover:text-primary/[0.05] transition-colors duration-1000 leading-none">
         {pokemon.name.charAt(0)}
       </div>
     </motion.div>
