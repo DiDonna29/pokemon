@@ -166,13 +166,31 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
 
   return (
     <div className="space-y-12">
-      <div className="text-center space-y-4">
-        <h2 className="text-4xl md:text-6xl font-headline font-black bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent">
-          {t.battle_arena}
-        </h2>
-        <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-lg px-4">
-          {t.battle_desc}
-        </p>
+      <div className="flex flex-col items-center gap-6 text-center">
+        {/* Pixel Pokedex Game Logo */}
+        <motion.div 
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          className="relative w-20 h-20 md:w-28 md:h-28 drop-shadow-2xl"
+        >
+          <Image 
+            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/pokedex.png"
+            alt="Pixel Pokedex Game Icon"
+            fill
+            className="object-contain"
+            style={{ imageRendering: 'pixelated' }}
+            priority
+          />
+        </motion.div>
+
+        <div className="space-y-4">
+          <h2 className="text-4xl md:text-6xl font-headline font-black bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent uppercase tracking-tighter">
+            {t.battle_arena}
+          </h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-lg px-4 italic">
+            {t.battle_desc}
+          </p>
+        </div>
       </div>
 
       <div className="relative min-h-[500px] md:min-h-[650px] w-full glass rounded-[3rem] md:rounded-[4rem] border-foreground/5 p-6 md:p-12 flex flex-col items-center justify-center overflow-hidden">
