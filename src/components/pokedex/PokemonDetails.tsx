@@ -23,9 +23,11 @@ interface PokemonDetailsViewProps {
   pokemon: PokemonDetails | null;
   onClose: () => void;
   lang: Language;
+  isCaught: boolean;
+  onToggleCaught: (id: number) => void;
 }
 
-export function PokemonDetailsView({ pokemon, onClose, lang }: PokemonDetailsViewProps) {
+export function PokemonDetailsView({ pokemon, onClose, lang, isCaught, onToggleCaught }: PokemonDetailsViewProps) {
   const [species, setSpecies] = useState<PokemonSpecies | null>(null);
   const [loading, setLoading] = useState(false);
   const t = translations[lang];
@@ -48,12 +50,12 @@ export function PokemonDetailsView({ pokemon, onClose, lang }: PokemonDetailsVie
 
   const getStatIcon = (name: string) => {
     switch (name) {
-      case 'hp': return <Heart className="w-4 h-4" />;
-      case 'attack': return <Swords className="w-4 h-4" />;
-      case 'defense': return <Shield className="w-4 h-4" />;
-      case 'special-attack': return <Target className="w-4 h-4" />;
-      case 'special-defense': return <ShieldAlert className="w-4 h-4" />;
-      case 'speed': return <Zap className="w-4 h-4" />;
+      case 'hp': return <Heart className="w-3 h-3" />;
+      case 'attack': return <Swords className="w-3 h-3" />;
+      case 'defense': return <Shield className="w-3 h-3" />;
+      case 'special-attack': return <Target className="w-3 h-3" />;
+      case 'special-defense': return <ShieldAlert className="w-3 h-3" />;
+      case 'speed': return <Zap className="w-3 h-3" />;
       default: return null;
     }
   };
@@ -64,169 +66,159 @@ export function PokemonDetailsView({ pokemon, onClose, lang }: PokemonDetailsVie
 
   return (
     <Dialog open={!!pokemon} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-full md:max-w-6xl lg:max-w-7xl p-0 overflow-hidden border-none bg-background shadow-2xl rounded-none md:rounded-[3rem] h-[100dvh] md:h-[90vh] lg:h-[85vh] md:max-h-[900px] [&>button]:hidden">
+      <DialogContent className="max-w-[100vw] md:max-w-xl lg:max-w-2xl p-0 overflow-hidden border-none bg-background shadow-2xl rounded-none md:rounded-[3rem] h-[100dvh] md:h-[90vh] md:max-h-[850px] [&>button]:hidden">
         <AnimatePresence>
           {pokemon && (
             <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="flex flex-col md:flex-row h-full w-full relative overflow-hidden"
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="flex flex-col h-full w-full relative overflow-hidden"
             >
-              {/* Left Side: Information Section */}
-              <div className="flex-1 order-2 md:order-1 bg-card flex flex-col h-full overflow-hidden">
-                {/* Fixed Top Bar in the info section */}
-                <div className="p-6 md:p-8 lg:p-12 pb-0">
+              {/* Top Section: Visual & Header */}
+              <div className={cn(
+                "relative h-[45%] md:h-[40%] flex flex-col items-center justify-center p-6",
+                getTypeColorClass(mainType)
+              )}>
+                <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/30" />
+                
+                {/* Floating Header */}
+                <div className="absolute top-8 left-0 right-0 px-6 flex items-center justify-between z-50">
                   <Button 
                     onClick={onClose}
-                    className="glass h-10 md:h-12 px-5 md:px-8 rounded-2xl flex items-center gap-2 border-foreground/10 hover:bg-primary/20 hover:text-foreground text-foreground transition-all group mb-4 md:mb-8"
+                    className="glass h-11 w-11 md:w-auto md:px-6 rounded-2xl flex items-center justify-center gap-2 border-white/20 text-white hover:bg-white/20"
                   >
-                    <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                    <span className="font-black uppercase text-[10px] md:text-xs tracking-widest">{t.go_back}</span>
+                    <ArrowLeft className="w-5 h-5" />
+                    <span className="hidden md:block font-black uppercase text-[10px] tracking-widest">{t.go_back}</span>
+                  </Button>
+
+                  <Button
+                    onClick={() => onToggleCaught(pokemon.id)}
+                    className={cn(
+                      "glass h-11 w-11 rounded-2xl flex items-center justify-center border-white/20 transition-all duration-300",
+                      isCaught ? "bg-primary/40 border-primary/50" : "bg-white/10"
+                    )}
+                  >
+                    <Image 
+                      src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
+                      alt="Caught"
+                      width={24}
+                      height={24}
+                      className={cn("pixelated", isCaught ? "" : "grayscale opacity-40")}
+                    />
                   </Button>
                 </div>
 
-                {/* Scrollable Content */}
-                <div className="flex-1 overflow-y-auto px-6 md:px-8 lg:px-12 pb-12 scrollbar-thin scrollbar-thumb-foreground/10">
-                  <div className="space-y-6 md:space-y-12">
-                    <header className="space-y-2 md:space-y-4">
-                      <div className="flex items-center gap-4">
-                         <span className="text-primary font-black tracking-widest text-lg md:text-2xl">#{String(pokemon.id).padStart(3, '0')}</span>
-                         <div className="h-px flex-1 bg-foreground/10" />
-                      </div>
-                      <DialogTitle className="text-3xl md:text-5xl lg:text-7xl font-headline font-black capitalize tracking-tighter leading-tight">
-                        {pokemon.name}
-                      </DialogTitle>
-                      <div className="flex flex-wrap gap-2 md:gap-3">
-                        {pokemon.types.map(typeInfo => (
-                          <Badge 
-                            key={typeInfo.type.name} 
-                            className={cn(
-                              "px-5 md:px-8 py-1 md:py-2.5 rounded-full text-white font-black uppercase text-[9px] md:text-xs tracking-widest border-none shadow-lg",
-                              getTypeColorClass(typeInfo.type.name)
-                            )}
-                          >
-                            {t[typeInfo.type.name as keyof typeof t] || typeInfo.type.name}
-                          </Badge>
-                        ))}
-                      </div>
-                    </header>
-
-                    <Tabs defaultValue="about" className="w-full">
-                      <TabsList className="grid w-full grid-cols-2 glass bg-foreground/5 h-12 md:h-16 p-1.5 md:p-2 rounded-2xl mb-6 md:mb-10">
-                        <TabsTrigger value="about" className="rounded-xl font-black uppercase text-[9px] md:text-xs tracking-widest data-[state=active]:bg-primary data-[state=active]:text-black transition-all">
-                          {t.about}
-                        </TabsTrigger>
-                        <TabsTrigger value="stats" className="rounded-xl font-black uppercase text-[9px] md:text-xs tracking-widest data-[state=active]:bg-primary data-[state=active]:text-black transition-all">
-                          {t.stats}
-                        </TabsTrigger>
-                      </TabsList>
-                      
-                      <TabsContent value="about" className="space-y-6 md:space-y-10 outline-none">
-                        <div className="relative">
-                          <div className="absolute -left-4 md:-left-6 top-0 w-1 md:w-1.5 h-full bg-primary rounded-full opacity-20" />
-                          <p className="text-muted-foreground leading-relaxed text-sm md:text-lg lg:text-xl font-medium pl-2 italic">
-                            "{flavorText}"
-                          </p>
-                        </div>
-                        
-                        <div className="grid grid-cols-2 gap-3 md:gap-6">
-                          <div className="glass rounded-[1.5rem] md:rounded-[2.5rem] p-4 md:p-10 flex flex-col items-center gap-2 md:gap-5 border-foreground/5 group hover:border-primary/20 transition-all">
-                            <div className="w-8 h-8 md:w-14 md:h-14 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform">
-                              <Ruler className="w-4 h-4 md:w-7 md:h-7" />
-                            </div>
-                            <div className="text-center">
-                              <div className="font-headline text-lg md:text-3xl lg:text-4xl font-black">{pokemon.height / 10}m</div>
-                              <div className="text-muted-foreground text-[7px] md:text-[10px] uppercase font-black tracking-widest opacity-50 mt-1">{t.height}</div>
-                            </div>
-                          </div>
-                          <div className="glass rounded-[1.5rem] md:rounded-[2.5rem] p-4 md:p-10 flex flex-col items-center gap-2 md:gap-5 border-foreground/5 group hover:border-orange-500/20 transition-all">
-                            <div className="w-8 h-8 md:w-14 md:h-14 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 group-hover:scale-110 transition-transform">
-                              <Weight className="w-4 h-4 md:w-7 md:h-7" />
-                            </div>
-                            <div className="text-center">
-                              <div className="font-headline text-lg md:text-3xl lg:text-4xl font-black">{pokemon.weight / 10}kg</div>
-                              <div className="text-muted-foreground text-[7px] md:text-[10px] uppercase font-black tracking-widest opacity-50 mt-1">{t.weight}</div>
-                            </div>
-                          </div>
-                        </div>
-                      </TabsContent>
-
-                      <TabsContent value="stats" className="space-y-4 md:space-y-8 outline-none">
-                        {pokemon.stats.map((s, idx) => (
-                          <motion.div 
-                            key={s.stat.name} 
-                            initial={{ x: -20, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            transition={{ delay: idx * 0.05 }}
-                            className="group space-y-1 md:space-y-3"
-                          >
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2 md:gap-3">
-                                <div className="w-6 h-6 md:w-9 md:h-9 rounded-lg bg-foreground/5 flex items-center justify-center group-hover:text-primary transition-colors">
-                                  {getStatIcon(s.stat.name)}
-                                </div>
-                                <span className="font-black uppercase text-[8px] md:text-xs tracking-widest text-muted-foreground">
-                                  {t[s.stat.name as keyof typeof t] || s.stat.name.replace('-', ' ')}
-                                </span>
-                              </div>
-                              <span className="font-headline font-black text-base md:text-2xl">{s.base_stat}</span>
-                            </div>
-                            <Progress 
-                              value={(s.base_stat / 255) * 100} 
-                              className="h-1.5 md:h-2.5 bg-foreground/5"
-                            />
-                          </motion.div>
-                        ))}
-                      </TabsContent>
-                    </Tabs>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Side: Visual Section */}
-              <div className={cn(
-                "relative flex-1 min-h-[300px] md:min-h-0 flex flex-col items-center justify-center p-6 md:p-12 order-1 md:order-2 overflow-hidden",
-                getTypeColorClass(mainType)
-              )}>
-                <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-transparent to-white/10" />
-                
-                {/* Dynamic Background Elements */}
-                <motion.div 
-                  animate={{ 
-                    scale: [1, 1.2, 1],
-                    rotate: [0, 90, 0],
-                    opacity: [0.1, 0.2, 0.1]
-                  }}
-                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                  className="absolute w-[150%] h-[150%] bg-white/20 rounded-full blur-[120px] -z-10" 
-                />
-                
-                <motion.div 
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ type: "spring", stiffness: 60, damping: 20 }}
-                  className="relative z-10 w-full flex items-center justify-center"
-                >
-                  <div className="absolute inset-0 bg-white/30 blur-[60px] md:blur-[150px] rounded-full scale-110 md:scale-125 opacity-40" />
-                  {artwork && (
+                <div className="relative z-10 w-full flex items-center justify-center h-full pt-12">
+                   <div className="absolute inset-0 bg-white/20 blur-[80px] rounded-full scale-75 opacity-40" />
+                   {artwork && (
                     <Image 
                       src={artwork} 
                       alt={pokemon.name} 
-                      width={550} 
-                      height={550} 
-                      className="relative z-10 drop-shadow-[0_30px_30px_rgba(0,0,0,0.5)] lg:drop-shadow-[0_80px_80px_rgba(0,0,0,0.6)] animate-float w-full max-w-[240px] md:max-w-[420px] lg:max-w-[500px] h-auto"
+                      width={380} 
+                      height={380} 
+                      className="relative z-10 drop-shadow-[0_20px_20px_rgba(0,0,0,0.5)] animate-float w-auto h-full max-h-[220px] md:max-h-[280px]"
                       priority
                     />
                   )}
-                </motion.div>
-
-                <div className="absolute -bottom-12 -right-12 md:-bottom-24 md:-right-24 font-headline text-[10rem] md:text-[30rem] font-black text-white/5 select-none pointer-events-none uppercase tracking-tighter">
-                  {pokemon.name.charAt(0)}
                 </div>
 
-                <div className="absolute bottom-4 left-4 md:bottom-10 md:left-10 hidden sm:flex items-center gap-3 md:gap-4 glass bg-white/10 border-none px-4 md:px-8 py-2 md:py-4 rounded-full text-white shadow-2xl backdrop-blur-3xl">
-                  <Sparkles className="w-4 h-4 md:w-6 md:h-6 animate-pulse" />
-                  <span className="font-black uppercase text-[8px] md:text-xs tracking-[0.2em]">{t.species} # {pokemon.id}</span>
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/40 font-headline font-black text-6xl md:text-8xl uppercase tracking-tighter opacity-20 whitespace-nowrap overflow-hidden pointer-events-none">
+                  {pokemon.name}
+                </div>
+              </div>
+
+              {/* Bottom Section: Info Panel */}
+              <div className="flex-1 bg-card rounded-t-[3rem] -mt-10 relative z-20 shadow-[0_-20px_50px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden">
+                <div className="w-12 h-1.5 bg-foreground/10 rounded-full mx-auto mt-4 shrink-0" />
+                
+                <div className="flex-1 overflow-y-auto px-6 md:px-10 pb-10 scrollbar-none">
+                  <header className="py-6 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <DialogTitle className="text-3xl md:text-4xl font-headline font-black capitalize tracking-tighter">
+                        {pokemon.name}
+                      </DialogTitle>
+                      <span className="text-muted-foreground font-black tracking-widest text-lg opacity-40">#{String(pokemon.id).padStart(3, '0')}</span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {pokemon.types.map(typeInfo => (
+                        <Badge 
+                          key={typeInfo.type.name} 
+                          className={cn(
+                            "px-5 py-1.5 rounded-full text-white font-black uppercase text-[10px] tracking-widest border-none shadow-lg",
+                            getTypeColorClass(typeInfo.type.name)
+                          )}
+                        >
+                          {t[typeInfo.type.name as keyof typeof t] || typeInfo.type.name}
+                        </Badge>
+                      ))}
+                    </div>
+                  </header>
+
+                  <Tabs defaultValue="about" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2 bg-foreground/5 h-12 p-1.5 rounded-2xl mb-8">
+                      <TabsTrigger value="about" className="rounded-xl font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-foreground data-[state=active]:text-background transition-all">
+                        {t.about}
+                      </TabsTrigger>
+                      <TabsTrigger value="stats" className="rounded-xl font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-foreground data-[state=active]:text-background transition-all">
+                        {t.stats}
+                      </TabsTrigger>
+                    </TabsList>
+                    
+                    <TabsContent value="about" className="space-y-8 outline-none">
+                      <p className="text-muted-foreground leading-relaxed text-sm md:text-base font-medium italic border-l-4 border-primary/20 pl-4 py-2">
+                        "{flavorText}"
+                      </p>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="glass bg-foreground/5 rounded-3xl p-6 flex flex-col items-center gap-3 border-foreground/5">
+                          <Ruler className="w-5 h-5 text-blue-500" />
+                          <div className="text-center">
+                            <div className="text-xl md:text-2xl font-black">{pokemon.height / 10}m</div>
+                            <div className="text-muted-foreground text-[9px] uppercase font-black tracking-widest opacity-50">{t.height}</div>
+                          </div>
+                        </div>
+                        <div className="glass bg-foreground/5 rounded-3xl p-6 flex flex-col items-center gap-3 border-foreground/5">
+                          <Weight className="w-5 h-5 text-orange-500" />
+                          <div className="text-center">
+                            <div className="text-xl md:text-2xl font-black">{pokemon.weight / 10}kg</div>
+                            <div className="text-muted-foreground text-[9px] uppercase font-black tracking-widest opacity-50">{t.weight}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent value="stats" className="space-y-4 outline-none">
+                      {pokemon.stats.map((s, idx) => (
+                        <motion.div 
+                          key={s.stat.name} 
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: idx * 0.05 }}
+                          className="space-y-2"
+                        >
+                          <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                              {getStatIcon(s.stat.name)}
+                              {t[s.stat.name as keyof typeof t] || s.stat.name.replace('-', ' ')}
+                            </div>
+                            <span className="text-foreground">{s.base_stat}</span>
+                          </div>
+                          <div className="relative h-2 w-full bg-foreground/5 rounded-full overflow-hidden">
+                             <motion.div 
+                               initial={{ width: 0 }}
+                               animate={{ width: `${(s.base_stat / 255) * 100}%` }}
+                               transition={{ duration: 1, ease: "easeOut" }}
+                               className={cn(
+                                 "absolute h-full rounded-full",
+                                 s.base_stat > 100 ? "bg-green-500" : s.base_stat > 60 ? "bg-yellow-500" : "bg-red-500"
+                               )}
+                             />
+                          </div>
+                        </motion.div>
+                      ))}
+                    </TabsContent>
+                  </Tabs>
                 </div>
               </div>
             </motion.div>

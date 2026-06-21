@@ -337,7 +337,13 @@ export default function Home() {
       <div className="mt-8">
         <Footer lang={lang} />
       </div>
-      <PokemonDetailsView pokemon={selectedDetails} onClose={() => setSelectedDetails(null)} lang={lang} />
+      <PokemonDetailsView 
+        pokemon={selectedDetails} 
+        onClose={() => setSelectedDetails(null)} 
+        lang={lang} 
+        isCaught={selectedDetails ? caughtPokemon.has(selectedDetails.id) : false}
+        onToggleCaught={toggleCaught}
+      />
     </main>
   );
 }
