@@ -169,7 +169,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
     <div className="space-y-12">
       <div className="flex flex-col items-center gap-8 text-center">
         {/* Representative Gaming Icons */}
-        <div className="flex items-center gap-6 md:gap-12">
+        <div className="flex items-center justify-center">
            <motion.div 
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
@@ -178,20 +178,6 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
             <Image 
               src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
               alt="Pixel Ball Game Icon"
-              fill
-              className="object-contain"
-              style={{ imageRendering: 'pixelated' }}
-              priority
-            />
-          </motion.div>
-          <motion.div 
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-            className="relative w-16 h-16 md:w-20 md:h-20 drop-shadow-2xl"
-          >
-            <Image 
-              src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/pokedex.png"
-              alt="Pokedex Game Icon"
               fill
               className="object-contain"
               style={{ imageRendering: 'pixelated' }}
