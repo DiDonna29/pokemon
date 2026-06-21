@@ -213,7 +213,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
               className="w-full flex flex-row items-center justify-around gap-2 md:gap-4 relative z-10 px-2"
             >
               {/* Player 1 Battle View */}
-              <div className="flex flex-col items-center gap-4 md:gap-8 relative flex-1">
+              <div className="flex flex-col items-center gap-4 md:gap-8 relative flex-1 min-w-0">
                 <div className="w-full max-w-[140px] md:max-w-none md:absolute md:-top-24 md:w-56 space-y-2 z-30">
                   <div className="flex justify-between text-[9px] md:text-[11px] font-black uppercase text-white drop-shadow-md tracking-widest bg-black/40 px-2 py-1 rounded-full backdrop-blur-sm">
                     <span className="truncate">{p1?.name}</span>
@@ -239,22 +239,22 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
               </div>
 
               {/* VS Divider / Winner Controls */}
-              <div className="flex flex-col items-center gap-4 z-20 shrink-0">
+              <div className="flex flex-col items-center gap-4 z-20 shrink-0 min-w-[80px] md:min-w-[200px]">
                 {winner ? (
                   <motion.div 
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="flex flex-col items-center gap-4"
+                    className="flex flex-col items-center gap-2 md:gap-4"
                   >
-                    <div className="text-2xl md:text-6xl font-black text-primary drop-shadow-2xl uppercase tracking-tighter animate-bounce">
+                    <div className="text-xl md:text-6xl font-black text-primary drop-shadow-2xl uppercase tracking-tighter animate-bounce text-center">
                       {t.winner}!
                     </div>
                     <Button 
                       onClick={resetBattle} 
-                      className="bg-primary text-black rounded-full px-6 md:px-12 h-12 md:h-16 font-black uppercase text-[10px] md:text-sm tracking-[0.2em] hover:bg-primary/90 hover:scale-105 transition-all shadow-2xl shadow-primary/40 border-none"
+                      className="bg-primary text-black rounded-full px-4 md:px-12 h-10 md:h-16 font-black uppercase text-[8px] md:text-sm tracking-[0.2em] hover:bg-primary/90 hover:scale-105 transition-all shadow-2xl shadow-primary/40 border-none"
                     >
-                      <RotateCcw className="w-4 h-4 mr-2" />
-                      {lang === 'es' ? 'NUEVA BATALLA' : 'NEW BATTLE'}
+                      <RotateCcw className="w-3 h-3 mr-2" />
+                      <span className="truncate">{lang === 'es' ? 'NUEVA BATALLA' : 'NEW BATTLE'}</span>
                     </Button>
                   </motion.div>
                 ) : (
@@ -269,7 +269,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
               </div>
 
               {/* Player 2 Battle View */}
-              <div className="flex flex-col items-center gap-4 md:gap-8 relative flex-1">
+              <div className="flex flex-col items-center gap-4 md:gap-8 relative flex-1 min-w-0">
                 <div className="w-full max-w-[140px] md:max-w-none md:absolute md:-top-24 md:w-56 space-y-2 z-30">
                    <div className="flex justify-between text-[9px] md:text-[11px] font-black uppercase text-white drop-shadow-md tracking-widest bg-black/40 px-2 py-1 rounded-full backdrop-blur-sm">
                     <span className="truncate">{p2?.name}</span>
