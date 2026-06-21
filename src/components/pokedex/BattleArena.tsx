@@ -5,12 +5,12 @@ import { useState, useEffect, useCallback } from "react";
 import { PokemonDetails, fetchPokemonDetails, PokemonSummary } from "@/lib/pokeapi";
 import { Language, translations } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Swords, RotateCcw, Search, Zap, Heart, Loader2, Sparkles, Trophy } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { hidePortableIndicator } from "@/lib/utils"; // If exists, else ignored
 import { cn } from "@/lib/utils";
 import { PokemonSelectorModal } from "./PokemonSelectorModal";
 import confetti from "canvas-confetti";
@@ -494,4 +494,3 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
     </div>
   );
 }
-
