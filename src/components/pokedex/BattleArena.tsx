@@ -110,13 +110,15 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
       
       await new Promise(resolve => setTimeout(resolve, 800));
       
+      const dmgLabel = lang === 'es' ? 'DAÑO' : 'DMG';
+
       if (turn === 1) {
         const dmg = Math.max(10, Math.floor((atk1 * 2.5) / (def2 / 8 + 1)));
         currentHp2 = Math.max(0, currentHp2 - dmg);
         setHp2(currentHp2);
         currentLogs = [{ 
           turn: turnCount, 
-          message: `${p1.name.toUpperCase()} -> ${dmg} ${t.damage_unit} -> ${p2.name.toUpperCase()}` 
+          message: `${p1.name.toUpperCase()} -> ${dmg} ${dmgLabel} -> ${p2.name.toUpperCase()}` 
         }, ...currentLogs];
         turn = 2;
       } else {
@@ -125,7 +127,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
         setHp1(currentHp1);
         currentLogs = [{ 
           turn: turnCount, 
-          message: `${p2.name.toUpperCase()} -> ${dmg} ${t.damage_unit} -> ${p1.name.toUpperCase()}` 
+          message: `${p2.name.toUpperCase()} -> ${dmg} ${dmgLabel} -> ${p1.name.toUpperCase()}` 
         }, ...currentLogs];
         turn = 1;
       }
@@ -168,7 +170,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
   return (
     <div className="space-y-12">
       <div className="flex flex-col items-center gap-8 text-center">
-        {/* Representative Gaming Icons */}
+        {/* Representative Gaming Icon */}
         <div className="flex items-center justify-center">
            <motion.div 
             animate={{ y: [0, -10, 0] }}
@@ -237,14 +239,35 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                 <div className="w-32 md:w-48 h-4 md:h-6 bg-black/20 rounded-[100%] blur-md" />
               </div>
 
-              {/* VS Divider */}
-              <motion.div 
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ repeat: Infinity, duration: 1 }}
-                className="text-4xl md:text-8xl font-black text-primary drop-shadow-2xl z-20 my-4 md:my-0"
-              >
-                VS
-              </motion.div>
+              {/* VS Divider / Winner Controls */}
+              <div className="flex flex-col items-center gap-8 z-20">
+                {winner ? (
+                  <motion.div 
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="flex flex-col items-center gap-6"
+                  >
+                    <div className="text-4xl md:text-6xl font-black text-primary drop-shadow-2xl uppercase tracking-tighter animate-bounce">
+                      {t.winner}!
+                    </div>
+                    <Button 
+                      onClick={resetBattle} 
+                      className="glass border-primary/20 rounded-full px-10 h-16 font-black uppercase text-sm tracking-[0.2em] hover:bg-primary/20 hover:scale-105 transition-all shadow-2xl"
+                    >
+                      <RotateCcw className="w-5 h-5 mr-3" />
+                      {lang === 'es' ? 'NUEVA BATALLA' : 'NEW BATTLE'}
+                    </Button>
+                  </motion.div>
+                ) : (
+                  <motion.div 
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ repeat: Infinity, duration: 1 }}
+                    className="text-4xl md:text-8xl font-black text-primary drop-shadow-2xl my-4 md:my-0"
+                  >
+                    VS
+                  </motion.div>
+                )}
+              </div>
 
               {/* Player 2 Battle View */}
               <div className="flex flex-col items-center gap-6 md:gap-8 relative w-full md:w-auto">
@@ -280,7 +303,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
               className="w-full flex flex-col lg:flex-row items-center justify-around gap-10 md:gap-12 relative z-10"
             >
               {/* Player 1 Selection */}
-              <div className="w-full max-sm-space-y-6">
+              <div className="w-full max-sm:space-y-6">
                  <Button 
                     variant="outline" 
                     onClick={() => setActiveSelector(1)}
@@ -296,7 +319,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                     <motion.div 
                       layoutId="p1-card"
                       className={cn(
-                        "glass p-6 md:p-10 rounded-[2.5rem] md:rounded-[4rem] border-primary/20 text-center relative",
+                        "glass p-6 md:p-10 rounded-[2.5rem] md:rounded-[4rem] border-primary/20 text-center relative mt-4",
                         winner === 1 ? "ring-4 ring-primary bg-primary/10 shadow-2xl shadow-primary/20" : ""
                       )}
                     >
@@ -318,7 +341,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                       </div>
                     </motion.div>
                   ) : (
-                    <div className="glass h-[300px] md:h-[400px] rounded-[3rem] border-dashed border-foreground/10 flex flex-col items-center justify-center text-muted-foreground gap-4">
+                    <div className="glass h-[300px] md:h-[400px] rounded-[3rem] border-dashed border-foreground/10 flex flex-col items-center justify-center text-muted-foreground gap-4 mt-4">
                       {loading && activeSelector === 1 ? <Loader2 className="w-10 h-10 animate-spin text-primary" /> : <div className="font-black uppercase text-[10px] tracking-widest opacity-20">Slot 1</div>}
                     </div>
                   )}
@@ -344,7 +367,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                 </Button>
 
                 {(p1 || p2) && (
-                  <Button variant="ghost" onClick={resetBattle} className="text-muted-foreground hover:text-primary gap-2 font-black uppercase text-[10px] tracking-widest">
+                  <Button variant="ghost" onClick={resetBattle} className="text-muted-foreground hover:text-primary gap-2 font-black uppercase text-[10px] tracking-widest bg-foreground/5 px-6 h-10 rounded-full border border-foreground/5">
                     <RotateCcw className="w-4 h-4" />
                     {t.reset}
                   </Button>
@@ -352,7 +375,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
               </div>
 
               {/* Player 2 Selection */}
-              <div className="w-full max-sm-space-y-6">
+              <div className="w-full max-sm:space-y-6">
                   <Button 
                     variant="outline" 
                     onClick={() => setActiveSelector(2)}
@@ -368,7 +391,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                     <motion.div 
                       layoutId="p2-card"
                       className={cn(
-                        "glass p-6 md:p-10 rounded-[2.5rem] md:rounded-[4rem] border-secondary/20 text-center relative",
+                        "glass p-6 md:p-10 rounded-[2.5rem] md:rounded-[4rem] border-secondary/20 text-center relative mt-4",
                         winner === 2 ? "ring-4 ring-secondary bg-secondary/10 shadow-2xl shadow-secondary/20" : ""
                       )}
                     >
@@ -390,7 +413,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                       </div>
                     </motion.div>
                   ) : (
-                    <div className="glass h-[300px] md:h-[400px] rounded-[3rem] border-dashed border-foreground/10 flex flex-col items-center justify-center text-muted-foreground gap-4">
+                    <div className="glass h-[300px] md:h-[400px] rounded-[3rem] border-dashed border-foreground/10 flex flex-col items-center justify-center text-muted-foreground gap-4 mt-4">
                       {loading && activeSelector === 2 ? <Loader2 className="w-10 h-10 animate-spin text-secondary" /> : <div className="font-black uppercase text-[10px] tracking-widest opacity-20">Slot 2</div>}
                     </div>
                   )}
