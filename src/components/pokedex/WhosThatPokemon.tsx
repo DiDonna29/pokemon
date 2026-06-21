@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
@@ -148,16 +149,18 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
                 initial={{ scale: 0.5, opacity: 0 }} 
                 animate={{ 
                   scale: isRevealing ? [1, 1.1, 1] : 1,
+                  rotate: isRevealing ? [0, -2, 2, -2, 2, 0] : 0,
                   opacity: 1,
                 }}
                 transition={{
-                  scale: isRevealing ? { duration: 0.2, repeat: Infinity } : { duration: 0.5 }
+                  scale: isRevealing ? { duration: 0.2, repeat: Infinity } : { duration: 0.5 },
+                  rotate: isRevealing ? { duration: 0.1, repeat: Infinity } : { duration: 0.5 }
                 }}
                 className="relative w-full h-full"
               >
                 <div className={cn(
                   "absolute inset-0 bg-white rounded-full blur-[100px] opacity-0 transition-opacity duration-300",
-                  isRevealing && "opacity-40 animate-pulse"
+                  isRevealing && "opacity-60 animate-pulse"
                 )} />
                 <Image 
                   src={artwork}
@@ -195,7 +198,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
           <Button 
             onClick={handleGuess}
             disabled={isRevealed || isRevealing || loading || !guess}
-            className="h-14 px-8 rounded-2xl bg-primary text-black font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all w-full sm:w-auto hover:bg-primary/90"
+            className="h-14 px-8 rounded-2xl bg-primary text-black font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all w-full sm:w-auto hover:bg-primary/90 shadow-lg shadow-primary/20"
           >
             {t.check_guess}
           </Button>

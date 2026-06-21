@@ -298,7 +298,7 @@ export default function Home() {
                     className={cn(
                       "rounded-2xl font-black text-[10px] uppercase tracking-widest h-12 px-6 glass transition-all border shadow-lg",
                       showCapturedOnly 
-                        ? "bg-primary text-black border-primary hover:bg-primary/90" 
+                        ? "bg-primary text-black border-primary hover:bg-primary/90 shadow-primary/30" 
                         : "bg-foreground/5 text-black dark:text-white border-foreground/5 hover:bg-foreground/10"
                     )}
                   >
@@ -325,10 +325,10 @@ export default function Home() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="glass border-foreground/10">
-                      <SelectItem value="id-asc">{t.numerical_asc}</SelectItem>
-                      <SelectItem value="id-desc">{t.numerical_desc}</SelectItem>
-                      <SelectItem value="name-asc">{t.alpha_asc}</SelectItem>
-                      <SelectItem value="name-desc">{t.alpha_desc}</SelectItem>
+                      <SelectItem value="id-asc" className="text-black dark:text-white">{t.numerical_asc}</SelectItem>
+                      <SelectItem value="id-desc" className="text-black dark:text-white">{t.numerical_desc}</SelectItem>
+                      <SelectItem value="name-asc" className="text-black dark:text-white">{t.alpha_asc}</SelectItem>
+                      <SelectItem value="name-desc" className="text-black dark:text-white">{t.alpha_desc}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -365,13 +365,13 @@ export default function Home() {
 
               {visiblePokemon.length > 0 && (
                 <div className="flex flex-wrap justify-center items-center gap-2 py-12">
-                   <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => jumpToPage(1)} className="rounded-xl glass h-10 w-10 text-black dark:text-white"><ChevronsLeft className="w-4 h-4" /></Button>
-                   <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="rounded-xl glass h-10 w-10 text-black dark:text-white"><ChevronLeft className="w-4 h-4" /></Button>
-                   <div className="glass px-6 h-10 flex items-center rounded-xl font-black text-[10px] uppercase tracking-widest min-w-[120px] justify-center text-black dark:text-white">
+                   <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => jumpToPage(1)} className="rounded-xl glass h-10 w-10 text-black dark:text-white border-foreground/10"><ChevronsLeft className="w-4 h-4" /></Button>
+                   <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="rounded-xl glass h-10 w-10 text-black dark:text-white border-foreground/10"><ChevronLeft className="w-4 h-4" /></Button>
+                   <div className="glass px-6 h-10 flex items-center rounded-xl font-black text-[10px] uppercase tracking-widest min-w-[120px] justify-center text-black dark:text-white border-foreground/10">
                     {t.page} {currentPage} / {totalPages}
                    </div>
-                   <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="rounded-xl glass h-10 w-10 text-black dark:text-white"><ChevronRight className="w-4 h-4" /></Button>
-                   <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={() => jumpToPage(totalPages)} className="rounded-xl glass h-10 w-10 text-black dark:text-white"><ChevronsRight className="w-4 h-4" /></Button>
+                   <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="rounded-xl glass h-10 w-10 text-black dark:text-white border-foreground/10"><ChevronRight className="w-4 h-4" /></Button>
+                   <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={() => jumpToPage(totalPages)} className="rounded-xl glass h-10 w-10 text-black dark:text-white border-foreground/10"><ChevronsRight className="w-4 h-4" /></Button>
                 </div>
               )}
             </motion.div>
