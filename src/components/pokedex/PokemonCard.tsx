@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -30,8 +31,8 @@ export function PokemonCard({ name, isCaught, onToggleCaught, onClick }: Pokemon
 
   if (loading) {
     return (
-      <div className="glass rounded-[4rem] p-10 h-[450px] flex flex-col items-center justify-between animate-pulse">
-        <Skeleton className="h-56 w-56 rounded-full bg-foreground/5" />
+      <div className="glass rounded-[4rem] p-10 h-[500px] flex flex-col items-center justify-between animate-pulse">
+        <Skeleton className="h-64 w-64 rounded-full bg-foreground/5" />
         <div className="space-y-4 w-full">
           <Skeleton className="h-10 w-3/4 mx-auto rounded-2xl bg-foreground/5" />
           <div className="flex gap-3 justify-center">
@@ -50,10 +51,10 @@ export function PokemonCard({ name, isCaught, onToggleCaught, onClick }: Pokemon
   return (
     <motion.div 
       whileHover={{ y: -15, scale: 1.02 }}
-      className="group relative glass-card rounded-[4rem] p-10 h-[450px] flex flex-col items-center justify-between cursor-pointer overflow-hidden transition-all duration-700"
+      className="group relative glass-card rounded-[4rem] p-8 md:p-10 h-[500px] flex flex-col items-center justify-between cursor-pointer overflow-hidden transition-all duration-700"
       onClick={() => onClick(pokemon)}
     >
-      <div className="absolute top-10 left-10 flex flex-col items-start gap-1 z-20">
+      <div className="absolute top-8 left-8 flex flex-col items-start gap-1 z-20">
         <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.3em]">Entry</span>
         <span className="font-headline text-2xl font-black text-primary/60 tracking-tighter italic">
           #{String(pokemon.id).padStart(3, '0')}
@@ -68,7 +69,7 @@ export function PokemonCard({ name, isCaught, onToggleCaught, onClick }: Pokemon
           onToggleCaught(pokemon.id);
         }}
         className={cn(
-          "absolute top-10 right-10 z-30 w-14 h-14 rounded-3xl flex items-center justify-center transition-all duration-1000",
+          "absolute top-8 right-8 z-30 w-12 h-12 md:w-14 md:h-14 rounded-3xl flex items-center justify-center transition-all duration-1000",
           isCaught ? "bg-primary shadow-[0_15px_30px_-5px_rgba(var(--primary),0.5)]" : "glass hover:bg-foreground/10"
         )}
       >
@@ -90,16 +91,19 @@ export function PokemonCard({ name, isCaught, onToggleCaught, onClick }: Pokemon
           <Image 
             src={artwork} 
             alt={pokemon.name} 
-            width={300} 
-            height={300} 
-            className="relative z-10 drop-shadow-[0_60px_60px_rgba(0,0,0,0.5)] group-hover:scale-125 transition-transform duration-1000 animate-float-hero w-auto h-full max-h-[220px]"
+            width={350} 
+            height={350} 
+            className="relative z-10 drop-shadow-[0_60px_60px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform duration-1000 animate-float-hero w-auto h-full max-h-[250px]"
             priority={pokemon.id < 30}
           />
         )}
       </div>
 
       <div className="w-full text-center mt-auto z-10">
-        <h3 className="text-4xl md:text-5xl font-black capitalize tracking-tighter group-hover:text-primary mb-5 group-hover:italic transition-all duration-700">
+        <h3 className={cn(
+          "font-black capitalize tracking-tighter group-hover:text-primary mb-5 group-hover:italic transition-all duration-700 leading-tight",
+          pokemon.name.length > 10 ? "text-3xl md:text-4xl" : "text-4xl md:text-5xl"
+        )}>
           {pokemon.name}
         </h3>
         <div className="flex gap-3 justify-center">

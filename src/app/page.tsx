@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
@@ -38,7 +39,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
-const PAGE_SIZE = 15;
+const PAGE_SIZE = 12; // Adjusted for 3 and 4 column layouts
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<"pokedex" | "battle" | "quiz">("pokedex");
@@ -260,7 +261,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-background text-foreground transition-all duration-1000 pb-32 md:pb-40 overflow-x-hidden">
       <header className="fixed top-0 left-0 right-0 z-[100] px-6 py-6 bg-background/60 backdrop-blur-3xl border-b border-foreground/[0.03]">
-        <div className="container mx-auto max-w-7xl flex items-center justify-between">
+        <div className="container mx-auto max-w-[1800px] flex items-center justify-between">
           <motion.div 
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
@@ -286,10 +287,10 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="container mx-auto px-6 md:px-12 max-w-7xl pt-40">
+      <div className="container mx-auto px-6 md:px-12 max-w-[1800px] pt-40">
         <AnimatePresence mode="wait">
           {activeTab === "pokedex" && (
-            <motion.div key="dex" initial="hidden" animate="visible" variants={containerVariants} className="space-y-24">
+            <motion.div key="dex" initial="hidden" animate="visible" variants={containerVariants} className="space-y-16 md:space-y-24">
               <div className="max-w-5xl mx-auto space-y-10 text-center">
                 <motion.div variants={itemVariants} className="space-y-6">
                   <Badge variant="outline" className="px-5 py-2 rounded-full border-primary/20 text-primary uppercase font-black text-[10px] tracking-[0.3em] bg-primary/5">
@@ -310,7 +311,7 @@ export default function Home() {
                 </motion.div>
               </div>
 
-              <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-between gap-8 glass p-8 rounded-[3.5rem] border-foreground/[0.05]">
+              <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-between gap-8 glass p-6 md:p-8 rounded-[3.5rem] border-foreground/[0.05]">
                 <div className="flex flex-wrap gap-4">
                   <FiltersDrawer 
                     selectedTypes={selectedTypes} setSelectedTypes={setSelectedTypes}
@@ -376,7 +377,7 @@ export default function Home() {
                   </Button>
                 </motion.div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-8 md:gap-12">
                   <AnimatePresence mode="popLayout">
                     {visiblePokemon.map((p) => {
                       const id = parseInt(p.url.split('/').filter(Boolean).pop() || '0');
