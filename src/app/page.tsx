@@ -454,7 +454,7 @@ export default function Home() {
           whileTap={{ scale: 0.9 }}
           onClick={() => handleTabChange("battle")}
           className={cn(
-            "w-20 h-20 md:w-24 md:h-24 rounded-[2rem] md:rounded-[2.5rem] border-[4px] md:border-[6px] shadow-2xl transition-all flex items-center justify-center bg-background relative -top-6 md:-top-8",
+            "w-20 h-20 md:w-24 md:h-24 rounded-[2rem] md:rounded-[2.5rem] border-[4px] md:border-[6px] shadow-2xl transition-all flex items-center justify-center bg-background relative -top-6 md:-top-8 lg:top-0",
             activeTab === 'battle' ? "border-primary bg-primary/10 shadow-primary/30 shadow-[0_0_40px_rgba(var(--primary),0.3)]" : "border-foreground/10 glass"
           )}
         >
