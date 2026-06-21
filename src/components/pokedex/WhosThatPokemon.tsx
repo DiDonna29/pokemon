@@ -150,7 +150,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
           <Button 
             onClick={handleGuess}
             disabled={isRevealed || loading || !guess}
-            className="h-14 px-8 rounded-2xl bg-primary text-black font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all w-full sm:w-auto"
+            className="h-14 px-8 rounded-2xl bg-primary text-black dark:text-black font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all w-full sm:w-auto hover:bg-primary/90"
           >
             {t.check_guess}
           </Button>
@@ -198,7 +198,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
         <Button 
           variant="outline" 
           onClick={loadRandomPokemon}
-          className="w-full h-14 rounded-2xl glass border-foreground/5 hover:bg-foreground/10 hover:text-foreground font-black uppercase text-xs tracking-widest flex items-center gap-3 transition-all"
+          className="w-full h-14 rounded-2xl glass border-foreground/5 hover:bg-foreground/10 hover:text-black dark:hover:text-white text-black dark:text-white font-black uppercase text-xs tracking-widest flex items-center gap-3 transition-all"
         >
           <Sparkles className="w-5 h-5 text-secondary" />
           {t.next_pokemon}

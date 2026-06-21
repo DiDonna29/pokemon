@@ -23,10 +23,11 @@ import {
   LayoutGrid, 
   ChevronLeft, 
   ChevronRight, 
-  Star, 
   Gamepad2,
   ChevronsLeft,
-  ChevronsRight
+  ChevronsRight,
+  RotateCcw,
+  SearchX
 } from "lucide-react";
 import { Language, translations } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
@@ -152,6 +153,7 @@ export default function Home() {
     setAiSuggestions(null);
     setTypeFilteredNames(null);
     setShowCapturedOnly(false);
+    setCurrentPage(1);
   };
 
   const handleTabChange = (tab: "pokedex" | "battle" | "quiz") => {
@@ -228,8 +230,8 @@ export default function Home() {
                     className={cn(
                       "rounded-2xl font-black text-[10px] uppercase tracking-widest h-12 px-6 glass transition-all",
                       showCapturedOnly 
-                        ? "bg-primary text-black hover:bg-primary/90 hover:text-black shadow-lg" 
-                        : "hover:bg-foreground/10 hover:text-foreground"
+                        ? "bg-primary shadow-lg text-black dark:text-black hover:bg-primary/90" 
+                        : "hover:bg-foreground/10 text-black dark:text-white"
                     )}
                   >
                     <div className="relative w-4 h-4 mr-2">
@@ -245,7 +247,7 @@ export default function Home() {
                 </div>
                 <div className="flex items-center gap-4">
                   <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="w-48 glass h-12 rounded-2xl font-black text-[10px] uppercase tracking-widest border-foreground/10">
+                    <SelectTrigger className="w-48 glass h-12 rounded-2xl font-black text-[10px] uppercase tracking-widest border-foreground/10 text-black dark:text-white">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="glass border-foreground/10">
@@ -258,32 +260,48 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
-                <AnimatePresence mode="popLayout">
-                  {!loading && !filtering && visiblePokemon.map((p) => {
-                    const id = parseInt(p.url.split('/').filter(Boolean).pop() || '0');
-                    return (
-                      <motion.div key={p.name} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                        <PokemonCard name={p.name} isCaught={caughtPokemon.has(id)} onToggleCaught={toggleCaught} onClick={setSelectedDetails} />
-                      </motion.div>
-                    );
-                  })}
-                </AnimatePresence>
-              </div>
+              {visiblePokemon.length === 0 && !loading && !filtering ? (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center py-20 text-center space-y-6">
+                  <div className="p-8 rounded-full bg-foreground/5 mb-4">
+                    <SearchX className="w-16 h-16 text-muted-foreground opacity-20" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-2xl font-black uppercase tracking-tight">{t.no_pokemon}</h3>
+                    <p className="text-muted-foreground">{t.no_pokemon_desc}</p>
+                  </div>
+                  <Button onClick={handleClearFilters} className="rounded-2xl h-14 px-8 font-black uppercase text-xs tracking-widest bg-primary text-black hover:bg-primary/90 transition-all">
+                    <RotateCcw className="w-4 h-4 mr-2" />
+                    {t.clear_filters}
+                  </Button>
+                </motion.div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
+                  <AnimatePresence mode="popLayout">
+                    {!loading && !filtering && visiblePokemon.map((p) => {
+                      const id = parseInt(p.url.split('/').filter(Boolean).pop() || '0');
+                      return (
+                        <motion.div key={p.name} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                          <PokemonCard name={p.name} isCaught={caughtPokemon.has(id)} onToggleCaught={toggleCaught} onClick={setSelectedDetails} />
+                        </motion.div>
+                      );
+                    })}
+                  </AnimatePresence>
+                </div>
+              )}
 
               {visiblePokemon.length > 0 && (
                 <div className="flex flex-wrap justify-center items-center gap-2 py-12">
-                   <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => jumpToPage(1)} className="rounded-xl glass h-10 w-10"><ChevronsLeft className="w-4 h-4" /></Button>
-                   <Button variant="outline" size="icon" disabled={currentPage <= 3} onClick={() => jumpToPage(currentPage - 3)} className="rounded-xl glass h-10 w-10 flex items-center justify-center font-black text-[10px]">-3</Button>
-                   <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="rounded-xl glass h-10 w-10"><ChevronLeft className="w-4 h-4" /></Button>
+                   <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => jumpToPage(1)} className="rounded-xl glass h-10 w-10 text-black dark:text-white"><ChevronsLeft className="w-4 h-4" /></Button>
+                   <Button variant="outline" size="icon" disabled={currentPage <= 3} onClick={() => jumpToPage(currentPage - 3)} className="rounded-xl glass h-10 w-10 flex items-center justify-center font-black text-[10px] text-black dark:text-white">-3</Button>
+                   <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="rounded-xl glass h-10 w-10 text-black dark:text-white"><ChevronLeft className="w-4 h-4" /></Button>
                    
-                   <div className="glass px-6 h-10 flex items-center rounded-xl font-black text-[10px] uppercase tracking-widest min-w-[120px] justify-center">
+                   <div className="glass px-6 h-10 flex items-center rounded-xl font-black text-[10px] uppercase tracking-widest min-w-[120px] justify-center text-black dark:text-white">
                     {t.page} {currentPage} / {totalPages}
                    </div>
                    
-                   <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="rounded-xl glass h-10 w-10"><ChevronRight className="w-4 h-4" /></Button>
-                   <Button variant="outline" size="icon" disabled={currentPage >= totalPages - 2} onClick={() => jumpToPage(currentPage + 3)} className="rounded-xl glass h-10 w-10 flex items-center justify-center font-black text-[10px]">+3</Button>
-                   <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={() => jumpToPage(totalPages)} className="rounded-xl glass h-10 w-10"><ChevronsRight className="w-4 h-4" /></Button>
+                   <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="rounded-xl glass h-10 w-10 text-black dark:text-white"><ChevronRight className="w-4 h-4" /></Button>
+                   <Button variant="outline" size="icon" disabled={currentPage >= totalPages - 2} onClick={() => jumpToPage(currentPage + 3)} className="rounded-xl glass h-10 w-10 flex items-center justify-center font-black text-[10px] text-black dark:text-white">+3</Button>
+                   <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={() => jumpToPage(totalPages)} className="rounded-xl glass h-10 w-10 text-black dark:text-white"><ChevronsRight className="w-4 h-4" /></Button>
                 </div>
               )}
             </motion.div>

@@ -1,8 +1,7 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Sparkles, X, Eraser } from "lucide-react";
+import { Search, Sparkles, Eraser } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { intelligentPokemonDiscovery } from "@/ai/flows/intelligent-pokemon-discovery-flow";
@@ -53,6 +52,7 @@ export function SearchPanel({ onSearch, onAiSuggest, isLoading, lang }: SearchPa
   const clearSearch = () => {
     setQuery("");
     onSearch("");
+    onAiSuggest(null as any);
   };
 
   return (
@@ -76,7 +76,7 @@ export function SearchPanel({ onSearch, onAiSuggest, isLoading, lang }: SearchPa
             placeholder={aiMode ? t.ai_placeholder : t.search_placeholder}
             className={cn(
               "border-none focus-visible:ring-0 text-lg h-12 bg-transparent font-bold tracking-tight",
-              "placeholder:text-muted-foreground/50 placeholder:font-medium text-foreground",
+              "placeholder:text-muted-foreground/50 placeholder:font-medium",
               aiMode ? "text-secondary" : "text-foreground"
             )}
           />
@@ -108,7 +108,7 @@ export function SearchPanel({ onSearch, onAiSuggest, isLoading, lang }: SearchPa
 
       <div className="flex items-center justify-center gap-8">
         <button 
-          onClick={() => { setAiMode(false); setQuery(""); }}
+          onClick={() => { setAiMode(false); setQuery(""); onAiSuggest(null as any); }}
           className={cn(
             "text-[10px] font-black uppercase tracking-[0.2em] transition-all relative pb-2 px-2",
             !aiMode ? "text-primary scale-110" : "text-muted-foreground hover:text-foreground opacity-60"
@@ -123,7 +123,7 @@ export function SearchPanel({ onSearch, onAiSuggest, isLoading, lang }: SearchPa
           )}
         </button>
         <button 
-          onClick={() => { setAiMode(true); setQuery(""); }}
+          onClick={() => { setAiMode(true); setQuery(""); onAiSuggest(null as any); }}
           className={cn(
             "text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 relative pb-2 px-2",
             aiMode ? "text-secondary scale-110" : "text-muted-foreground hover:text-foreground opacity-60"
