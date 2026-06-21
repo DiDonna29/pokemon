@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 
 interface SearchPanelProps {
   onSearch: (query: string) => void;
-  onAiSuggest: (pokemonNames: string[]) => void;
+  onAiSuggest: (pokemonNames: string[] | null) => void;
   isLoading: boolean;
   lang: Language;
 }
@@ -43,10 +43,10 @@ export function SearchPanel({ onSearch, onAiSuggest, isLoading, lang }: SearchPa
     setAiLoading(true);
     try {
       const result = await intelligentPokemonDiscovery({ description: query });
-      if (result && result.suggestedPokemon) {
+      if (result && result.suggestedPokemon && result.suggestedPokemon.length > 0) {
         onAiSuggest(result.suggestedPokemon.map(p => p.name.toLowerCase()));
       } else {
-        throw new Error("No suggestions found");
+        onAiSuggest([]); // No results found, trigger empty state
       }
     } catch (error) {
       console.error("AI Discovery failed:", error);
@@ -54,9 +54,10 @@ export function SearchPanel({ onSearch, onAiSuggest, isLoading, lang }: SearchPa
         variant: "destructive",
         title: lang === 'es' ? "Error de IA" : "AI Error",
         description: lang === 'es' 
-          ? "No se pudo conectar con el servicio de IA. Verifica tu API Key o conexión." 
-          : "Could not connect to AI service. Please check your API Key or connection.",
+          ? "No se pudo conectar con el servicio de IA o no se encontraron resultados." 
+          : "Could not connect to AI service or no results found.",
       });
+      onAiSuggest(null); // Reset to all pokemon on error
     } finally {
       setAiLoading(false);
     }
@@ -65,13 +66,13 @@ export function SearchPanel({ onSearch, onAiSuggest, isLoading, lang }: SearchPa
   const clearSearch = () => {
     setQuery("");
     onSearch("");
-    onAiSuggest(null as any);
+    onAiSuggest(null);
   };
 
   const toggleAiMode = (enabled: boolean) => {
     setAiMode(enabled);
     setQuery("");
-    onAiSuggest(null as any);
+    onAiSuggest(null);
     onSearch("");
   };
 

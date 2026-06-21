@@ -69,6 +69,7 @@ export default function Home() {
   useEffect(() => {
     async function loadInitial() {
       try {
+        setLoading(true);
         const fullList = await fetchAllPokemon();
         setAllPokemon(fullList);
       } catch (error) {
@@ -107,28 +108,44 @@ export default function Home() {
 
   const filteredList = useMemo(() => {
     let list = [...allPokemon];
-    if (searchQuery) {
+    
+    if (aiSuggestions !== null) {
+      list = list.filter(p => aiSuggestions.includes(p.name.toLowerCase()));
+    } else if (searchQuery) {
       const q = searchQuery.toLowerCase().trim();
       list = list.filter(p => {
         const id = p.url.split('/').filter(Boolean).pop() || '0';
         return p.name.includes(q) || id === q || id.startsWith(q);
       });
     }
-    if (aiSuggestions) {
-      list = list.filter(p => aiSuggestions.includes(p.name.toLowerCase()));
-    }
+
     if (typeFilteredNames) {
       list = list.filter(p => typeFilteredNames.has(p.name));
     }
+
     if (showCapturedOnly) {
       list = list.filter(p => {
         const id = parseInt(p.url.split('/').filter(Boolean).pop() || '0');
         return caughtPokemon.has(id);
       });
     }
+
     if (sortBy === "name-asc") list.sort((a, b) => a.name.localeCompare(b.name));
     else if (sortBy === "name-desc") list.sort((a, b) => b.name.localeCompare(a.name));
-    else if (sortBy === "id-desc") list = [...list].reverse();
+    else if (sortBy === "id-desc") {
+      list.sort((a, b) => {
+        const idA = parseInt(a.url.split('/').filter(Boolean).pop() || '0');
+        const idB = parseInt(b.url.split('/').filter(Boolean).pop() || '0');
+        return idB - idA;
+      });
+    } else {
+      list.sort((a, b) => {
+        const idA = parseInt(a.url.split('/').filter(Boolean).pop() || '0');
+        const idB = parseInt(b.url.split('/').filter(Boolean).pop() || '0');
+        return idA - idB;
+      });
+    }
+
     return list;
   }, [allPokemon, searchQuery, aiSuggestions, typeFilteredNames, sortBy, showCapturedOnly, caughtPokemon]);
 
@@ -155,6 +172,7 @@ export default function Home() {
     setTypeFilteredNames(null);
     setShowCapturedOnly(false);
     setCurrentPage(1);
+    setSortBy("id-asc");
   };
 
   const handleTabChange = (tab: "pokedex" | "battle" | "quiz") => {
@@ -187,6 +205,7 @@ export default function Home() {
                 alt="Pokemon Logo"
                 fill
                 className="object-contain"
+                priority
               />
             </div>
             <div className="hidden sm:flex flex-col border-l border-foreground/10 pl-4">
@@ -213,7 +232,12 @@ export default function Home() {
                 <h2 className="text-4xl md:text-6xl font-black tracking-tight text-center md:text-left leading-tight">
                   {t.looking_for} <span className="text-primary">{t.looking_for_span}</span>
                 </h2>
-                <SearchPanel onSearch={setSearchQuery} onAiSuggest={setAiSuggestions} isLoading={loading} lang={lang} />
+                <SearchPanel 
+                  onSearch={setSearchQuery} 
+                  onAiSuggest={setAiSuggestions} 
+                  isLoading={loading} 
+                  lang={lang} 
+                />
               </div>
 
               <div className="flex flex-wrap items-center justify-between gap-6 glass p-6 rounded-[2.5rem] border-foreground/10">
@@ -229,10 +253,10 @@ export default function Home() {
                     size="sm" 
                     onClick={() => setShowCapturedOnly(!showCapturedOnly)} 
                     className={cn(
-                      "rounded-2xl font-black text-[10px] uppercase tracking-widest h-12 px-6 glass transition-all border border-foreground/5",
+                      "rounded-2xl font-black text-[10px] uppercase tracking-widest h-12 px-6 glass transition-all border",
                       showCapturedOnly 
                         ? "bg-primary shadow-lg text-black hover:bg-primary/90 border-primary" 
-                        : "text-black dark:text-white hover:bg-foreground/10"
+                        : "text-black dark:text-white hover:bg-foreground/10 border-foreground/5"
                     )}
                   >
                     <div className="relative w-4 h-4 mr-2">
