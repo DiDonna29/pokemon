@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
@@ -6,7 +5,7 @@ import { PokemonDetails, fetchPokemonDetails, PokemonSummary } from "@/lib/pokea
 import { Language, translations } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Sparkles, HelpCircle, RotateCcw, CheckCircle2, AlertCircle, Lightbulb } from "lucide-react";
+import { Sparkles, HelpCircle, RotateCcw, CheckCircle2, AlertCircle, Lightbulb, Eye } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -26,6 +25,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
   const [message, setMessage] = useState<string | null>(null);
   const [status, setStatus] = useState<'idle' | 'correct' | 'wrong'>('idle');
   const [hintType, setHintType] = useState<'none' | 'letter' | 'types'>('none');
+  const [attempts, setAttempts] = useState(0);
 
   const loadRandomPokemon = useCallback(async () => {
     setLoading(true);
@@ -34,6 +34,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
     setMessage(null);
     setStatus('idle');
     setHintType('none');
+    setAttempts(0);
     
     try {
       const randomIndex = Math.floor(Math.random() * Math.min(allPokemon.length, 1010));
@@ -77,6 +78,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
       setIsRevealed(true);
       setStatus('correct');
       setMessage(`${t.correct_guess}${currentPokemon.name.toUpperCase()}!`);
+      setAttempts(0);
       confetti({
         particleCount: 150,
         spread: 70,
@@ -86,7 +88,15 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
     } else {
       setStatus('wrong');
       setMessage(t.incorrect_guess);
+      setAttempts(prev => prev + 1);
     }
+  };
+
+  const handleReveal = () => {
+    if (!currentPokemon) return;
+    setIsRevealed(true);
+    setStatus('correct');
+    setMessage(`${t.revealed_msg}${currentPokemon.name.toUpperCase()}`);
   };
 
   const getHint = () => {
@@ -169,14 +179,27 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
               </div>
 
               {!isRevealed && status === 'wrong' && (
-                <Button 
-                  variant="ghost" 
-                  onClick={getHint}
-                  className="w-full h-12 rounded-xl glass border-foreground/5 font-black uppercase text-[10px] tracking-widest gap-2 text-black dark:text-white hover:bg-foreground/10"
-                >
-                  <Lightbulb className="w-4 h-4" />
-                  {t.get_hint}
-                </Button>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <Button 
+                    variant="ghost" 
+                    onClick={getHint}
+                    className="w-full h-12 rounded-xl glass border-foreground/5 font-black uppercase text-[10px] tracking-widest gap-2 text-black dark:text-white hover:bg-foreground/10"
+                  >
+                    <Lightbulb className="w-4 h-4" />
+                    {t.get_hint}
+                  </Button>
+                  
+                  {attempts >= 3 && (
+                    <Button 
+                      variant="outline" 
+                      onClick={handleReveal}
+                      className="w-full h-12 rounded-xl glass border-primary/20 font-black uppercase text-[10px] tracking-widest gap-2 text-primary hover:bg-primary/5"
+                    >
+                      <Eye className="w-4 h-4" />
+                      {t.reveal_name}
+                    </Button>
+                  )}
+                </div>
               )}
             </motion.div>
           )}
