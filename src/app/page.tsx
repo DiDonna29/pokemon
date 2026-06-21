@@ -42,6 +42,7 @@ import Image from "next/image";
 const PAGE_SIZE = 12;
 
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState<"pokedex" | "battle" | "quiz">("pokedex");
   const [lang, setLang] = useState<Language>('es');
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
@@ -61,16 +62,23 @@ export default function Home() {
   const [selectedWeight, setSelectedWeight] = useState<string | null>(null);
   const [selectedHeight, setSelectedHeight] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState("id-asc");
-  const [showCapturedOnly, setShowCapturedOnly] = useState(false);
+  const [showCapturedOnly, setSelectedCapturedOnly] = useState(false);
 
   const [caughtPokemon, setCaughtPokemon] = useState<Set<number>>(new Set());
   const [selectedDetails, setSelectedDetails] = useState<PokemonDetails | null>(null);
   
   const [deepFilteredList, setDeepFilteredList] = useState<PokemonSummary[] | null>(null);
 
+  // Fix Hydration issues
   useEffect(() => {
-    document.documentElement.className = theme;
-  }, [theme]);
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      document.documentElement.className = theme;
+    }
+  }, [theme, mounted]);
 
   useEffect(() => {
     async function loadInitial() {
@@ -225,7 +233,7 @@ export default function Home() {
     setTypeFilteredNames(null);
     setSelectedWeight(null);
     setSelectedHeight(null);
-    setShowCapturedOnly(false);
+    setSelectedCapturedOnly(false);
     setCurrentPage(1);
     setSortBy("id-asc");
     setDeepFilteredList(null);
@@ -234,7 +242,9 @@ export default function Home() {
   const handleTabChange = (tab: "pokedex" | "battle" | "quiz") => {
     setSelectedDetails(null);
     setActiveTab(tab);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE) || 1;
@@ -242,7 +252,9 @@ export default function Home() {
   const jumpToPage = (p: number) => {
     const target = Math.max(1, Math.min(p, totalPages));
     setCurrentPage(target);
-    window.scrollTo({ top: 300, behavior: 'smooth' });
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 300, behavior: 'smooth' });
+    }
   };
 
   const containerVariants = {
@@ -258,8 +270,10 @@ export default function Home() {
     visible: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', damping: 20, stiffness: 200 } }
   };
 
+  if (!mounted) return null;
+
   return (
-    <main className="min-h-screen bg-background text-foreground transition-all duration-1000 pb-32 md:pb-48 overflow-x-hidden">
+    <main className="min-h-screen bg-background text-foreground transition-all duration-1000 pb-32 md:pb-40 lg:pb-48 overflow-x-hidden">
       <header className="fixed top-0 left-0 right-0 z-[100] px-6 py-6 bg-background/60 backdrop-blur-3xl border-b border-foreground/[0.03]">
         <div className="container mx-auto max-w-[1800px] flex items-center justify-between">
           <motion.div 
@@ -295,7 +309,7 @@ export default function Home() {
                 <motion.div variants={itemVariants} className="space-y-6">
                   <Badge variant="outline" className="px-5 py-2 rounded-full border-primary/20 text-primary uppercase font-black text-[10px] tracking-[0.3em] bg-primary/5">
                     <Sparkles className="w-3.5 h-3.5 mr-2" />
-                    Taste Skill Enabled
+                    Ultimate Experience
                   </Badge>
                   <h2 className="text-4xl md:text-9xl font-black tracking-tighter leading-[0.85] uppercase">
                     {t.looking_for} <br/> <span className="text-primary italic">{t.looking_for_span}</span>
@@ -320,7 +334,7 @@ export default function Home() {
                     onClear={handleClearFilters} lang={lang}
                   />
                   <Button 
-                    onClick={() => setShowCapturedOnly(!showCapturedOnly)} 
+                    onClick={() => setSelectedCapturedOnly(!showCapturedOnly)} 
                     className={cn(
                       "rounded-3xl font-black text-[10px] uppercase tracking-widest h-14 px-8 md:px-10 transition-all duration-700",
                       showCapturedOnly 
@@ -377,7 +391,7 @@ export default function Home() {
                   </Button>
                 </motion.div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 md:gap-12">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 md:gap-12 lg:gap-16">
                   <AnimatePresence mode="popLayout">
                     {visiblePokemon.map((p) => {
                       const id = parseInt(p.url.split('/').filter(Boolean).pop() || '0');
@@ -419,7 +433,11 @@ export default function Home() {
         </AnimatePresence>
       </div>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-[120] w-full h-20 md:h-24 bg-background/80 backdrop-blur-3xl border-t border-foreground/5 md:border-white/10 flex items-center justify-around px-8 md:px-12 shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
+      <nav className={cn(
+        "fixed z-[120] bg-background/80 backdrop-blur-3xl border-foreground/5 md:border-white/10 flex items-center justify-around shadow-[0_-10px_40px_rgba(0,0,0,0.1)] transition-all duration-700",
+        "bottom-0 left-0 right-0 w-full h-20 md:h-24 border-t px-8 md:px-12", // Mobile & Tablet: Docked
+        "lg:bottom-10 lg:left-1/2 lg:-translate-x-1/2 lg:w-fit lg:min-w-[600px] lg:px-16 lg:rounded-[3rem] lg:border lg:h-24" // Desktop: Floating
+      )}>
         <button 
           onClick={() => handleTabChange("pokedex")}
           className={cn(
