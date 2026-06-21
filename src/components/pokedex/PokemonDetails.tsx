@@ -66,7 +66,7 @@ export function PokemonDetailsView({ pokemon, onClose, lang, isCaught, onToggleC
 
   return (
     <Dialog open={!!pokemon} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-[100vw] md:max-w-xl lg:max-w-2xl p-0 overflow-hidden border-none bg-background shadow-2xl rounded-none md:rounded-[3rem] h-[100dvh] md:h-[90vh] md:max-h-[850px] [&>button]:hidden">
+      <DialogContent className="max-w-[100vw] md:max-w-xl lg:max-w-2xl p-0 overflow-hidden border-none bg-background shadow-2xl rounded-none md:rounded-[3rem] h-[100dvh] md:h-[90vh] md:max-h-[850px] [&>button]:hidden z-[110]">
         <AnimatePresence>
           {pokemon && (
             <motion.div 
@@ -77,7 +77,7 @@ export function PokemonDetailsView({ pokemon, onClose, lang, isCaught, onToggleC
             >
               {/* Top Section: Visual & Header */}
               <div className={cn(
-                "relative h-[45%] md:h-[40%] flex flex-col items-center justify-center p-6",
+                "relative h-[35%] md:h-[40%] flex flex-col items-center justify-center p-6",
                 getTypeColorClass(mainType)
               )}>
                 <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/30" />
@@ -117,7 +117,7 @@ export function PokemonDetailsView({ pokemon, onClose, lang, isCaught, onToggleC
                       alt={pokemon.name} 
                       width={380} 
                       height={380} 
-                      className="relative z-10 drop-shadow-[0_20px_20px_rgba(0,0,0,0.5)] animate-float w-auto h-full max-h-[220px] md:max-h-[280px]"
+                      className="relative z-10 drop-shadow-[0_20px_20px_rgba(0,0,0,0.5)] animate-float w-auto h-full max-h-[180px] md:max-h-[280px]"
                       priority
                     />
                   )}
@@ -132,7 +132,7 @@ export function PokemonDetailsView({ pokemon, onClose, lang, isCaught, onToggleC
               <div className="flex-1 bg-card rounded-t-[3rem] -mt-10 relative z-20 shadow-[0_-20px_50px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden">
                 <div className="w-12 h-1.5 bg-foreground/10 rounded-full mx-auto mt-4 shrink-0" />
                 
-                <div className="flex-1 overflow-y-auto px-6 md:px-10 pb-10 scrollbar-none">
+                <div className="flex-1 overflow-y-auto px-6 md:px-10 pb-32 scrollbar-none">
                   <header className="py-6 space-y-3">
                     <div className="flex items-center justify-between">
                       <DialogTitle className="text-3xl md:text-4xl font-headline font-black capitalize tracking-tighter">
@@ -165,7 +165,7 @@ export function PokemonDetailsView({ pokemon, onClose, lang, isCaught, onToggleC
                       </TabsTrigger>
                     </TabsList>
                     
-                    <TabsContent value="about" className="space-y-8 outline-none">
+                    <TabsContent value="about" className="space-y-8 outline-none pb-8">
                       <p className="text-muted-foreground leading-relaxed text-sm md:text-base font-medium italic border-l-4 border-primary/20 pl-4 py-2">
                         "{flavorText}"
                       </p>
@@ -188,7 +188,7 @@ export function PokemonDetailsView({ pokemon, onClose, lang, isCaught, onToggleC
                       </div>
                     </TabsContent>
 
-                    <TabsContent value="stats" className="space-y-4 outline-none">
+                    <TabsContent value="stats" className="space-y-4 outline-none pb-8">
                       {pokemon.stats.map((s, idx) => (
                         <motion.div 
                           key={s.stat.name} 
