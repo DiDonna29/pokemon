@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState, useMemo, useCallback } from "react";
@@ -189,26 +190,13 @@ export default function Home() {
         />
       </div>
 
-      {/* Header with Navigation */}
+      {/* Header with Centered Layout */}
       <header className="relative z-50 glass border-b border-foreground/5 py-4 sticky top-0 backdrop-blur-2xl">
-        <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-3">
-              <motion.div 
-                whileHover={{ rotate: 360, scale: 1.1 }}
-                transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                className="w-12 h-12 bg-gradient-to-br from-primary via-secondary to-accent rounded-2xl flex items-center justify-center shadow-2xl shadow-primary/30"
-              >
-                <Trophy className="text-white w-7 h-7" />
-              </motion.div>
-              <div>
-                <h1 className="font-headline text-2xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent">PokeNexus</h1>
-                <p className="text-[9px] text-muted-foreground uppercase tracking-widest font-black opacity-70">{t.app_subtitle}</p>
-              </div>
-            </div>
-            
-            {/* Desktop Tabs Navigation */}
-            <div className="hidden md:flex glass bg-foreground/5 p-1 rounded-2xl border border-foreground/5">
+        <div className="container mx-auto px-4 flex items-center justify-between gap-4">
+          
+          {/* Left: Navigation Buttons */}
+          <div className="flex-1 flex justify-start">
+            <div className="hidden md:flex glass bg-foreground/5 p-1 rounded-2xl border border-foreground/10 shadow-sm">
               <Button 
                 variant={activeTab === "pokedex" ? "secondary" : "ghost"} 
                 onClick={() => setActiveTab("pokedex")}
@@ -228,21 +216,37 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          {/* Center: Logo + Title */}
+          <div className="flex items-center gap-3 justify-center">
+            <motion.div 
+              whileHover={{ rotate: 360, scale: 1.1 }}
+              transition={{ type: "spring", stiffness: 260, damping: 20 }}
+              className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary via-secondary to-accent rounded-2xl flex items-center justify-center shadow-2xl shadow-primary/30"
+            >
+              <Trophy className="text-white w-6 h-6 sm:w-7 sm:h-7" />
+            </motion.div>
+            <div className="hidden sm:block text-center">
+              <h1 className="font-headline text-xl sm:text-2xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent leading-none">PokeNexus</h1>
+              <p className="text-[9px] text-muted-foreground uppercase tracking-widest font-black opacity-70 mt-1">{t.app_subtitle}</p>
+            </div>
+          </div>
+
+          {/* Right: Controls */}
+          <div className="flex-1 flex justify-end items-center gap-2 sm:gap-3">
              <motion.button 
                whileHover={{ scale: 1.05 }}
                whileTap={{ scale: 0.95 }}
                onClick={() => setShowCapturedOnly(!showCapturedOnly)}
                className={cn(
-                 "glass px-5 py-2 rounded-full flex items-center gap-3 border-foreground/10 transition-all duration-300",
+                 "glass px-3 sm:px-5 py-2 rounded-full flex items-center gap-2 sm:gap-3 border-foreground/10 transition-all duration-300",
                  showCapturedOnly ? "ring-2 ring-primary bg-primary/10" : ""
                )}
              >
                 <div className={cn(
-                  "w-2.5 h-2.5 rounded-full shadow-sm",
-                  showCapturedOnly ? "bg-primary animate-ping" : "bg-primary/50 animate-pulse"
+                  "w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full",
+                  showCapturedOnly ? "bg-primary animate-ping" : "bg-primary/50"
                 )} />
-                <span className="text-xs font-black uppercase tracking-tight">{caughtPokemon.size} {t.captured}</span>
+                <span className="text-[10px] sm:text-xs font-black uppercase tracking-tight">{caughtPokemon.size}</span>
              </motion.button>
              
              <div className="flex items-center gap-1 glass p-1 rounded-full border-foreground/10">
@@ -259,9 +263,9 @@ export default function Home() {
 
       {/* Content */}
       <section className="relative z-10 container mx-auto px-4 py-8">
-        {/* Mobile Tabs Navigation */}
+        {/* Mobile Navigation Tabs */}
         <div className="flex md:hidden justify-center mb-8">
-          <div className="glass bg-foreground/5 p-1 rounded-2xl border border-foreground/5 flex w-full max-w-sm">
+          <div className="glass bg-foreground/5 p-1 rounded-2xl border border-foreground/5 flex w-full max-w-sm shadow-xl">
             <Button 
               variant={activeTab === "pokedex" ? "secondary" : "ghost"} 
               onClick={() => setActiveTab("pokedex")}
@@ -288,7 +292,7 @@ export default function Home() {
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col sm:flex-row items-center justify-between gap-4 glass p-5 rounded-[2.5rem] border-foreground/5"
+              className="flex flex-col sm:flex-row items-center justify-between gap-4 glass p-5 rounded-[2.5rem] border-foreground/10 shadow-lg"
             >
               <div className="flex items-center gap-4 w-full sm:w-auto">
                  <FiltersDrawer 
@@ -297,18 +301,18 @@ export default function Home() {
                    selectedHeight={selectedHeight} setSelectedHeight={setSelectedHeight}
                    onClear={handleClearFilters} lang={lang}
                  />
-                 <Button variant={showCapturedOnly ? "secondary" : "ghost"} size="sm" onClick={() => setShowCapturedOnly(!showCapturedOnly)} className={cn("rounded-xl font-bold text-xs gap-2 h-10 px-4 transition-all duration-300", showCapturedOnly ? "bg-primary text-black" : "glass border-foreground/10")}>
+                 <Button variant={showCapturedOnly ? "secondary" : "ghost"} size="sm" onClick={() => setShowCapturedOnly(!showCapturedOnly)} className={cn("rounded-xl font-bold text-xs gap-2 h-10 px-4 transition-all duration-300", showCapturedOnly ? "bg-primary text-black shadow-lg" : "glass border-foreground/10 hover:bg-foreground/5")}>
                    {showCapturedOnly ? <Star className="w-3.5 h-3.5 fill-current" /> : <Star className="w-3.5 h-3.5" />}
                    {t.my_collection}
                  </Button>
-                 <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2 bg-foreground/5 px-3 py-1.5 rounded-full">
+                 <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2 bg-foreground/5 px-4 py-2 rounded-full border border-foreground/5">
                    {filtering ? <Loader2 className="w-3 h-3 animate-spin" /> : totalCount} {t.species}
                  </div>
               </div>
               <div className="flex items-center gap-3 w-full sm:w-auto">
-                <span className="text-[10px] font-black uppercase text-muted-foreground tracking-tighter">{t.sort_by}</span>
+                <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">{t.sort_by}</span>
                 <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-48 glass border-foreground/10 h-10 rounded-xl font-bold text-xs">
+                  <SelectTrigger className="w-48 glass border-foreground/10 h-10 rounded-xl font-bold text-xs shadow-sm hover:border-primary/50 transition-colors">
                     <SelectValue placeholder="Numerical" />
                   </SelectTrigger>
                   <SelectContent className="glass border-foreground/10">
@@ -336,13 +340,13 @@ export default function Home() {
 
             {!loading && !filtering && visiblePokemon.length > 0 && (
               <div className="flex justify-center gap-4 pt-10">
-                <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="rounded-2xl glass h-12 w-12 border-foreground/10"><ChevronLeft className="w-6 h-6" /></Button>
-                <div className="glass px-8 py-3 rounded-2xl font-black text-sm tracking-tighter flex items-center gap-2 border-foreground/10">
+                <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="rounded-2xl glass h-12 w-12 border-foreground/10 hover:border-primary transition-colors"><ChevronLeft className="w-6 h-6" /></Button>
+                <div className="glass px-8 py-3 rounded-2xl font-black text-sm tracking-tighter flex items-center gap-2 border-foreground/10 shadow-inner">
                   <span className="text-primary">{t.page} {currentPage}</span>
                   <span className="opacity-30">{t.of}</span>
                   <span>{totalPages}</span>
                 </div>
-                <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="rounded-2xl glass h-12 w-12 border-foreground/10"><ChevronRight className="w-6 h-6" /></Button>
+                <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="rounded-2xl glass h-12 w-12 border-foreground/10 hover:border-primary transition-colors"><ChevronRight className="w-6 h-6" /></Button>
               </div>
             )}
           </TabsContent>
