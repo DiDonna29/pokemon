@@ -5,6 +5,7 @@ import { PokemonDetails, fetchPokemonDetails, PokemonSummary } from "@/lib/pokea
 import { Language, translations } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
 import { Swords, RotateCcw, Search, Zap, Heart, Trophy, Loader2, Sparkles, BrainCircuit } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
@@ -226,7 +227,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
         </div>
       </div>
 
-      <div className="relative min-h-[450px] md:min-h-[700px] w-full glass rounded-[2.5rem] md:rounded-[4rem] border-foreground/5 p-4 md:p-12 flex flex-col items-center justify-center overflow-hidden">
+      <div className="relative min-h-[400px] md:min-h-[650px] w-full glass rounded-[2.5rem] md:rounded-[4rem] border-foreground/5 p-4 md:p-12 flex flex-col items-center justify-center overflow-hidden">
         
         <div className="absolute inset-0 pointer-events-none opacity-20">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/20 rounded-full blur-[150px]" />
@@ -265,12 +266,12 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
               <div className="flex flex-col items-center gap-4 z-20 shrink-0 min-w-[80px] md:min-w-[220px]">
                 {winner ? (
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="flex flex-col items-center gap-4">
-                    <div className="text-xl md:text-7xl font-black text-primary drop-shadow-2xl uppercase tracking-tighter animate-bounce text-center">
+                    <div className="text-xl md:text-4xl font-black text-primary drop-shadow-2xl uppercase tracking-tighter animate-bounce text-center">
                       {t.winner}
                     </div>
                     <Button 
                       onClick={resetBattle} 
-                      className="bg-primary text-black rounded-full px-6 md:px-14 h-12 md:h-20 font-black uppercase text-[10px] md:text-lg tracking-[0.2em] hover:scale-105 transition-all shadow-2xl shadow-primary/40"
+                      className="bg-primary text-black rounded-full px-6 md:px-14 h-12 md:h-16 font-black uppercase text-[10px] md:text-sm tracking-[0.2em] hover:scale-105 transition-all shadow-2xl shadow-primary/40"
                     >
                       <RotateCcw className="w-4 h-4 md:w-6 md:h-6 mr-3" />
                       {lang === 'es' ? 'NUEVA BATALLA' : 'NEW BATTLE'}
@@ -333,7 +334,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                       </div>
                     </motion.div>
                   ) : (
-                    <div className="glass h-[150px] md:h-[400px] rounded-[3rem] border-dashed border-foreground/10 flex flex-col items-center justify-center text-muted-foreground gap-4 opacity-50">
+                    <div className="glass h-[150px] md:h-[400px] rounded-[3rem] border-dashed border-foreground/10 flex flex-col items-center justify-center text-muted-foreground gap-4 opacity-50 overflow-hidden">
                       {loading && activeSelector === 1 ? <Loader2 className="w-10 h-10 animate-spin text-primary" /> : <div className="font-black uppercase text-xs tracking-widest">SLOT 01</div>}
                     </div>
                   )}
@@ -398,7 +399,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                       </div>
                     </motion.div>
                   ) : (
-                    <div className="glass h-[150px] md:h-[400px] rounded-[3rem] border-dashed border-foreground/10 flex flex-col items-center justify-center text-muted-foreground gap-4 opacity-50">
+                    <div className="glass h-[150px] md:h-[400px] rounded-[3rem] border-dashed border-foreground/10 flex flex-col items-center justify-center text-muted-foreground gap-4 opacity-50 overflow-hidden">
                       {loading && activeSelector === 2 ? <Loader2 className="w-10 h-10 animate-spin text-secondary" /> : <div className="font-black uppercase text-xs tracking-widest">SLOT 02</div>}
                     </div>
                   )}
