@@ -75,9 +75,9 @@ export function PokemonDetailsView({ pokemon, onClose, lang, isCaught, onToggleC
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
               className="flex flex-col h-full w-full relative overflow-hidden"
             >
-              {/* Top Section: Visual & Header */}
+              {/* Top Section: Visual (50% on mobile, adjusted for laptop/tablet) */}
               <div className={cn(
-                "relative h-[35%] md:h-[40%] flex flex-col items-center justify-center p-6",
+                "relative h-[50%] flex flex-col items-center justify-center p-6",
                 getTypeColorClass(mainType)
               )}>
                 <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/30" />
@@ -86,10 +86,10 @@ export function PokemonDetailsView({ pokemon, onClose, lang, isCaught, onToggleC
                 <div className="absolute top-8 left-0 right-0 px-6 flex items-center justify-between z-50">
                   <Button 
                     onClick={onClose}
-                    className="glass h-11 w-11 md:w-auto md:px-6 rounded-2xl flex items-center justify-center gap-2 border-white/20 text-white hover:bg-white/20"
+                    className="glass h-11 px-6 rounded-2xl flex items-center justify-center gap-2 border-white/20 text-white hover:bg-white/20"
                   >
                     <ArrowLeft className="w-5 h-5" />
-                    <span className="hidden md:block font-black uppercase text-[10px] tracking-widest">{t.go_back}</span>
+                    <span className="font-black uppercase text-[10px] tracking-widest">{t.go_back}</span>
                   </Button>
 
                   <Button
@@ -110,29 +110,30 @@ export function PokemonDetailsView({ pokemon, onClose, lang, isCaught, onToggleC
                 </div>
 
                 <div className="relative z-10 w-full flex items-center justify-center h-full pt-12">
-                   <div className="absolute inset-0 bg-white/20 blur-[80px] rounded-full scale-75 opacity-40" />
+                   <div className="absolute inset-0 bg-white/20 blur-[100px] rounded-full scale-110 opacity-60" />
                    {artwork && (
                     <Image 
                       src={artwork} 
                       alt={pokemon.name} 
                       width={380} 
                       height={380} 
-                      className="relative z-10 drop-shadow-[0_20px_20px_rgba(0,0,0,0.5)] animate-float w-auto h-full max-h-[180px] md:max-h-[280px]"
+                      className="relative z-10 drop-shadow-[0_40px_40px_rgba(0,0,0,0.6)] animate-float w-auto h-full max-h-[220px] md:max-h-[350px]"
                       priority
                     />
                   )}
                 </div>
 
-                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/40 font-headline font-black text-6xl md:text-8xl uppercase tracking-tighter opacity-20 whitespace-nowrap overflow-hidden pointer-events-none">
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/40 font-headline font-black text-6xl md:text-8xl uppercase tracking-tighter opacity-10 whitespace-nowrap overflow-hidden pointer-events-none">
                   {pokemon.name}
                 </div>
               </div>
 
-              {/* Bottom Section: Info Panel */}
+              {/* Bottom Section: Info Panel (50% on mobile) */}
               <div className="flex-1 bg-card rounded-t-[3rem] -mt-10 relative z-20 shadow-[0_-20px_50px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden">
                 <div className="w-12 h-1.5 bg-foreground/10 rounded-full mx-auto mt-4 shrink-0" />
                 
-                <div className="flex-1 overflow-y-auto px-6 md:px-10 pb-32 scrollbar-none">
+                {/* Scroll area with padding to clear navigation bar */}
+                <div className="flex-1 overflow-y-auto px-6 md:px-10 pb-40 scrollbar-none">
                   <header className="py-6 space-y-3">
                     <div className="flex items-center justify-between">
                       <DialogTitle className="text-3xl md:text-4xl font-headline font-black capitalize tracking-tighter">
@@ -188,7 +189,7 @@ export function PokemonDetailsView({ pokemon, onClose, lang, isCaught, onToggleC
                       </div>
                     </TabsContent>
 
-                    <TabsContent value="stats" className="space-y-4 outline-none pb-8">
+                    <TabsContent value="stats" className="space-y-5 outline-none pb-8">
                       {pokemon.stats.map((s, idx) => (
                         <motion.div 
                           key={s.stat.name} 
@@ -202,16 +203,16 @@ export function PokemonDetailsView({ pokemon, onClose, lang, isCaught, onToggleC
                               {getStatIcon(s.stat.name)}
                               {t[s.stat.name as keyof typeof t] || s.stat.name.replace('-', ' ')}
                             </div>
-                            <span className="text-foreground">{s.base_stat}</span>
+                            <span className="text-foreground font-bold">{s.base_stat}</span>
                           </div>
-                          <div className="relative h-2 w-full bg-foreground/5 rounded-full overflow-hidden">
+                          <div className="relative h-1.5 w-full bg-foreground/10 rounded-full overflow-hidden">
                              <motion.div 
                                initial={{ width: 0 }}
                                animate={{ width: `${(s.base_stat / 255) * 100}%` }}
                                transition={{ duration: 1, ease: "easeOut" }}
                                className={cn(
-                                 "absolute h-full rounded-full",
-                                 s.base_stat > 100 ? "bg-green-500" : s.base_stat > 60 ? "bg-yellow-500" : "bg-red-500"
+                                 "absolute h-full rounded-full shadow-[0_0_10px_rgba(255,255,255,0.2)]",
+                                 s.base_stat > 120 ? "bg-accent" : s.base_stat > 80 ? "bg-primary" : s.base_stat > 40 ? "bg-orange-500" : "bg-destructive"
                                )}
                              />
                           </div>
