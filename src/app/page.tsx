@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
@@ -229,7 +228,7 @@ export default function Home() {
                     className={cn(
                       "rounded-2xl font-black text-[10px] uppercase tracking-widest h-12 px-6 glass transition-all",
                       showCapturedOnly 
-                        ? "bg-primary text-primary-foreground hover:bg-primary/90" 
+                        ? "bg-primary text-black hover:bg-primary/90 hover:text-black shadow-lg" 
                         : "hover:bg-foreground/10 hover:text-foreground"
                     )}
                   >

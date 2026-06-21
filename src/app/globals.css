@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -16,7 +15,8 @@
     --secondary: 262 83% 58%;
     --accent: 160 84% 39%;
     
-    --primary-foreground: 210 40% 98%;
+    /* Improved contrast for yellow primary background in light mode */
+    --primary-foreground: 222 47% 11%;
     --secondary-foreground: 210 40% 98%;
     --accent-foreground: 210 40% 98%;
     
