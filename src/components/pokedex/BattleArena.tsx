@@ -7,8 +7,7 @@ import { Language, translations } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
-import { Swords, RotateCcw, Search, Zap, Heart, Loader2, Sparkles, Trophy } from "lucide-react";
+import { Swords, RotateCcw, Search, Loader2, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -177,7 +176,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
   };
 
   return (
-    <div className="space-y-8 md:space-y-16 max-w-7xl mx-auto px-4 md:px-12 pb-40 overflow-hidden">
+    <div className="space-y-8 md:space-y-16 max-w-7xl mx-auto px-4 md:px-12 pb-32">
       <div className="flex flex-col items-center gap-4 text-center">
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}>
           <Badge variant="outline" className="px-6 py-2.5 rounded-full border-primary/20 text-primary uppercase font-black text-[10px] tracking-[0.4em] bg-primary/5">
@@ -195,8 +194,8 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
         </div>
       </div>
 
-      <div className="relative min-h-[400px] md:min-h-[600px] h-[70vh] w-full glass rounded-[3rem] border-foreground/[0.03] flex flex-col items-center justify-center overflow-hidden shadow-4xl">
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      <div className="relative min-h-[500px] md:h-[70vh] w-full glass rounded-[3rem] border-foreground/[0.03] flex flex-col items-center justify-center overflow-visible md:overflow-hidden shadow-4xl">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-[3rem]">
           <AnimatePresence mode="wait">
             {attackingPlayer && (
               <motion.div 
@@ -218,7 +217,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
             <motion.div 
               key="battle-stage"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="w-full h-full flex flex-col md:flex-row items-center justify-around gap-4 relative z-10 px-4 md:px-8 overflow-hidden"
+              className="w-full h-full flex flex-col md:flex-row items-center justify-around gap-4 relative z-10 px-4 md:px-8 py-8 md:py-0"
             >
               {/* Player 1 Slot */}
               <div className="flex flex-col items-center justify-center gap-4 flex-1 w-full order-2 md:order-1 h-full max-h-full overflow-hidden">
@@ -239,7 +238,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                       : {}
                   }
                   transition={{ duration: attackingPlayer === 1 ? 0.3 : 0.1 }}
-                  className="relative w-full h-full max-h-[30vh] md:max-h-[50vh] flex items-center justify-center"
+                  className="relative w-full h-full min-h-[200px] md:max-h-[50vh] flex items-center justify-center"
                 >
                   {p1 && getArtwork(p1) && (
                     <Image src={getArtwork(p1)!} alt={p1.name} fill className="object-contain drop-shadow-2xl animate-float-hero" priority />
@@ -282,7 +281,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                       : {}
                   }
                   transition={{ duration: attackingPlayer === 2 ? 0.3 : 0.1 }}
-                  className="relative w-full h-full max-h-[30vh] md:max-h-[50vh] flex items-center justify-center"
+                  className="relative w-full h-full min-h-[200px] md:max-h-[50vh] flex items-center justify-center"
                 >
                   {p2 && getArtwork(p2) && (
                     <Image src={getArtwork(p2)!} alt={p2.name} fill className="object-contain drop-shadow-2xl animate-float-hero" priority />
@@ -294,41 +293,64 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
             /* Prep Stage */
             <motion.div 
               key="prep-stage" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-              className="w-full h-full flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 px-4 py-8"
+              className="w-full h-full flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 px-4 py-8 overflow-y-auto md:overflow-visible scrollbar-none"
             >
-              <div className="flex-1 w-full max-w-xs flex flex-col gap-4">
-                <Button variant="outline" onClick={() => setActiveSelector(1)} className="h-14 glass border-foreground/10 rounded-2xl flex items-center justify-between px-6 hover:bg-foreground/5 overflow-hidden">
-                  <span className="font-black uppercase text-xs tracking-tighter truncate">{p1 ? p1.name : t.select_pokemon}</span>
-                  <Search className="w-4 h-4 opacity-30" />
+              {/* Slot 1 */}
+              <div className="flex-1 w-full max-w-xs flex flex-col gap-3">
+                 <div className="flex items-center justify-between px-2">
+                    <span className="font-black text-[10px] uppercase tracking-[0.4em] opacity-30">Slot 1</span>
+                    <Badge variant="outline" className="text-[9px] border-primary/20 bg-primary/5 text-primary">PLAYER</Badge>
+                 </div>
+                <Button variant="outline" onClick={() => setActiveSelector(1)} className="h-12 glass border-foreground/10 rounded-2xl flex items-center justify-between px-6 hover:bg-foreground/5 overflow-hidden">
+                  <span className="font-black uppercase text-xs tracking-tighter truncate text-black dark:text-white">
+                    {p1 ? p1.name : t.select_pokemon}
+                  </span>
+                  <Search className="w-4 h-4 opacity-30 text-black dark:text-white" />
                 </Button>
-                <div className="glass aspect-square rounded-[2rem] border-dashed border-foreground/5 flex items-center justify-center overflow-hidden relative">
+                <div className="glass aspect-square rounded-[2rem] border-dashed border-foreground/5 flex items-center justify-center overflow-hidden relative shadow-inner">
                   {p1 ? (
-                    <Image src={getArtwork(p1)!} alt={p1.name} fill className="object-contain p-4 drop-shadow-xl" />
+                    <Image src={getArtwork(p1)!} alt={p1.name} fill className="object-contain p-6 drop-shadow-xl" />
                   ) : (
-                    <span className="font-black text-[10px] uppercase tracking-[0.4em] opacity-10">Slot 1</span>
+                    <div className="flex flex-col items-center gap-2 opacity-10">
+                       <Sparkles className="w-10 h-10" />
+                    </div>
                   )}
                 </div>
               </div>
 
-              <div className="flex flex-col items-center gap-6">
-                <div className="w-16 h-16 rounded-2xl glass border-primary/20 flex items-center justify-center shadow-xl">
-                   <span className="text-2xl font-black text-primary italic">VS</span>
+              {/* VS & Action */}
+              <div className="flex flex-col items-center gap-6 shrink-0 py-4 md:py-0">
+                <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl glass border-primary/20 flex items-center justify-center shadow-xl">
+                   <span className="text-xl md:text-2xl font-black text-primary italic">VS</span>
                 </div>
-                <Button disabled={!p1 || !p2 || loading} onClick={simulateBattle} className="bg-primary text-black font-black px-10 h-14 rounded-full shadow-glow hover:scale-105 transition-all uppercase text-xs tracking-widest">
-                  {t.start_battle}
+                <Button 
+                  disabled={!p1 || !p2 || loading} 
+                  onClick={simulateBattle} 
+                  className="bg-primary text-black font-black px-12 h-14 rounded-full shadow-glow hover:scale-105 transition-all uppercase text-xs tracking-widest active:scale-95 disabled:opacity-20"
+                >
+                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : t.start_battle}
                 </Button>
               </div>
 
-              <div className="flex-1 w-full max-w-xs flex flex-col gap-4">
-                <Button variant="outline" onClick={() => setActiveSelector(2)} className="h-14 glass border-foreground/10 rounded-2xl flex items-center justify-between px-6 hover:bg-foreground/5 overflow-hidden">
-                  <span className="font-black uppercase text-xs tracking-tighter truncate">{p2 ? p2.name : t.select_pokemon}</span>
-                  <Search className="w-4 h-4 opacity-30" />
+              {/* Slot 2 */}
+              <div className="flex-1 w-full max-w-xs flex flex-col gap-3">
+                 <div className="flex items-center justify-between px-2">
+                    <Badge variant="outline" className="text-[9px] border-secondary/20 bg-secondary/5 text-secondary">CPU</Badge>
+                    <span className="font-black text-[10px] uppercase tracking-[0.4em] opacity-30">Slot 2</span>
+                 </div>
+                <Button variant="outline" onClick={() => setActiveSelector(2)} className="h-12 glass border-foreground/10 rounded-2xl flex items-center justify-between px-6 hover:bg-foreground/5 overflow-hidden">
+                  <span className="font-black uppercase text-xs tracking-tighter truncate text-black dark:text-white">
+                    {p2 ? p2.name : t.select_pokemon}
+                  </span>
+                  <Search className="w-4 h-4 opacity-30 text-black dark:text-white" />
                 </Button>
-                <div className="glass aspect-square rounded-[2rem] border-dashed border-foreground/5 flex items-center justify-center overflow-hidden relative">
+                <div className="glass aspect-square rounded-[2rem] border-dashed border-foreground/5 flex items-center justify-center overflow-hidden relative shadow-inner">
                   {p2 ? (
-                    <Image src={getArtwork(p2)!} alt={p2.name} fill className="object-contain p-4 drop-shadow-xl" />
+                    <Image src={getArtwork(p2)!} alt={p2.name} fill className="object-contain p-6 drop-shadow-xl" />
                   ) : (
-                    <span className="font-black text-[10px] uppercase tracking-[0.4em] opacity-10">Slot 2</span>
+                    <div className="flex flex-col items-center gap-2 opacity-10">
+                       <Sparkles className="w-10 h-10" />
+                    </div>
                   )}
                 </div>
               </div>
