@@ -299,10 +299,10 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
               key="prep-stage"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="w-full flex flex-col lg:flex-row items-center justify-around gap-6 md:gap-12 relative z-10"
+              className="w-full flex flex-col lg:flex-row items-center justify-around gap-6 md:gap-12 relative z-10 px-4"
             >
               {/* Player 1 Selection */}
-              <div className="w-full max-lg:space-y-4">
+              <div className="w-full lg:flex-1 max-lg:space-y-4">
                  <Button 
                     variant="outline" 
                     onClick={() => setActiveSelector(1)}
@@ -340,14 +340,14 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                       </div>
                     </motion.div>
                   ) : (
-                    <div className="glass h-[150px] md:h-[400px] rounded-[2rem] md:rounded-[3rem] border-dashed border-foreground/10 flex flex-col items-center justify-center text-muted-foreground gap-2 md:gap-4 mt-2 md:mt-4">
+                    <div className="glass h-[150px] md:h-[400px] rounded-[2rem] md:rounded-[3rem] border-dashed border-foreground/10 flex flex-col items-center justify-center text-muted-foreground gap-2 md:gap-4 mt-2 md:mt-4 overflow-hidden">
                       {loading && activeSelector === 1 ? <Loader2 className="w-8 h-8 animate-spin text-primary" /> : <div className="font-black uppercase text-[8px] md:text-[10px] tracking-widest opacity-20">Slot 1</div>}
                     </div>
                   )}
               </div>
 
               {/* Combat Controls */}
-              <div className="flex flex-col items-center gap-4 md:gap-8 py-4 md:py-10">
+              <div className="flex flex-col items-center gap-4 md:gap-8 py-4 md:py-10 shrink-0">
                 <div className="w-16 h-16 md:w-36 md:h-36 rounded-full glass border-primary/30 flex items-center justify-center relative">
                    <span className="text-xl md:text-5xl font-black text-primary">VS</span>
                    <motion.div 
@@ -374,7 +374,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
               </div>
 
               {/* Player 2 Selection */}
-              <div className="w-full max-lg:space-y-4">
+              <div className="w-full lg:flex-1 max-lg:space-y-4">
                   <Button 
                     variant="outline" 
                     onClick={() => setActiveSelector(2)}
@@ -412,7 +412,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                       </div>
                     </motion.div>
                   ) : (
-                    <div className="glass h-[150px] md:h-[400px] rounded-[2rem] md:rounded-[3rem] border-dashed border-foreground/10 flex flex-col items-center justify-center text-muted-foreground gap-2 md:gap-4 mt-2 md:mt-4">
+                    <div className="glass h-[150px] md:h-[400px] rounded-[2rem] md:rounded-[3rem] border-dashed border-foreground/10 flex flex-col items-center justify-center text-muted-foreground gap-2 md:gap-4 mt-2 md:mt-4 overflow-hidden">
                       {loading && activeSelector === 2 ? <Loader2 className="w-8 h-8 animate-spin text-secondary" /> : <div className="font-black uppercase text-[8px] md:text-[10px] tracking-widest opacity-20">Slot 2</div>}
                     </div>
                   )}
