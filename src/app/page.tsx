@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
@@ -249,13 +248,13 @@ export default function Home() {
                     onClear={handleClearFilters} lang={lang}
                   />
                   <Button 
-                    variant="secondary" 
+                    variant="outline" 
                     size="sm" 
                     onClick={() => setShowCapturedOnly(!showCapturedOnly)} 
                     className={cn(
                       "rounded-2xl font-black text-[10px] uppercase tracking-widest h-12 px-6 glass transition-all border",
                       showCapturedOnly 
-                        ? "bg-primary shadow-lg text-black hover:bg-primary/90 border-primary" 
+                        ? "bg-primary shadow-lg border-primary text-black hover:bg-primary/90" 
                         : "text-black dark:text-white hover:bg-foreground/10 border-foreground/5"
                     )}
                   >
@@ -294,7 +293,7 @@ export default function Home() {
                     <h3 className="text-2xl font-black uppercase tracking-tight">{t.no_pokemon}</h3>
                     <p className="text-muted-foreground">{t.no_pokemon_desc}</p>
                   </div>
-                  <Button onClick={handleClearFilters} className="rounded-2xl h-14 px-8 font-black uppercase text-xs tracking-widest bg-primary text-black hover:bg-primary/90 transition-all">
+                  <Button onClick={handleClearFilters} className="rounded-2xl h-14 px-8 font-black uppercase text-xs tracking-widest bg-primary text-black hover:bg-primary/90 transition-all shadow-xl shadow-primary/20">
                     <RotateCcw className="w-4 h-4 mr-2" />
                     {t.clear_filters}
                   </Button>

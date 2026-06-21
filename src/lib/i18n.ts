@@ -1,4 +1,3 @@
-
 export type Language = 'en' | 'es';
 
 export const translations = {
@@ -73,6 +72,9 @@ export const translations = {
     'special-attack': "Sp. Atk",
     'special-defense': "Sp. Def",
     speed: "Speed",
+    battle_strategist: "Battle Strategist",
+    get_strategy: "Ask Strategist",
+    strategy_advice: "Tactical Advice",
     normal: "Normal",
     fire: "Fire",
     water: "Water",
@@ -163,6 +165,9 @@ export const translations = {
     'special-attack': "At. Esp",
     'special-defense': "Def. Esp",
     speed: "Velocidad",
+    battle_strategist: "Estratega de Batalla",
+    get_strategy: "Consultar Estratega",
+    strategy_advice: "Consejo Táctico",
     normal: "Normal",
     fire: "Fuego",
     water: "Agua",
