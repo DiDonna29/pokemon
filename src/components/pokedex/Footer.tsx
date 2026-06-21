@@ -19,19 +19,22 @@ export function Footer({ lang }: FooterProps) {
         <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
           
           {/* Brand/Credits */}
-          <div className="flex flex-col items-center lg:items-start gap-4 text-center lg:text-left">
-            <div className="relative w-32 h-10 opacity-50 grayscale hover:grayscale-0 transition-all cursor-pointer">
-              <Image 
-                src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg"
-                alt="Pokemon Logo Footer"
-                fill
-                className="object-contain"
-              />
+          <div className="flex flex-col items-center lg:items-start gap-6">
+            <div className="flex flex-col sm:flex-row items-center gap-4 text-center lg:text-left">
+              <p className="text-sm font-medium text-muted-foreground italic order-2 sm:order-1">
+                {t.developed_by} <span className="text-foreground font-black not-italic">John Di Donna</span> @2024
+              </p>
+              <div className="relative w-8 h-8 order-1 sm:order-2">
+                <Image 
+                  src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
+                  alt="Pokeball Credits"
+                  fill
+                  className="object-contain"
+                  style={{ imageRendering: 'pixelated' }}
+                />
+              </div>
             </div>
-            <p className="text-sm font-medium text-muted-foreground italic">
-              {t.developed_by} <span className="text-foreground font-black not-italic">John Di Donna</span> @2024
-            </p>
-            <p className="text-[10px] uppercase tracking-[0.3em] font-black text-muted-foreground/40">
+            <p className="text-[10px] uppercase tracking-[0.3em] font-black text-muted-foreground/40 text-center lg:text-left">
               © 2024 PokeNexus - {t.rights_reserved}
             </p>
           </div>
@@ -45,9 +48,16 @@ export function Footer({ lang }: FooterProps) {
           </div>
         </div>
         
-        {/* Nexus Decorative Text */}
-        <div className="mt-12 text-center opacity-5 select-none pointer-events-none">
-          <h2 className="text-6xl md:text-9xl font-headline font-black uppercase tracking-[1em]">NEXUS</h2>
+        {/* Pokémon Logo Decorative Center */}
+        <div className="mt-16 flex justify-center opacity-10 grayscale hover:grayscale-0 hover:opacity-30 transition-all duration-700">
+          <div className="relative w-48 h-16 md:w-64 md:h-24 select-none pointer-events-none">
+            <Image 
+              src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg"
+              alt="Pokemon Logo Decorative Footer"
+              fill
+              className="object-contain"
+            />
+          </div>
         </div>
       </div>
     </footer>
