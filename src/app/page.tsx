@@ -334,7 +334,7 @@ export default function Home() {
         </button>
       </nav>
 
-      <div className="mt-8">
+      <div className="mt-4">
         <Footer lang={lang} />
       </div>
       <PokemonDetailsView 

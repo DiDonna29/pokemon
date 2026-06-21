@@ -6,7 +6,7 @@ import { PokemonDetails, fetchPokemonDetails, PokemonSummary } from "@/lib/pokea
 import { Language, translations } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Swords, RotateCcw, Search, Zap, Heart, Shield, Trophy, Loader2, Sparkles } from "lucide-react";
+import { Swords, RotateCcw, Search, Zap, Heart, Trophy, Loader2, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -168,9 +168,8 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
   };
 
   return (
-    <div className="space-y-12">
-      <div className="flex flex-col items-center gap-8 text-center">
-        {/* Representative Gaming Icon */}
+    <div className="space-y-8 md:space-y-12">
+      <div className="flex flex-col items-center gap-6 md:gap-8 text-center">
         <div className="flex items-center justify-center">
            <motion.div 
             animate={{ y: [0, -10, 0] }}
@@ -188,17 +187,17 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
           </motion.div>
         </div>
 
-        <div className="space-y-4">
-          <h2 className="text-4xl md:text-6xl font-headline font-black bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent uppercase tracking-tighter">
+        <div className="space-y-2 md:space-y-4">
+          <h2 className="text-3xl md:text-6xl font-headline font-black bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent uppercase tracking-tighter">
             {t.battle_arena}
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-lg px-4 italic">
+          <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-sm md:text-lg px-4 italic">
             {t.battle_desc}
           </p>
         </div>
       </div>
 
-      <div className="relative min-h-[500px] md:min-h-[650px] w-full glass rounded-[3rem] md:rounded-[4rem] border-foreground/5 p-6 md:p-12 flex flex-col items-center justify-center overflow-hidden">
+      <div className="relative min-h-[400px] md:min-h-[650px] w-full glass rounded-[2.5rem] md:rounded-[4rem] border-foreground/5 p-4 md:p-12 flex flex-col items-center justify-center overflow-hidden">
         
         <div className="absolute inset-0 pointer-events-none opacity-20">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/20 rounded-full blur-[150px]" />
@@ -211,50 +210,50 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 1.1 }}
-              className="w-full flex flex-col md:flex-row items-center justify-around gap-12 md:gap-4 relative z-10"
+              className="w-full flex flex-row items-center justify-around gap-2 md:gap-4 relative z-10 px-2"
             >
               {/* Player 1 Battle View */}
-              <div className="flex flex-col items-center gap-6 md:gap-8 relative w-full md:w-auto">
-                <div className="w-full max-w-[200px] md:max-w-none md:absolute md:-top-24 md:w-56 space-y-3 z-30">
-                  <div className="flex justify-between text-[11px] font-black uppercase text-white drop-shadow-md tracking-widest bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm">
+              <div className="flex flex-col items-center gap-4 md:gap-8 relative flex-1">
+                <div className="w-full max-w-[140px] md:max-w-none md:absolute md:-top-24 md:w-56 space-y-2 z-30">
+                  <div className="flex justify-between text-[9px] md:text-[11px] font-black uppercase text-white drop-shadow-md tracking-widest bg-black/40 px-2 py-1 rounded-full backdrop-blur-sm">
                     <span className="truncate">{p1?.name}</span>
                     <span>{hp1} HP</span>
                   </div>
-                  <Progress value={(hp1 / (maxHp1 || 1)) * 100} className="h-2.5 bg-white/20" />
+                  <Progress value={(hp1 / (maxHp1 || 1)) * 100} className="h-1.5 md:h-2.5 bg-white/20" />
                 </div>
                 <motion.div
-                  animate={attackingPlayer === 1 ? { x: [0, 100, 0], scale: [1, 1.2, 1] } : attackingPlayer === 2 ? { x: [0, -10, 0], filter: ["brightness(1)", "brightness(2)", "brightness(1)"] } : {}}
+                  animate={attackingPlayer === 1 ? { x: [0, 50, 0], scale: [1, 1.1, 1] } : attackingPlayer === 2 ? { x: [0, -5, 0], filter: ["brightness(1)", "brightness(2)", "brightness(1)"] } : {}}
                   transition={{ duration: 0.4, ease: "easeInOut" }}
-                  className="relative w-48 h-48 md:w-[350px] md:h-[350px]"
+                  className="relative w-28 h-28 sm:w-40 sm:h-40 md:w-[350px] md:h-[350px]"
                 >
                   {p1 && getArtwork(p1) ? (
                     <Image 
                       src={getArtwork(p1)!} 
                       alt={p1.name} 
                       fill
-                      className="object-contain drop-shadow-[0_35px_35px_rgba(0,0,0,0.5)] animate-float"
+                      className="object-contain drop-shadow-[0_15px_15px_rgba(0,0,0,0.5)] animate-float"
                     />
                   ) : <div className="w-full h-full" />}
                 </motion.div>
-                <div className="w-32 md:w-48 h-4 md:h-6 bg-black/20 rounded-[100%] blur-md" />
+                <div className="w-20 md:w-48 h-2 md:h-6 bg-black/20 rounded-[100%] blur-md" />
               </div>
 
               {/* VS Divider / Winner Controls */}
-              <div className="flex flex-col items-center gap-8 z-20">
+              <div className="flex flex-col items-center gap-4 z-20 shrink-0">
                 {winner ? (
                   <motion.div 
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="flex flex-col items-center gap-6"
+                    className="flex flex-col items-center gap-4"
                   >
-                    <div className="text-4xl md:text-6xl font-black text-primary drop-shadow-2xl uppercase tracking-tighter animate-bounce">
+                    <div className="text-2xl md:text-6xl font-black text-primary drop-shadow-2xl uppercase tracking-tighter animate-bounce">
                       {t.winner}!
                     </div>
                     <Button 
                       onClick={resetBattle} 
-                      className="bg-primary text-black rounded-full px-12 h-16 font-black uppercase text-sm tracking-[0.2em] hover:bg-primary/90 hover:scale-105 transition-all shadow-2xl shadow-primary/40 border-none"
+                      className="bg-primary text-black rounded-full px-6 md:px-12 h-12 md:h-16 font-black uppercase text-[10px] md:text-sm tracking-[0.2em] hover:bg-primary/90 hover:scale-105 transition-all shadow-2xl shadow-primary/40 border-none"
                     >
-                      <RotateCcw className="w-5 h-5 mr-3" />
+                      <RotateCcw className="w-4 h-4 mr-2" />
                       {lang === 'es' ? 'NUEVA BATALLA' : 'NEW BATTLE'}
                     </Button>
                   </motion.div>
@@ -262,7 +261,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                   <motion.div 
                     animate={{ scale: [1, 1.2, 1] }}
                     transition={{ repeat: Infinity, duration: 1 }}
-                    className="text-4xl md:text-8xl font-black text-primary drop-shadow-2xl my-4 md:my-0"
+                    className="text-2xl md:text-8xl font-black text-primary drop-shadow-2xl my-2 md:my-0"
                   >
                     VS
                   </motion.div>
@@ -270,29 +269,29 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
               </div>
 
               {/* Player 2 Battle View */}
-              <div className="flex flex-col items-center gap-6 md:gap-8 relative w-full md:w-auto">
-                <div className="w-full max-w-[200px] md:max-w-none md:absolute md:-top-24 md:w-56 space-y-3 z-30">
-                   <div className="flex justify-between text-[11px] font-black uppercase text-white drop-shadow-md tracking-widest bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm">
+              <div className="flex flex-col items-center gap-4 md:gap-8 relative flex-1">
+                <div className="w-full max-w-[140px] md:max-w-none md:absolute md:-top-24 md:w-56 space-y-2 z-30">
+                   <div className="flex justify-between text-[9px] md:text-[11px] font-black uppercase text-white drop-shadow-md tracking-widest bg-black/40 px-2 py-1 rounded-full backdrop-blur-sm">
                     <span className="truncate">{p2?.name}</span>
                     <span>{hp2} HP</span>
                   </div>
-                  <Progress value={(hp2 / (maxHp2 || 1)) * 100} className="h-2.5 bg-white/20" />
+                  <Progress value={(hp2 / (maxHp2 || 1)) * 100} className="h-1.5 md:h-2.5 bg-white/20" />
                 </div>
                 <motion.div
-                  animate={attackingPlayer === 2 ? { x: [0, -100, 0], scale: [1, 1.2, 1] } : attackingPlayer === 1 ? { x: [0, 10, 0], filter: ["brightness(1)", "brightness(2)", "brightness(1)"] } : {}}
+                  animate={attackingPlayer === 2 ? { x: [0, -50, 0], scale: [1, 1.1, 1] } : attackingPlayer === 1 ? { x: [0, 5, 0], filter: ["brightness(1)", "brightness(2)", "brightness(1)"] } : {}}
                   transition={{ duration: 0.4, ease: "easeInOut" }}
-                  className="relative w-48 h-48 md:w-[350px] md:h-[350px]"
+                  className="relative w-28 h-28 sm:w-40 sm:h-40 md:w-[350px] md:h-[350px]"
                 >
                   {p2 && getArtwork(p2) ? (
                     <Image 
                       src={getArtwork(p2)!} 
                       alt={p2.name} 
                       fill
-                      className="object-contain drop-shadow-[0_35px_35px_rgba(0,0,0,0.5)] animate-float"
+                      className="object-contain drop-shadow-[0_15px_15px_rgba(0,0,0,0.5)] animate-float"
                     />
                   ) : <div className="w-full h-full" />}
                 </motion.div>
-                <div className="w-32 md:w-48 h-4 md:h-6 bg-black/20 rounded-[100%] blur-md" />
+                <div className="w-20 md:w-48 h-2 md:h-6 bg-black/20 rounded-[100%] blur-md" />
               </div>
             </motion.div>
           ) : (
@@ -300,14 +299,14 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
               key="prep-stage"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="w-full flex flex-col lg:flex-row items-center justify-around gap-10 md:gap-12 relative z-10"
+              className="w-full flex flex-col lg:flex-row items-center justify-around gap-6 md:gap-12 relative z-10"
             >
               {/* Player 1 Selection */}
-              <div className="w-full max-sm:space-y-6">
+              <div className="w-full max-lg:space-y-4">
                  <Button 
                     variant="outline" 
                     onClick={() => setActiveSelector(1)}
-                    className="w-full h-16 glass border-primary/20 rounded-2xl md:rounded-3xl flex items-center justify-between px-6 hover:bg-primary/5 transition-all group"
+                    className="w-full h-14 md:h-16 glass border-primary/20 rounded-2xl md:rounded-3xl flex items-center justify-between px-6 hover:bg-primary/5 transition-all group"
                   >
                     <div className="flex items-center gap-3">
                       <Search className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
@@ -319,12 +318,12 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                     <motion.div 
                       layoutId="p1-card"
                       className={cn(
-                        "glass p-6 md:p-10 rounded-[2.5rem] md:rounded-[4rem] border-primary/20 text-center relative mt-4",
+                        "glass p-4 md:p-10 rounded-[2rem] md:rounded-[4rem] border-primary/20 text-center relative mt-2 md:mt-4",
                         winner === 1 ? "ring-4 ring-primary bg-primary/10 shadow-2xl shadow-primary/20" : ""
                       )}
                     >
-                      {winner === 1 && <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-black px-8 py-2 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-2xl"><Trophy className="w-4 h-4"/> {t.winner}</div>}
-                      <div className="relative w-40 h-40 md:w-56 md:h-56 mx-auto mb-6">
+                      {winner === 1 && <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-black px-4 md:px-8 py-1 md:py-2 rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-2xl"><Trophy className="w-3 h-3 md:w-4 md:h-4"/> {t.winner}</div>}
+                      <div className="relative w-24 h-24 sm:w-40 sm:h-40 md:w-56 md:h-56 mx-auto mb-4 md:mb-6">
                         {getArtwork(p1) ? (
                           <Image 
                             src={getArtwork(p1)!} 
@@ -334,52 +333,52 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                           />
                         ) : <div className="w-full h-full" />}
                       </div>
-                      <div className="space-y-4 max-w-[240px] mx-auto">
+                      <div className="space-y-2 md:space-y-4 max-w-[240px] mx-auto hidden md:block">
                         <StatBar label={t.hp} value={getStatValue(p1, 'hp')} max={255} icon={<Heart className="w-3 h-3" />} color="bg-red-500" />
                         <StatBar label={t.attack} value={getStatValue(p1, 'attack')} max={255} icon={<Swords className="w-3 h-3" />} color="bg-orange-500" />
                         <StatBar label={t.speed} value={getStatValue(p1, 'speed')} max={255} icon={<Zap className="w-3 h-3" />} color="bg-yellow-500" />
                       </div>
                     </motion.div>
                   ) : (
-                    <div className="glass h-[300px] md:h-[400px] rounded-[3rem] border-dashed border-foreground/10 flex flex-col items-center justify-center text-muted-foreground gap-4 mt-4">
-                      {loading && activeSelector === 1 ? <Loader2 className="w-10 h-10 animate-spin text-primary" /> : <div className="font-black uppercase text-[10px] tracking-widest opacity-20">Slot 1</div>}
+                    <div className="glass h-[150px] md:h-[400px] rounded-[2rem] md:rounded-[3rem] border-dashed border-foreground/10 flex flex-col items-center justify-center text-muted-foreground gap-2 md:gap-4 mt-2 md:mt-4">
+                      {loading && activeSelector === 1 ? <Loader2 className="w-8 h-8 animate-spin text-primary" /> : <div className="font-black uppercase text-[8px] md:text-[10px] tracking-widest opacity-20">Slot 1</div>}
                     </div>
                   )}
               </div>
 
               {/* Combat Controls */}
-              <div className="flex flex-col items-center gap-6 md:gap-8 py-6 md:py-10">
-                <div className="w-24 h-24 md:w-36 md:h-36 rounded-full glass border-primary/30 flex items-center justify-center relative">
-                   <span className="text-3xl md:text-5xl font-black text-primary">VS</span>
+              <div className="flex flex-col items-center gap-4 md:gap-8 py-4 md:py-10">
+                <div className="w-16 h-16 md:w-36 md:h-36 rounded-full glass border-primary/30 flex items-center justify-center relative">
+                   <span className="text-xl md:text-5xl font-black text-primary">VS</span>
                    <motion.div 
                      animate={{ scale: [1, 1.4, 1], opacity: [0.1, 0.4, 0.1] }}
                      transition={{ duration: 2, repeat: Infinity }}
-                     className="absolute inset-0 bg-primary rounded-full blur-3xl -z-10"
+                     className="absolute inset-0 bg-primary rounded-full blur-2xl md:blur-3xl -z-10"
                    />
                 </div>
                 
                 <Button 
                   disabled={!p1 || !p2 || loading} 
                   onClick={simulateBattle}
-                  className="w-full sm:w-64 h-16 md:h-20 rounded-[2rem] md:rounded-[2.5rem] bg-gradient-to-r from-primary via-secondary to-accent text-white font-black text-xl md:text-2xl shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all uppercase tracking-tighter"
+                  className="w-full sm:w-64 h-14 md:h-20 rounded-2xl md:rounded-[2.5rem] bg-gradient-to-r from-primary via-secondary to-accent text-white font-black text-lg md:text-2xl shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all uppercase tracking-tighter"
                 >
                   {t.start_battle}
                 </Button>
 
                 {(p1 || p2) && (
-                  <Button variant="ghost" onClick={resetBattle} className="text-muted-foreground hover:text-primary gap-2 font-black uppercase text-[10px] tracking-widest bg-foreground/5 px-6 h-10 rounded-full border border-foreground/5">
-                    <RotateCcw className="w-4 h-4" />
+                  <Button variant="ghost" onClick={resetBattle} className="text-muted-foreground hover:text-primary gap-2 font-black uppercase text-[8px] md:text-[10px] tracking-widest bg-foreground/5 px-4 md:px-6 h-8 md:h-10 rounded-full border border-foreground/5">
+                    <RotateCcw className="w-3 h-3 md:w-4 md:h-4" />
                     {t.reset}
                   </Button>
                 )}
               </div>
 
               {/* Player 2 Selection */}
-              <div className="w-full max-sm:space-y-6">
+              <div className="w-full max-lg:space-y-4">
                   <Button 
                     variant="outline" 
                     onClick={() => setActiveSelector(2)}
-                    className="w-full h-16 glass border-secondary/20 rounded-2xl md:rounded-3xl flex items-center justify-between px-6 hover:bg-secondary/5 transition-all group"
+                    className="w-full h-14 md:h-16 glass border-secondary/20 rounded-2xl md:rounded-3xl flex items-center justify-between px-6 hover:bg-secondary/5 transition-all group"
                   >
                     <div className="flex items-center gap-3">
                       <Search className="w-5 h-5 text-muted-foreground group-hover:text-secondary transition-colors" />
@@ -391,12 +390,12 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                     <motion.div 
                       layoutId="p2-card"
                       className={cn(
-                        "glass p-6 md:p-10 rounded-[2.5rem] md:rounded-[4rem] border-secondary/20 text-center relative mt-4",
+                        "glass p-4 md:p-10 rounded-[2rem] md:rounded-[4rem] border-secondary/20 text-center relative mt-2 md:mt-4",
                         winner === 2 ? "ring-4 ring-secondary bg-secondary/10 shadow-2xl shadow-secondary/20" : ""
                       )}
                     >
-                      {winner === 2 && <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-secondary text-white px-8 py-2 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-2xl"><Trophy className="w-4 h-4"/> {t.winner}</div>}
-                      <div className="relative w-40 h-40 md:w-56 md:h-56 mx-auto mb-6">
+                      {winner === 2 && <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-secondary text-white px-4 md:px-8 py-1 md:py-2 rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-2xl"><Trophy className="w-3 h-3 md:w-4 md:h-4"/> {t.winner}</div>}
+                      <div className="relative w-24 h-24 sm:w-40 sm:h-40 md:w-56 md:h-56 mx-auto mb-4 md:mb-6">
                         {getArtwork(p2) ? (
                           <Image 
                             src={getArtwork(p2)!} 
@@ -406,15 +405,15 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                           />
                         ) : <div className="w-full h-full" />}
                       </div>
-                      <div className="space-y-4 max-w-[240px] mx-auto">
+                      <div className="space-y-2 md:space-y-4 max-w-[240px] mx-auto hidden md:block">
                         <StatBar label={t.hp} value={getStatValue(p2, 'hp')} max={255} icon={<Heart className="w-3 h-3" />} color="bg-red-500" />
                         <StatBar label={t.attack} value={getStatValue(p2, 'attack')} max={255} icon={<Swords className="w-3 h-3" />} color="bg-orange-500" />
                         <StatBar label={t.speed} value={getStatValue(p2, 'speed')} max={255} icon={<Zap className="w-3 h-3" />} color="bg-yellow-500" />
                       </div>
                     </motion.div>
                   ) : (
-                    <div className="glass h-[300px] md:h-[400px] rounded-[3rem] border-dashed border-foreground/10 flex flex-col items-center justify-center text-muted-foreground gap-4 mt-4">
-                      {loading && activeSelector === 2 ? <Loader2 className="w-10 h-10 animate-spin text-secondary" /> : <div className="font-black uppercase text-[10px] tracking-widest opacity-20">Slot 2</div>}
+                    <div className="glass h-[150px] md:h-[400px] rounded-[2rem] md:rounded-[3rem] border-dashed border-foreground/10 flex flex-col items-center justify-center text-muted-foreground gap-2 md:gap-4 mt-2 md:mt-4">
+                      {loading && activeSelector === 2 ? <Loader2 className="w-8 h-8 animate-spin text-secondary" /> : <div className="font-black uppercase text-[8px] md:text-[10px] tracking-widest opacity-20">Slot 2</div>}
                     </div>
                   )}
               </div>
@@ -444,7 +443,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
               )}
             </div>
             
-            <div className="space-y-4 max-h-[350px] overflow-y-auto overflow-x-hidden pr-4 scrollbar-thin scrollbar-thumb-foreground/10 scrollbar-track-transparent">
+            <div className="space-y-4 max-h-[250px] md:max-h-[350px] overflow-y-auto overflow-x-hidden pr-4 scrollbar-thin scrollbar-thumb-foreground/10 scrollbar-track-transparent">
               {battleLogs.map((log, i) => (
                 <div key={i} className={cn(
                   "text-sm font-bold border-b border-foreground/5 pb-4 last:border-0 flex items-center gap-4 transition-all duration-500",
