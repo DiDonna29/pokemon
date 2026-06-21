@@ -367,14 +367,14 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
               )}
             </div>
             
-            <div className="space-y-4 max-h-[300px] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-foreground/10">
+            <div className="space-y-4 max-h-[300px] overflow-y-auto overflow-x-hidden pr-4 scrollbar-thin scrollbar-thumb-foreground/10">
               {battleLogs.map((log, i) => (
                 <div key={i} className={cn(
                   "text-sm font-bold border-b border-foreground/5 pb-3 last:border-0 flex items-center gap-4 transition-all",
                   i === 0 ? "text-primary scale-105 origin-left" : "opacity-50"
                 )}>
-                  <span className="text-[10px] font-black opacity-30 w-10">TURN {log.turn}</span>
-                  <span className="capitalize">{log.message}</span>
+                  <span className="text-[10px] font-black opacity-30 w-10 shrink-0">TURN {log.turn}</span>
+                  <span className="capitalize truncate">{log.message}</span>
                 </div>
               ))}
             </div>
