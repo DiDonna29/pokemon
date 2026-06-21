@@ -29,12 +29,15 @@ import {
   ChevronsRight, 
   Loader2, 
   Star, 
-  Swords 
+  Swords,
+  Menu,
+  X
 } from "lucide-react";
 import { Language, translations } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/components/ui/sheet";
 
 const PAGE_SIZE = 20;
 
@@ -72,6 +75,7 @@ export default function Home() {
   // UX State
   const [caughtPokemon, setCaughtPokemon] = useState<Set<number>>(new Set());
   const [selectedDetails, setSelectedDetails] = useState<PokemonDetails | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   // Apply Theme Class
   useEffect(() => {
@@ -265,10 +269,10 @@ export default function Home() {
 
       {/* Symmetric Modern Header */}
       <header className="relative z-50 nav-glass sticky top-0 px-4 md:px-12 py-4 md:py-5">
-        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="container mx-auto flex items-center justify-between">
           
-          {/* Navigation - Left on Desktop */}
-          <div className="flex items-center gap-2 order-2 md:order-1 bg-foreground/5 p-1 rounded-2xl border border-foreground/10 shadow-inner">
+          {/* Navigation - Hidden on Mobile */}
+          <div className="hidden md:flex items-center gap-2 bg-foreground/5 p-1 rounded-2xl border border-foreground/10 shadow-inner">
             <Button 
               variant="ghost"
               onClick={() => setActiveTab("pokedex")}
@@ -277,8 +281,8 @@ export default function Home() {
                 activeTab === "pokedex" ? "bg-primary text-black shadow-lg shadow-primary/20" : "text-muted-foreground hover:text-foreground"
               )}
             >
-              <LayoutGrid className="w-4 h-4 md:mr-2" />
-              <span className="hidden md:inline">{t.infinite_dex}</span>
+              <LayoutGrid className="w-4 h-4 mr-2" />
+              <span>{t.infinite_dex}</span>
             </Button>
             <Button 
               variant="ghost"
@@ -288,17 +292,17 @@ export default function Home() {
                 activeTab === "arena" ? "bg-secondary text-white shadow-lg shadow-secondary/20" : "text-muted-foreground hover:text-foreground"
               )}
             >
-              <Swords className="w-4 h-4 md:mr-2" />
-              <span className="hidden md:inline">{t.battle_arena}</span>
+              <Swords className="w-4 h-4 mr-2" />
+              <span>{t.battle_arena}</span>
             </Button>
           </div>
 
           {/* Branding - Centered */}
-          <div className="flex flex-col items-center gap-1 order-1 md:order-2">
+          <div className="flex flex-col items-center gap-1">
             <motion.div 
               whileHover={{ scale: 1.1 }}
               transition={{ type: "spring", stiffness: 300 }}
-              className="relative w-36 h-12 md:w-48 md:h-16 cursor-pointer"
+              className="relative w-32 h-10 md:w-48 md:h-16 cursor-pointer"
               onClick={() => {
                 setActiveTab("pokedex");
                 handleClearFilters();
@@ -312,33 +316,134 @@ export default function Home() {
                 priority
               />
             </motion.div>
-            <div className="text-center -mt-1">
+            <div className="text-center -mt-1 hidden md:block">
               <p className="text-[10px] text-muted-foreground uppercase tracking-[0.4em] font-black opacity-60">NEXUS</p>
             </div>
           </div>
 
-          {/* Right: Utils */}
-          <div className="flex items-center gap-3 order-3">
-             <motion.button 
-               whileHover={{ scale: 1.05 }}
-               whileTap={{ scale: 0.95 }}
-               onClick={() => setShowCapturedOnly(!showCapturedOnly)}
-               className={cn(
-                 "glass px-4 h-10 rounded-full flex items-center gap-2 border-foreground/10 transition-all",
-                 showCapturedOnly ? "ring-2 ring-primary bg-primary/10" : ""
-               )}
-             >
-                <div className={cn("w-2 h-2 rounded-full", showCapturedOnly ? "bg-primary animate-ping" : "bg-primary/40")} />
-                <span className="text-xs font-black uppercase tracking-tight">{caughtPokemon.size}</span>
-             </motion.button>
-             
-             <div className="flex items-center gap-1 glass p-1 rounded-full border-foreground/10 bg-foreground/5">
-                <Button variant="ghost" size="icon" onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="rounded-full w-9 h-9 hover:bg-foreground/10">
-                  <Globe className="w-4 h-4" />
-                </Button>
-                <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-full w-9 h-9 hover:bg-foreground/10">
-                  {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                </Button>
+          {/* Right: Utils (Desktop) / Hamburger (Mobile) */}
+          <div className="flex items-center gap-3">
+             <div className="hidden md:flex items-center gap-3">
+                <motion.button 
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setShowCapturedOnly(!showCapturedOnly)}
+                  className={cn(
+                    "glass px-4 h-10 rounded-full flex items-center gap-2 border-foreground/10 transition-all",
+                    showCapturedOnly ? "ring-2 ring-primary bg-primary/10" : ""
+                  )}
+                >
+                   <div className={cn("w-2 h-2 rounded-full", showCapturedOnly ? "bg-primary animate-ping" : "bg-primary/40")} />
+                   <span className="text-xs font-black uppercase tracking-tight">{caughtPokemon.size}</span>
+                </motion.button>
+                
+                <div className="flex items-center gap-1 glass p-1 rounded-full border-foreground/10 bg-foreground/5">
+                   <Button variant="ghost" size="icon" onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="rounded-full w-9 h-9 hover:bg-foreground/10">
+                     <Globe className="w-4 h-4" />
+                   </Button>
+                   <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-full w-9 h-9 hover:bg-foreground/10">
+                     {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                   </Button>
+                </div>
+             </div>
+
+             {/* Hamburger Icon for Mobile */}
+             <div className="md:hidden">
+               <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                 <SheetTrigger asChild>
+                   <Button variant="ghost" size="icon" className="rounded-xl w-10 h-10 glass border-foreground/10">
+                     <Menu className="w-6 h-6" />
+                   </Button>
+                 </SheetTrigger>
+                 <SheetContent side="right" className="glass w-[85vw] sm:w-[400px] border-l border-foreground/10 flex flex-col p-8">
+                   <SheetHeader className="text-left mb-10">
+                      <SheetTitle className="text-2xl font-black uppercase tracking-tighter flex items-center gap-3">
+                        <Image 
+                          src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
+                          alt="PokeBall"
+                          width={24}
+                          height={24}
+                          className="pixelated"
+                        />
+                        Menu
+                      </SheetTitle>
+                   </SheetHeader>
+
+                   <div className="flex flex-col gap-12 flex-1">
+                      {/* Nav Section */}
+                      <div className="space-y-4">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-50">{t.infinite_dex}</p>
+                        <div className="flex flex-col gap-3">
+                          <Button 
+                            variant="ghost"
+                            onClick={() => { setActiveTab("pokedex"); setIsMobileMenuOpen(false); }}
+                            className={cn(
+                              "justify-start h-14 rounded-2xl px-6 font-black uppercase text-xs tracking-widest border transition-all",
+                              activeTab === "pokedex" ? "bg-primary text-black border-primary shadow-xl shadow-primary/20" : "glass border-foreground/5"
+                            )}
+                          >
+                            <LayoutGrid className="w-5 h-5 mr-4" />
+                            {t.infinite_dex}
+                          </Button>
+                          <Button 
+                            variant="ghost"
+                            onClick={() => { setActiveTab("arena"); setIsMobileMenuOpen(false); }}
+                            className={cn(
+                              "justify-start h-14 rounded-2xl px-6 font-black uppercase text-xs tracking-widest border transition-all",
+                              activeTab === "arena" ? "bg-secondary text-white border-secondary shadow-xl shadow-secondary/20" : "glass border-foreground/5"
+                            )}
+                          >
+                            <Swords className="w-5 h-5 mr-4" />
+                            {t.battle_arena}
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Stats Section */}
+                      <div className="space-y-4">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-50">{t.my_collection}</p>
+                        <div 
+                          className={cn(
+                            "glass h-14 rounded-2xl px-6 flex items-center justify-between border-foreground/5 cursor-pointer",
+                            showCapturedOnly ? "border-primary/40 bg-primary/5" : ""
+                          )}
+                          onClick={() => setShowCapturedOnly(!showCapturedOnly)}
+                        >
+                          <div className="flex items-center gap-4">
+                            <Star className={cn("w-5 h-5", showCapturedOnly ? "text-primary fill-current" : "text-muted-foreground")} />
+                            <span className="font-black uppercase text-xs tracking-widest">{t.captured}</span>
+                          </div>
+                          <span className="text-sm font-black text-primary">{caughtPokemon.size}</span>
+                        </div>
+                      </div>
+
+                      {/* Settings Section */}
+                      <div className="mt-auto pt-8 border-t border-foreground/10 space-y-6">
+                        <div className="flex items-center justify-between">
+                           <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-50">{t.advanced_search}</p>
+                           <div className="flex gap-2">
+                              <Button 
+                                variant="outline" 
+                                size="icon" 
+                                onClick={() => setLang(lang === 'en' ? 'es' : 'en')}
+                                className="rounded-xl w-12 h-12 glass border-foreground/10"
+                              >
+                                <Globe className="w-5 h-5" />
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                size="icon" 
+                                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                                className="rounded-xl w-12 h-12 glass border-foreground/10"
+                              >
+                                {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                              </Button>
+                           </div>
+                        </div>
+                      </div>
+                   </div>
+                 </SheetContent>
+               </Sheet>
              </div>
           </div>
         </div>
