@@ -110,7 +110,6 @@ export default function Home() {
     updateTypeFilters();
   }, [selectedTypes]);
 
-  // Base list filtered by search, AI, and types
   const baseFilteredList = useMemo(() => {
     let list = [...allPokemon];
     
@@ -138,7 +137,6 @@ export default function Home() {
     return list;
   }, [allPokemon, searchQuery, aiSuggestions, typeFilteredNames, showCapturedOnly, caughtPokemon]);
 
-  // Deep filtering for weight and height
   useEffect(() => {
     async function applyDeepFilters() {
       if (!selectedWeight && !selectedHeight) {
@@ -147,8 +145,7 @@ export default function Home() {
       }
       
       setFiltering(true);
-      // Limit processing to a reasonable batch for performance in this prototype
-      const candidates = baseFilteredList.slice(0, 100); 
+      const candidates = baseFilteredList.slice(0, 150); 
       const results: PokemonSummary[] = [];
       
       try {
@@ -248,15 +245,10 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-background text-foreground transition-colors duration-500 pb-32 md:pb-40">
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.05, 0.1, 0.05] }} transition={{ duration: 15, repeat: Infinity }} className="absolute top-[-10%] left-[-10%] w-full h-full bg-primary/20 rounded-full blur-[200px]" />
-        <motion.div animate={{ scale: [1, 1.3, 1], opacity: [0.05, 0.08, 0.05] }} transition={{ duration: 18, repeat: Infinity, delay: 2 }} className="absolute bottom-[-10%] right-[-10%] w-full h-full bg-secondary/20 rounded-full blur-[200px]" />
-      </div>
-
-      <header className="relative z-[100] px-6 py-6 md:py-8 border-b border-foreground/5 bg-background/50 backdrop-blur-xl">
+      <header className="relative z-[100] px-6 py-6 border-b border-foreground/5 bg-background/50 backdrop-blur-xl">
         <div className="container mx-auto max-w-7xl flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="relative w-28 h-10 md:w-36 md:h-12 cursor-pointer" onClick={() => handleTabChange('pokedex')}>
+            <div className="relative w-28 h-10 cursor-pointer" onClick={() => handleTabChange('pokedex')}>
               <Image 
                 src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg"
                 alt="Pokemon Logo"
@@ -265,16 +257,12 @@ export default function Home() {
                 priority
               />
             </div>
-            <div className="hidden sm:flex flex-col border-l border-foreground/10 pl-4">
-              <p className="text-[10px] font-black tracking-[0.3em] uppercase opacity-60">pokenexus</p>
-            </div>
           </div>
-          
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="rounded-xl glass w-10 h-10 md:w-11 md:h-11 border-foreground/5 text-black dark:text-white hover:bg-foreground/10">
+            <Button variant="ghost" size="icon" onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="rounded-xl glass w-10 h-10 border-foreground/5 text-black dark:text-white hover:bg-foreground/10">
               <Globe className="w-5 h-5" />
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-xl glass w-10 h-10 md:w-11 md:h-11 border-foreground/5 text-black dark:text-white hover:bg-foreground/10">
+            <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-xl glass w-10 h-10 border-foreground/5 text-black dark:text-white hover:bg-foreground/10">
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </Button>
           </div>
@@ -306,14 +294,12 @@ export default function Home() {
                     onClear={handleClearFilters} lang={lang}
                   />
                   <Button 
-                    variant="outline" 
-                    size="sm" 
                     onClick={() => setShowCapturedOnly(!showCapturedOnly)} 
                     className={cn(
-                      "rounded-2xl font-black text-[10px] uppercase tracking-widest h-12 px-6 glass transition-all border",
+                      "rounded-2xl font-black text-[10px] uppercase tracking-widest h-12 px-6 glass transition-all border shadow-lg",
                       showCapturedOnly 
-                        ? "bg-primary shadow-lg border-primary text-black hover:bg-primary/90" 
-                        : "text-black dark:text-white hover:bg-foreground/10 border-foreground/5"
+                        ? "bg-primary text-black border-primary hover:bg-primary/90" 
+                        : "bg-foreground/5 text-black dark:text-white border-foreground/5 hover:bg-foreground/10"
                     )}
                   >
                     <div className="relative w-4 h-4 mr-2">
@@ -335,7 +321,7 @@ export default function Home() {
                     </div>
                   )}
                   <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="w-48 glass h-12 rounded-2xl font-black text-[10px] uppercase tracking-widest border-foreground/10 text-black dark:text-white hover:bg-foreground/10">
+                    <SelectTrigger className="w-48 glass h-12 rounded-2xl font-black text-[10px] uppercase tracking-widest border-foreground/10 text-black dark:text-white">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="glass border-foreground/10">
@@ -357,7 +343,7 @@ export default function Home() {
                     <h3 className="text-2xl font-black uppercase tracking-tight">{t.no_pokemon}</h3>
                     <p className="text-muted-foreground">{t.no_pokemon_desc}</p>
                   </div>
-                  <Button onClick={handleClearFilters} className="rounded-2xl h-14 px-8 font-black uppercase text-xs tracking-widest bg-primary text-black hover:bg-primary/90 transition-all shadow-xl shadow-primary/20">
+                  <Button onClick={handleClearFilters} className="rounded-2xl h-14 px-8 font-black uppercase text-xs tracking-widest bg-primary text-black hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 border-none">
                     <RotateCcw className="w-4 h-4 mr-2" />
                     {t.clear_filters}
                   </Button>
@@ -379,17 +365,13 @@ export default function Home() {
 
               {visiblePokemon.length > 0 && (
                 <div className="flex flex-wrap justify-center items-center gap-2 py-12">
-                   <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => jumpToPage(1)} className="rounded-xl glass h-10 w-10 text-black dark:text-white hover:bg-foreground/10"><ChevronsLeft className="w-4 h-4" /></Button>
-                   <Button variant="outline" size="icon" disabled={currentPage <= 3} onClick={() => jumpToPage(currentPage - 3)} className="rounded-xl glass h-10 w-10 flex items-center justify-center font-black text-[10px] text-black dark:text-white hover:bg-foreground/10">-3</Button>
-                   <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="rounded-xl glass h-10 w-10 text-black dark:text-white hover:bg-foreground/10"><ChevronLeft className="w-4 h-4" /></Button>
-                   
+                   <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => jumpToPage(1)} className="rounded-xl glass h-10 w-10 text-black dark:text-white"><ChevronsLeft className="w-4 h-4" /></Button>
+                   <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="rounded-xl glass h-10 w-10 text-black dark:text-white"><ChevronLeft className="w-4 h-4" /></Button>
                    <div className="glass px-6 h-10 flex items-center rounded-xl font-black text-[10px] uppercase tracking-widest min-w-[120px] justify-center text-black dark:text-white">
                     {t.page} {currentPage} / {totalPages}
                    </div>
-                   
-                   <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="rounded-xl glass h-10 w-10 text-black dark:text-white hover:bg-foreground/10"><ChevronRight className="w-4 h-4" /></Button>
-                   <Button variant="outline" size="icon" disabled={currentPage >= totalPages - 2} onClick={() => jumpToPage(currentPage + 3)} className="rounded-xl glass h-10 w-10 flex items-center justify-center font-black text-[10px] text-black dark:text-white hover:bg-foreground/10">+3</Button>
-                   <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={() => jumpToPage(totalPages)} className="rounded-xl glass h-10 w-10 text-black dark:text-white hover:bg-foreground/10"><ChevronsRight className="w-4 h-4" /></Button>
+                   <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="rounded-xl glass h-10 w-10 text-black dark:text-white"><ChevronRight className="w-4 h-4" /></Button>
+                   <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={() => jumpToPage(totalPages)} className="rounded-xl glass h-10 w-10 text-black dark:text-white"><ChevronsRight className="w-4 h-4" /></Button>
                 </div>
               )}
             </motion.div>
