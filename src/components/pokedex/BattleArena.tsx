@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { PokemonDetails, fetchPokemonDetails, PokemonSummary } from "@/lib/pokeapi";
 import { Language, translations } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { PokemonSelectorModal } from "./PokemonSelectorModal";
+import confetti from "canvas-confetti";
 
 interface BattleArenaProps {
   lang: Language;
@@ -31,11 +32,30 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
   const [battleLogs, setBattleLogs] = useState<{turn: number, message: string}[]>([]);
   const [winner, setWinner] = useState<1 | 2 | null>(null);
   
-  // Real-time HP for the cinematic view
   const [hp1, setHp1] = useState(0);
   const [hp2, setHp2] = useState(0);
   const [maxHp1, setMaxHp1] = useState(0);
   const [maxHp2, setMaxHp2] = useState(0);
+
+  const fireVictoryConfetti = useCallback(() => {
+    const duration = 5 * 1000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+    const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
+
+    const interval: any = setInterval(function() {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 50 * (timeLeft / duration);
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+    }, 250);
+  }, []);
 
   const handleSelectPokemon = async (player: 1 | 2, name: string) => {
     setLoading(true);
@@ -88,7 +108,6 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
     while (currentHp1 > 0 && currentHp2 > 0 && turnCount < 30) {
       setAttackingPlayer(turn as 1 | 2);
       
-      // Animation wait
       await new Promise(resolve => setTimeout(resolve, 800));
       
       if (turn === 1) {
@@ -118,8 +137,14 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
     await new Promise(resolve => setTimeout(resolve, 500));
     setAttackingPlayer(null);
     setIsBattling(false);
-    if (currentHp1 <= 0) setWinner(2);
-    else if (currentHp2 <= 0) setWinner(1);
+    
+    if (currentHp1 <= 0) {
+      setWinner(2);
+      fireVictoryConfetti();
+    } else if (currentHp2 <= 0) {
+      setWinner(1);
+      fireVictoryConfetti();
+    }
   };
 
   function getStatValue(p: PokemonDetails, name: string) {
@@ -147,10 +172,8 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
         </p>
       </div>
 
-      {/* Main Arena Area */}
       <div className="relative min-h-[600px] w-full glass rounded-[3rem] border-foreground/5 p-8 flex flex-col items-center justify-center overflow-hidden">
         
-        {/* Background Decorative Elements */}
         <div className="absolute inset-0 pointer-events-none opacity-20">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[120px]" />
           <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-background to-transparent" />
@@ -158,7 +181,6 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
 
         <AnimatePresence mode="wait">
           {isBattling ? (
-            /* CINEMATIC BATTLE VIEW */
             <motion.div 
               key="battle-stage"
               initial={{ opacity: 0, scale: 0.9 }}
@@ -166,14 +188,13 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
               exit={{ opacity: 0, scale: 1.1 }}
               className="w-full h-full flex items-center justify-around gap-4 relative z-10"
             >
-              {/* P1 Large Image */}
               <div className="flex flex-col items-center gap-8 relative">
                 <div className="absolute -top-20 w-48 space-y-2">
                   <div className="flex justify-between text-[10px] font-black uppercase text-white drop-shadow-md">
                     <span>{p1?.name}</span>
                     <span>{hp1} HP</span>
                   </div>
-                  <Progress value={(hp1 / maxHp1) * 100} className="h-2 bg-white/20" />
+                  <Progress value={(hp1 / (maxHp1 || 1)) * 100} className="h-2 bg-white/20" />
                 </div>
                 <motion.div
                   animate={attackingPlayer === 1 ? { x: [0, 150, 0], scale: [1, 1.2, 1] } : attackingPlayer === 2 ? { x: [0, -20, 0], filter: ["brightness(1)", "brightness(2)", "brightness(1)"] } : {}}
@@ -190,7 +211,6 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                 <div className="w-48 h-6 bg-black/20 rounded-[100%] blur-md" />
               </div>
 
-              {/* VS Divider */}
               <motion.div 
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ repeat: Infinity, duration: 1 }}
@@ -199,14 +219,13 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                 VS
               </motion.div>
 
-              {/* P2 Large Image */}
               <div className="flex flex-col items-center gap-8 relative">
                 <div className="absolute -top-20 w-48 space-y-2">
                    <div className="flex justify-between text-[10px] font-black uppercase text-white drop-shadow-md">
                     <span>{p2?.name}</span>
                     <span>{hp2} HP</span>
                   </div>
-                  <Progress value={(hp2 / maxHp2) * 100} className="h-2 bg-white/20" />
+                  <Progress value={(hp2 / (maxHp2 || 1)) * 100} className="h-2 bg-white/20" />
                 </div>
                 <motion.div
                   animate={attackingPlayer === 2 ? { x: [0, -150, 0], scale: [1, 1.2, 1] } : attackingPlayer === 1 ? { x: [0, 20, 0], filter: ["brightness(1)", "brightness(2)", "brightness(1)"] } : {}}
@@ -224,14 +243,12 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
               </div>
             </motion.div>
           ) : (
-            /* PREPARATION VIEW */
             <motion.div 
               key="prep-stage"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="w-full flex flex-col lg:flex-row items-center justify-around gap-12 relative z-10"
             >
-              {/* Slot 1 Selection */}
               <div className="w-full max-w-sm space-y-6">
                  <Button 
                     variant="outline" 
@@ -273,7 +290,6 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                   )}
               </div>
 
-              {/* Central Controls */}
               <div className="flex flex-col items-center gap-8 py-10">
                 <div className="w-32 h-32 rounded-full glass border-primary/30 flex items-center justify-center relative">
                    <span className="text-4xl font-black text-primary">VS</span>
@@ -300,7 +316,6 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                 )}
               </div>
 
-              {/* Slot 2 Selection */}
               <div className="w-full max-w-sm space-y-6">
                   <Button 
                     variant="outline" 
@@ -346,7 +361,6 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
         </AnimatePresence>
       </div>
 
-      {/* Battle Logs Section */}
       <AnimatePresence>
         {battleLogs.length > 0 && (
           <motion.div 
@@ -403,7 +417,7 @@ function StatBar({ label, value, max, icon, color }: { label: string, value: num
         </div>
         <span>{value}</span>
       </div>
-      <Progress value={(value / max) * 100} className={cn("h-1.5 bg-foreground/5", color)} />
+      <Progress value={(value / (max || 1)) * 100} className={cn("h-1.5 bg-foreground/5", color)} />
     </div>
   );
 }
