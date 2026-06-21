@@ -294,7 +294,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
               className="w-full flex flex-col lg:flex-row items-center justify-around gap-10 md:gap-12 relative z-10"
             >
               {/* Player 1 Selection */}
-              <div className="w-full max-w-sm space-y-6">
+              <div className="w-full max-sm-space-y-6">
                  <Button 
                     variant="outline" 
                     onClick={() => setActiveSelector(1)}
@@ -366,7 +366,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
               </div>
 
               {/* Player 2 Selection */}
-              <div className="w-full max-w-sm space-y-6">
+              <div className="w-full max-sm-space-y-6">
                   <Button 
                     variant="outline" 
                     onClick={() => setActiveSelector(2)}
