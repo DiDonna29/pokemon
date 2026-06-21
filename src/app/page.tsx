@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
@@ -34,7 +35,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 15;
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<"pokedex" | "battle" | "quiz">("pokedex");
@@ -194,10 +195,10 @@ export default function Home() {
           </div>
           
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="rounded-xl glass w-10 h-10 md:w-11 md:h-11 border-foreground/5 text-black dark:text-white">
+            <Button variant="ghost" size="icon" onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="rounded-xl glass w-10 h-10 md:w-11 md:h-11 border-foreground/5 text-black dark:text-white hover:bg-foreground/10">
               <Globe className="w-5 h-5" />
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-xl glass w-10 h-10 md:w-11 md:h-11 border-foreground/5 text-black dark:text-white">
+            <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-xl glass w-10 h-10 md:w-11 md:h-11 border-foreground/5 text-black dark:text-white hover:bg-foreground/10">
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </Button>
           </div>
@@ -224,7 +225,7 @@ export default function Home() {
                     onClear={handleClearFilters} lang={lang}
                   />
                   <Button 
-                    variant="ghost" 
+                    variant="secondary" 
                     size="sm" 
                     onClick={() => setShowCapturedOnly(!showCapturedOnly)} 
                     className={cn(

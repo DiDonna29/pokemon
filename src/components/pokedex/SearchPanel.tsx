@@ -45,7 +45,6 @@ export function SearchPanel({ onSearch, onAiSuggest, isLoading, lang }: SearchPa
       const result = await intelligentPokemonDiscovery({ description: query });
       if (result && result.suggestedPokemon) {
         onAiSuggest(result.suggestedPokemon.map(p => p.name.toLowerCase()));
-        setQuery("");
       } else {
         throw new Error("No suggestions found");
       }
@@ -55,8 +54,8 @@ export function SearchPanel({ onSearch, onAiSuggest, isLoading, lang }: SearchPa
         variant: "destructive",
         title: lang === 'es' ? "Error de IA" : "AI Error",
         description: lang === 'es' 
-          ? "No se pudo conectar con el servicio de IA. Verifica la configuración." 
-          : "Could not connect to the AI service. Check your configuration.",
+          ? "No se pudo conectar con el servicio de IA. Verifica tu API Key o conexión." 
+          : "Could not connect to AI service. Please check your API Key or connection.",
       });
     } finally {
       setAiLoading(false);

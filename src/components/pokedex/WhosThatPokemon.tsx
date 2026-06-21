@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
@@ -171,7 +172,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
                 <Button 
                   variant="ghost" 
                   onClick={getHint}
-                  className="w-full h-12 rounded-xl glass border-foreground/5 font-black uppercase text-[10px] tracking-widest gap-2 bg-primary/10 text-primary hover:bg-primary hover:text-black transition-all"
+                  className="w-full h-12 rounded-xl glass border-foreground/5 font-black uppercase text-[10px] tracking-widest gap-2 text-black dark:text-white hover:bg-foreground/10"
                 >
                   <Lightbulb className="w-4 h-4" />
                   {t.get_hint}
