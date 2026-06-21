@@ -5,7 +5,17 @@ import { PokemonDetails, fetchPokemonDetails, PokemonSummary } from "@/lib/pokea
 import { Language, translations } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { HelpCircle, RotateCcw, CheckCircle2, AlertCircle, Lightbulb, Eye, Sparkles } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { 
+  HelpCircle, 
+  RotateCcw, 
+  CheckCircle2, 
+  AlertCircle, 
+  Lightbulb, 
+  Eye, 
+  Sparkles,
+  Loader2
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -130,7 +140,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
         <Badge variant="outline" className="px-5 py-2 rounded-full border-primary/20 text-primary uppercase font-black text-[10px] tracking-[0.3em] bg-primary/5">
           Ultimate Quiz Challenge
         </Badge>
-        <h2 className="text-5xl md:text-9xl font-black bg-clip-text text-transparent bg-gradient-to-r from-primary via-foreground to-secondary uppercase tracking-tighter leading-none">
+        <h2 className="text-5xl md:text-[8rem] font-headline font-black bg-clip-text text-transparent bg-gradient-to-r from-primary via-foreground to-secondary uppercase tracking-tighter leading-[0.85]">
           {t.quiz_title}
         </h2>
         <p className="text-muted-foreground font-medium italic text-xl md:text-3xl opacity-60 leading-tight">{t.quiz_desc}</p>
@@ -155,14 +165,17 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
                   scale: isRevealing ? [1, 1.08, 1] : 1,
                   rotate: isRevealing ? [0, -3, 3, -3, 3, 0] : 0,
                   opacity: 1,
+                  x: isRevealing ? [0, -2, 2, -2, 2, 0] : 0,
                 }}
                 transition={{
-                  scale: isRevealing ? { duration: 0.15, repeat: Infinity } : { type: 'spring', damping: 15, stiffness: 100 },
-                  rotate: isRevealing ? { duration: 0.08, repeat: Infinity } : { type: 'spring', damping: 15, stiffness: 100 }
+                  scale: isRevealing ? { duration: 0.1, repeat: Infinity } : { type: 'spring', damping: 15, stiffness: 100 },
+                  rotate: isRevealing ? { duration: 0.1, repeat: Infinity } : { type: 'spring', damping: 15, stiffness: 100 },
+                  x: isRevealing ? { duration: 0.1, repeat: Infinity } : { duration: 0 }
                 }}
                 className={cn(
                   "relative w-full h-full",
-                  !isRevealed && !isRevealing && "animate-pulsate-glow"
+                  !isRevealed && !isRevealing && "animate-pulsate-glow",
+                  isRevealing && "animate-vibrate"
                 )}
               >
                 <div className={cn(
@@ -206,7 +219,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
           <Button 
             onClick={handleGuess}
             disabled={isRevealed || isRevealing || loading || !guess}
-            className="h-16 px-12 rounded-[2rem] bg-primary text-black font-black uppercase tracking-[0.2em] hover:scale-110 active:scale-95 transition-all w-full sm:w-auto shadow-2xl shadow-primary/30"
+            className="h-16 px-12 rounded-[2rem] bg-primary text-black font-black uppercase tracking-[0.2em] hover:scale-110 active:scale-95 transition-all w-full sm:w-auto shadow-2xl shadow-primary/30 border-none"
           >
             {t.check_guess}
           </Button>
@@ -256,9 +269,9 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass p-6 rounded-[2.5rem] border-primary/20 text-center shadow-2xl">
               <p className="text-xs font-black uppercase tracking-[0.3em] text-primary leading-loose">
                 {hintType === 'letter' ? (
-                  <>{t.hint_first_letter} <span className="text-3xl ml-4 italic underline decoration-primary/40 underline-offset-8">{currentPokemon?.name.charAt(0).toUpperCase()}</span></>
+                  <>{t.hint_first_letter} <span className="text-3xl ml-4 italic underline decoration-primary/40 underline-offset-8 font-black">{currentPokemon?.name.charAt(0).toUpperCase()}</span></>
                 ) : (
-                  <>{t.hint_types} <span className="ml-4 capitalize bg-foreground/5 px-6 py-2 rounded-full">{currentPokemon?.types.map(t => t.type.name).join(' · ')}</span></>
+                  <>{t.hint_types} <span className="ml-4 capitalize bg-foreground/5 px-6 py-2 rounded-full font-black">{currentPokemon?.types.map(t => t.type.name).join(' · ')}</span></>
                 )}
               </p>
             </motion.div>
