@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -8,6 +9,7 @@ import { intelligentPokemonDiscovery } from "@/ai/flows/intelligent-pokemon-disc
 import { cn } from "@/lib/utils";
 import { Language, translations } from "@/lib/i18n";
 import { motion } from "framer-motion";
+import { useToast } from "@/hooks/use-toast";
 
 interface SearchPanelProps {
   onSearch: (query: string) => void;
@@ -20,6 +22,7 @@ export function SearchPanel({ onSearch, onAiSuggest, isLoading, lang }: SearchPa
   const [query, setQuery] = useState("");
   const [aiMode, setAiMode] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
+  const { toast } = useToast();
   const t = translations[lang];
 
   useEffect(() => {
@@ -40,10 +43,21 @@ export function SearchPanel({ onSearch, onAiSuggest, isLoading, lang }: SearchPa
     setAiLoading(true);
     try {
       const result = await intelligentPokemonDiscovery({ description: query });
-      onAiSuggest(result.suggestedPokemon.map(p => p.name.toLowerCase()));
-      setQuery("");
+      if (result && result.suggestedPokemon) {
+        onAiSuggest(result.suggestedPokemon.map(p => p.name.toLowerCase()));
+        setQuery("");
+      } else {
+        throw new Error("No suggestions found");
+      }
     } catch (error) {
       console.error("AI Discovery failed:", error);
+      toast({
+        variant: "destructive",
+        title: lang === 'es' ? "Error de IA" : "AI Error",
+        description: lang === 'es' 
+          ? "No se pudo conectar con el servicio de IA. Verifica la configuración." 
+          : "Could not connect to the AI service. Check your configuration.",
+      });
     } finally {
       setAiLoading(false);
     }
@@ -53,6 +67,13 @@ export function SearchPanel({ onSearch, onAiSuggest, isLoading, lang }: SearchPa
     setQuery("");
     onSearch("");
     onAiSuggest(null as any);
+  };
+
+  const toggleAiMode = (enabled: boolean) => {
+    setAiMode(enabled);
+    setQuery("");
+    onAiSuggest(null as any);
+    onSearch("");
   };
 
   return (
@@ -108,7 +129,7 @@ export function SearchPanel({ onSearch, onAiSuggest, isLoading, lang }: SearchPa
 
       <div className="flex items-center justify-center gap-8">
         <button 
-          onClick={() => { setAiMode(false); setQuery(""); onAiSuggest(null as any); }}
+          onClick={() => toggleAiMode(false)}
           className={cn(
             "text-[10px] font-black uppercase tracking-[0.2em] transition-all relative pb-2 px-2",
             !aiMode ? "text-primary scale-110" : "text-muted-foreground hover:text-foreground opacity-60"
@@ -123,7 +144,7 @@ export function SearchPanel({ onSearch, onAiSuggest, isLoading, lang }: SearchPa
           )}
         </button>
         <button 
-          onClick={() => { setAiMode(true); setQuery(""); onAiSuggest(null as any); }}
+          onClick={() => toggleAiMode(true)}
           className={cn(
             "text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 relative pb-2 px-2",
             aiMode ? "text-secondary scale-110" : "text-muted-foreground hover:text-foreground opacity-60"
