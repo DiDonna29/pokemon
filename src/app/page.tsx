@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
@@ -18,6 +17,7 @@ import { WhosThatPokemon } from "@/components/pokedex/WhosThatPokemon";
 import { Footer } from "@/components/pokedex/Footer";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { 
   Globe, 
   Sun, 
@@ -30,7 +30,8 @@ import {
   ChevronsRight,
   RotateCcw,
   SearchX,
-  Loader2
+  Loader2,
+  Sparkles
 } from "lucide-react";
 import { Language, translations } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
@@ -243,50 +244,74 @@ export default function Home() {
     window.scrollTo({ top: 300, behavior: 'smooth' });
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { staggerChildren: 0.05 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { type: 'spring', damping: 25, stiffness: 300 } }
+  };
+
   return (
-    <main className="min-h-screen bg-background text-foreground transition-colors duration-500 pb-32 md:pb-40">
-      <header className="relative z-[100] px-6 py-6 border-b border-foreground/5 bg-background/50 backdrop-blur-xl">
+    <main className="min-h-screen bg-background text-foreground transition-colors duration-700 pb-32 md:pb-40">
+      <header className="fixed top-0 left-0 right-0 z-[100] px-6 py-4 bg-background/60 backdrop-blur-3xl border-b border-foreground/5">
         <div className="container mx-auto max-w-7xl flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="relative w-28 h-10 cursor-pointer" onClick={() => handleTabChange('pokedex')}>
-              <Image 
-                src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg"
-                alt="Pokemon Logo"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="rounded-xl glass w-10 h-10 border-foreground/5 text-black dark:text-white hover:bg-foreground/10">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="relative w-32 h-10 cursor-pointer" 
+            onClick={() => handleTabChange('pokedex')}
+          >
+            <Image 
+              src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg"
+              alt="Pokemon Logo"
+              fill
+              className="object-contain"
+              priority
+            />
+          </motion.div>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="rounded-full w-10 h-10 hover:bg-foreground/5">
               <Globe className="w-5 h-5" />
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-xl glass w-10 h-10 border-foreground/5 text-black dark:text-white hover:bg-foreground/10">
+            <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-full w-10 h-10 hover:bg-foreground/5">
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </Button>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-6 md:px-12 max-w-7xl relative z-10 pt-10">
+      <div className="container mx-auto px-6 md:px-12 max-w-7xl pt-32">
         <AnimatePresence mode="wait">
           {activeTab === "pokedex" && (
-            <motion.div key="dex" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-12">
-              <div className="max-w-3xl mx-auto space-y-6">
-                <h2 className="text-4xl md:text-6xl font-black tracking-tight text-center md:text-left leading-tight">
-                  {t.looking_for} <span className="text-primary">{t.looking_for_span}</span>
-                </h2>
-                <SearchPanel 
-                  onSearch={setSearchQuery} 
-                  onAiSuggest={setAiSuggestions} 
-                  isLoading={loading || filtering} 
-                  lang={lang} 
-                />
+            <motion.div key="dex" initial="hidden" animate="visible" variants={containerVariants} className="space-y-16">
+              <div className="max-w-4xl mx-auto space-y-8 text-center md:text-left">
+                <motion.div variants={itemVariants} className="space-y-4">
+                  <Badge variant="outline" className="px-4 py-1.5 rounded-full border-primary/20 text-primary uppercase font-black text-[10px] tracking-widest">
+                    <Sparkles className="w-3 h-3 mr-2" />
+                    Ultimate Experience
+                  </Badge>
+                  <h2 className="text-5xl md:text-8xl font-black tracking-tighter leading-none">
+                    {t.looking_for} <br/> <span className="text-primary">{t.looking_for_span}</span>
+                  </h2>
+                </motion.div>
+                <motion.div variants={itemVariants}>
+                  <SearchPanel 
+                    onSearch={setSearchQuery} 
+                    onAiSuggest={setAiSuggestions} 
+                    isLoading={loading || filtering} 
+                    lang={lang} 
+                  />
+                </motion.div>
               </div>
 
-              <div className="flex flex-wrap items-center justify-between gap-6 glass p-6 rounded-[2.5rem] border-foreground/10">
-                <div className="flex flex-wrap gap-4">
+              <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-between gap-6 glass p-6 rounded-[3rem]">
+                <div className="flex flex-wrap gap-3">
                   <FiltersDrawer 
                     selectedTypes={selectedTypes} setSelectedTypes={setSelectedTypes}
                     selectedWeight={selectedWeight} setSelectedWeight={setSelectedWeight}
@@ -296,54 +321,53 @@ export default function Home() {
                   <Button 
                     onClick={() => setShowCapturedOnly(!showCapturedOnly)} 
                     className={cn(
-                      "rounded-2xl font-black text-[10px] uppercase tracking-widest h-12 px-6 glass transition-all border shadow-lg",
+                      "rounded-full font-black text-[10px] uppercase tracking-widest h-12 px-8 transition-all duration-500",
                       showCapturedOnly 
-                        ? "bg-primary text-black border-primary hover:bg-primary/90 shadow-primary/30" 
-                        : "bg-foreground/5 text-black dark:text-white border-foreground/5 hover:bg-foreground/10"
+                        ? "bg-primary text-black shadow-2xl shadow-primary/30 scale-105" 
+                        : "bg-foreground/5 text-foreground hover:bg-foreground/10"
                     )}
                   >
-                    <div className="relative w-4 h-4 mr-2">
-                       <Image 
-                        src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
-                        alt="Caught Icon"
-                        fill
-                        className={cn("object-contain", showCapturedOnly ? "" : "grayscale opacity-40")}
-                      />
-                    </div>
+                    <Image 
+                      src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
+                      alt="Caught"
+                      width={16}
+                      height={16}
+                      className={cn("mr-2", showCapturedOnly ? "" : "grayscale opacity-40")}
+                    />
                     {t.my_collection}
                   </Button>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-6">
                   {filtering && (
-                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest opacity-60">
-                      <Loader2 className="w-3 h-3 animate-spin" />
-                      {lang === 'es' ? 'Filtrando...' : 'Filtering...'}
+                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      {lang === 'es' ? 'Sincronizando...' : 'Syncing...'}
                     </div>
                   )}
                   <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="w-48 glass h-12 rounded-2xl font-black text-[10px] uppercase tracking-widest border-foreground/10 text-black dark:text-white">
+                    <SelectTrigger className="w-52 h-12 bg-foreground/5 border-none rounded-full font-black text-[10px] uppercase tracking-widest">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="glass border-foreground/10">
-                      <SelectItem value="id-asc" className="text-black dark:text-white">{t.numerical_asc}</SelectItem>
-                      <SelectItem value="id-desc" className="text-black dark:text-white">{t.numerical_desc}</SelectItem>
-                      <SelectItem value="name-asc" className="text-black dark:text-white">{t.alpha_asc}</SelectItem>
-                      <SelectItem value="name-desc" className="text-black dark:text-white">{t.alpha_desc}</SelectItem>
+                    <SelectContent className="glass border-none rounded-2xl">
+                      <SelectItem value="id-asc">{t.numerical_asc}</SelectItem>
+                      <SelectItem value="id-desc">{t.numerical_desc}</SelectItem>
+                      <SelectItem value="name-asc">{t.alpha_asc}</SelectItem>
+                      <SelectItem value="name-desc">{t.alpha_desc}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-              </div>
+              </motion.div>
 
               {visiblePokemon.length === 0 && !loading && !filtering ? (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center py-20 text-center space-y-6">
-                  <div className="p-8 rounded-full bg-foreground/5 mb-4">
-                    <SearchX className="w-16 h-16 text-muted-foreground opacity-20" />
+                <motion.div variants={itemVariants} className="flex flex-col items-center justify-center py-32 text-center space-y-8">
+                  <div className="w-32 h-32 rounded-full bg-foreground/5 flex items-center justify-center">
+                    <SearchX className="w-12 h-12 opacity-20" />
                   </div>
                   <div className="space-y-2">
-                    <h3 className="text-2xl font-black uppercase tracking-tight">{t.no_pokemon}</h3>
-                    <p className="text-muted-foreground">{t.no_pokemon_desc}</p>
+                    <h3 className="text-3xl font-black uppercase tracking-tighter">{t.no_pokemon}</h3>
+                    <p className="text-muted-foreground max-w-sm mx-auto">{t.no_pokemon_desc}</p>
                   </div>
-                  <Button onClick={handleClearFilters} className="rounded-2xl h-14 px-8 font-black uppercase text-xs tracking-widest bg-primary text-black hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 border-none">
+                  <Button onClick={handleClearFilters} className="rounded-full h-14 px-10 font-black uppercase text-[10px] tracking-[0.2em] bg-primary text-black hover:scale-105 shadow-xl shadow-primary/20">
                     <RotateCcw className="w-4 h-4 mr-2" />
                     {t.clear_filters}
                   </Button>
@@ -354,7 +378,7 @@ export default function Home() {
                     {visiblePokemon.map((p) => {
                       const id = parseInt(p.url.split('/').filter(Boolean).pop() || '0');
                       return (
-                        <motion.div key={p.name} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                        <motion.div key={p.name} layout variants={itemVariants}>
                           <PokemonCard name={p.name} isCaught={caughtPokemon.has(id)} onToggleCaught={toggleCaught} onClick={setSelectedDetails} />
                         </motion.div>
                       );
@@ -364,70 +388,68 @@ export default function Home() {
               )}
 
               {visiblePokemon.length > 0 && (
-                <div className="flex flex-wrap justify-center items-center gap-2 py-12">
-                   <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => jumpToPage(1)} className="rounded-xl glass h-10 w-10 text-black dark:text-white border-foreground/10"><ChevronsLeft className="w-4 h-4" /></Button>
-                   <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="rounded-xl glass h-10 w-10 text-black dark:text-white border-foreground/10"><ChevronLeft className="w-4 h-4" /></Button>
-                   <div className="glass px-6 h-10 flex items-center rounded-xl font-black text-[10px] uppercase tracking-widest min-w-[120px] justify-center text-black dark:text-white border-foreground/10">
+                <motion.div variants={itemVariants} className="flex justify-center items-center gap-4 py-16">
+                   <Button variant="ghost" size="icon" disabled={currentPage === 1} onClick={() => jumpToPage(1)} className="rounded-full w-12 h-12"><ChevronsLeft className="w-5 h-5" /></Button>
+                   <Button variant="ghost" size="icon" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="rounded-full w-12 h-12"><ChevronLeft className="w-5 h-5" /></Button>
+                   <div className="px-8 h-12 glass flex items-center rounded-full font-black text-[10px] uppercase tracking-[0.2em]">
                     {t.page} {currentPage} / {totalPages}
                    </div>
-                   <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="rounded-xl glass h-10 w-10 text-black dark:text-white border-foreground/10"><ChevronRight className="w-4 h-4" /></Button>
-                   <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={() => jumpToPage(totalPages)} className="rounded-xl glass h-10 w-10 text-black dark:text-white border-foreground/10"><ChevronsRight className="w-4 h-4" /></Button>
-                </div>
+                   <Button variant="ghost" size="icon" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="rounded-full w-12 h-12"><ChevronRight className="w-5 h-5" /></Button>
+                   <Button variant="ghost" size="icon" disabled={currentPage === totalPages} onClick={() => jumpToPage(totalPages)} className="rounded-full w-12 h-12"><ChevronsRight className="w-5 h-5" /></Button>
+                </motion.div>
               )}
             </motion.div>
           )}
 
           {activeTab === "battle" && (
-            <motion.div key="battle" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05 }}>
+            <motion.div key="battle" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.02 }} className="pt-8">
               <BattleArena lang={lang} allPokemon={allPokemon} />
             </motion.div>
           )}
 
           {activeTab === "quiz" && (
-            <motion.div key="quiz" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+            <motion.div key="quiz" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -30 }} className="pt-8">
               <WhosThatPokemon lang={lang} allPokemon={allPokemon} />
             </motion.div>
           )}
         </AnimatePresence>
       </div>
 
-      <nav className="fixed bottom-0 left-0 right-0 md:bottom-8 md:left-1/2 md:-translate-x-1/2 z-[120] w-full md:w-[90%] md:max-w-md h-20 glass md:rounded-[2.5rem] border-t md:border border-foreground/10 shadow-[0_20px_50px_rgba(0,0,0,0.3)] flex items-center justify-around px-4">
+      <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[120] w-[90%] max-w-md h-20 glass rounded-full flex items-center justify-around px-8 shadow-2xl">
         <button 
           onClick={() => handleTabChange("pokedex")}
           className={cn(
-            "flex flex-col items-center gap-1 transition-all duration-300",
-            activeTab === 'pokedex' ? "text-primary scale-110" : "text-muted-foreground opacity-40"
+            "flex flex-col items-center gap-1.5 transition-all",
+            activeTab === 'pokedex' ? "text-primary scale-110" : "text-muted-foreground opacity-50 hover:opacity-100"
           )}
         >
           <LayoutGrid className="w-6 h-6" />
           <span className="text-[9px] font-black uppercase tracking-widest">Dex</span>
         </button>
 
-        <div className="relative -top-4 md:-top-8">
-          <motion.button 
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={() => handleTabChange("battle")}
-            className={cn(
-              "w-16 h-16 md:w-20 md:h-20 rounded-full border-4 shadow-2xl transition-all duration-500 flex items-center justify-center overflow-hidden bg-background",
-              activeTab === 'battle' ? "border-primary bg-primary/20 scale-110" : "border-foreground/10 glass"
-            )}
-          >
-            <Image 
-              src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
-              alt="Battle"
-              width={50}
-              height={50}
-              className={cn("pixelated", activeTab === 'battle' ? "animate-bounce" : "opacity-40 grayscale")}
-            />
-          </motion.button>
-        </div>
+        <motion.button 
+          whileHover={{ scale: 1.1, y: -5 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => handleTabChange("battle")}
+          className={cn(
+            "w-20 h-20 rounded-full border-4 shadow-2xl transition-all flex items-center justify-center bg-background relative -top-6",
+            activeTab === 'battle' ? "border-primary bg-primary/10" : "border-foreground/10 glass"
+          )}
+        >
+          <Image 
+            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
+            alt="Battle"
+            width={44}
+            height={44}
+            className={cn("pixelated", activeTab === 'battle' ? "animate-bounce" : "opacity-40 grayscale")}
+          />
+        </motion.button>
 
         <button 
           onClick={() => handleTabChange("quiz")}
           className={cn(
-            "flex flex-col items-center gap-1 transition-all duration-300",
-            activeTab === 'quiz' ? "text-secondary scale-110" : "text-muted-foreground opacity-40"
+            "flex flex-col items-center gap-1.5 transition-all",
+            activeTab === 'quiz' ? "text-secondary scale-110" : "text-muted-foreground opacity-50 hover:opacity-100"
           )}
         >
           <Gamepad2 className="w-6 h-6" />

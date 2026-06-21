@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -31,12 +30,14 @@ export function PokemonCard({ name, isCaught, onToggleCaught, onClick }: Pokemon
 
   if (loading) {
     return (
-      <div className="glass rounded-[2.5rem] p-6 h-[340px] flex flex-col items-center justify-between animate-pulse border-foreground/5">
-        <Skeleton className="h-44 w-44 rounded-full" />
-        <Skeleton className="h-7 w-36 mt-4 rounded-xl" />
-        <div className="flex gap-2 mt-2">
-          <Skeleton className="h-6 w-20 rounded-full" />
-          <Skeleton className="h-6 w-20 rounded-full" />
+      <div className="glass rounded-[3rem] p-8 h-[380px] flex flex-col items-center justify-between animate-pulse">
+        <Skeleton className="h-48 w-48 rounded-full bg-foreground/5" />
+        <div className="space-y-3 w-full">
+          <Skeleton className="h-8 w-3/4 mx-auto rounded-xl bg-foreground/5" />
+          <div className="flex gap-2 justify-center">
+            <Skeleton className="h-6 w-16 rounded-full bg-foreground/5" />
+            <Skeleton className="h-6 w-16 rounded-full bg-foreground/5" />
+          </div>
         </div>
       </div>
     );
@@ -48,69 +49,65 @@ export function PokemonCard({ name, isCaught, onToggleCaught, onClick }: Pokemon
 
   return (
     <motion.div 
-      whileHover={{ y: -15, scale: 1.03 }}
-      whileTap={{ scale: 0.97 }}
-      className="group relative glass rounded-[3rem] p-8 h-[360px] flex flex-col items-center justify-between cursor-pointer overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-primary/20 border-foreground/10"
+      whileHover={{ y: -10 }}
+      className="group relative glass rounded-[3.5rem] p-8 h-[380px] flex flex-col items-center justify-between cursor-pointer overflow-hidden spring-hover"
       onClick={() => onClick(pokemon)}
     >
+      <div className="absolute top-8 left-8 flex flex-col items-start gap-1">
+        <span className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.2em]">Pokedex</span>
+        <span className="font-headline text-xl font-black text-primary/60 tracking-tighter">
+          #{String(pokemon.id).padStart(3, '0')}
+        </span>
+      </div>
+
       <motion.button
-        whileHover={{ scale: 1.25, rotate: 20 }}
-        whileTap={{ scale: 0.8 }}
+        whileHover={{ scale: 1.2, rotate: 12 }}
+        whileTap={{ scale: 0.9 }}
         onClick={(e) => {
           e.stopPropagation();
           onToggleCaught(pokemon.id);
         }}
         className={cn(
-          "absolute top-6 right-6 z-20 p-2 rounded-2xl transition-all duration-300 backdrop-blur-md border border-foreground/10",
-          isCaught ? "bg-primary/20 shadow-xl shadow-primary/30" : "bg-foreground/5"
+          "absolute top-8 right-8 z-20 w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500",
+          isCaught ? "bg-primary shadow-xl shadow-primary/40" : "bg-foreground/5 hover:bg-foreground/10"
         )}
       >
-        <div className="relative w-8 h-8">
-          <Image 
-            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
-            alt="Caught"
-            fill
-            className={cn("object-contain transition-all duration-300", isCaught ? "grayscale-0" : "grayscale opacity-30")}
-          />
-        </div>
+        <Image 
+          src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
+          alt="Caught"
+          width={24}
+          height={24}
+          className={cn("transition-all duration-500", isCaught ? "grayscale-0" : "grayscale opacity-30")}
+        />
       </motion.button>
 
-      <span className="absolute top-8 left-8 font-headline text-xs font-black text-primary/40 uppercase tracking-widest">
-        #{String(pokemon.id).padStart(3, '0')}
-      </span>
-
-      <div className="relative mt-4">
+      <div className="relative mt-8">
         <div className={cn(
-          "absolute inset-0 blur-[80px] opacity-20 group-hover:opacity-60 transition-opacity duration-700 rounded-full",
+          "absolute inset-0 blur-[100px] opacity-10 group-hover:opacity-40 transition-opacity duration-1000 rounded-full",
           getTypeColorClass(pokemon.types[0].type.name)
         )} />
-        {artwork ? (
+        {artwork && (
           <Image 
             src={artwork} 
             alt={pokemon.name} 
-            width={200} 
-            height={200} 
-            className="relative z-0 group-hover:scale-110 transition-transform duration-700 ease-out drop-shadow-[0_30px_30px_rgba(0,0,0,0.4)] animate-float"
+            width={220} 
+            height={220} 
+            className="relative z-10 drop-shadow-[0_40px_40px_rgba(0,0,0,0.3)] group-hover:scale-110 transition-transform duration-700 animate-float-premium"
             priority={pokemon.id < 50}
           />
-        ) : (
-          <div className="w-[200px] h-[200px] flex items-center justify-center text-muted-foreground/30 italic text-sm">
-            No Image
-          </div>
         )}
       </div>
 
-      <div className="w-full text-center mt-auto z-10">
-        <h3 className="font-headline text-2xl font-black capitalize tracking-tight group-hover:text-primary transition-colors duration-300 mb-3 drop-shadow-sm">
+      <div className="w-full text-center mt-auto">
+        <h3 className="text-3xl font-black capitalize tracking-tighter group-hover:text-primary mb-4">
           {pokemon.name}
         </h3>
         <div className="flex gap-2 justify-center">
           {pokemon.types.map((t) => (
             <Badge 
               key={t.type.name} 
-              variant="outline" 
               className={cn(
-                "capitalize text-[10px] py-1 px-4 border-none font-black text-white shadow-xl tracking-widest transition-transform hover:scale-110",
+                "capitalize text-[9px] py-1.5 px-5 rounded-full border-none font-black text-white shadow-xl tracking-widest",
                 getTypeColorClass(t.type.name)
               )}
             >
@@ -120,7 +117,7 @@ export function PokemonCard({ name, isCaught, onToggleCaught, onClick }: Pokemon
         </div>
       </div>
 
-      <div className="absolute -bottom-8 -right-8 font-headline text-[10rem] font-black text-foreground/[0.03] pointer-events-none select-none uppercase tracking-tighter group-hover:text-primary/[0.05] transition-colors">
+      <div className="absolute -bottom-10 -right-10 text-[12rem] font-black text-foreground/[0.02] pointer-events-none select-none uppercase tracking-tighter group-hover:text-primary/[0.04] transition-colors duration-1000">
         {pokemon.name.charAt(0)}
       </div>
     </motion.div>
