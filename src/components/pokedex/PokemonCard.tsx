@@ -44,7 +44,7 @@ export function PokemonCard({ name, isCaught, onToggleCaught, onClick }: Pokemon
 
   if (!pokemon) return null;
 
-  const artwork = pokemon.sprites.other["official-artwork"].front_default || pokemon.sprites.front_default;
+  const artwork = pokemon.sprites.other["official-artwork"].front_default || pokemon.sprites.front_default || null;
 
   return (
     <motion.div 
@@ -80,13 +80,19 @@ export function PokemonCard({ name, isCaught, onToggleCaught, onClick }: Pokemon
           "absolute inset-0 blur-[60px] opacity-10 group-hover:opacity-40 transition-opacity duration-700 rounded-full",
           getTypeColorClass(pokemon.types[0].type.name)
         )} />
-        <Image 
-          src={artwork} 
-          alt={pokemon.name} 
-          width={180} 
-          height={180} 
-          className="relative z-0 group-hover:scale-115 transition-transform duration-700 ease-out drop-shadow-[0_25px_25px_rgba(0,0,0,0.3)] animate-float"
-        />
+        {artwork ? (
+          <Image 
+            src={artwork} 
+            alt={pokemon.name} 
+            width={180} 
+            height={180} 
+            className="relative z-0 group-hover:scale-115 transition-transform duration-700 ease-out drop-shadow-[0_25px_25px_rgba(0,0,0,0.3)] animate-float"
+          />
+        ) : (
+          <div className="w-[180px] h-[180px] flex items-center justify-center text-muted-foreground/20 italic text-xs">
+            No Image
+          </div>
+        )}
       </div>
 
       <div className="w-full text-center mt-auto">

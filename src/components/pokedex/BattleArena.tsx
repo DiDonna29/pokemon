@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
@@ -161,6 +160,10 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
     setIsBattling(false);
   };
 
+  const getArtwork = (p: PokemonDetails) => {
+    return p.sprites.other["official-artwork"].front_default || p.sprites.front_default || null;
+  };
+
   return (
     <div className="space-y-12">
       <div className="text-center space-y-4">
@@ -200,13 +203,15 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                   animate={attackingPlayer === 1 ? { x: [0, 150, 0], scale: [1, 1.2, 1] } : attackingPlayer === 2 ? { x: [0, -20, 0], filter: ["brightness(1)", "brightness(2)", "brightness(1)"] } : {}}
                   transition={{ duration: 0.4, ease: "easeInOut" }}
                 >
-                  <Image 
-                    src={p1!.sprites.other["official-artwork"].front_default} 
-                    alt={p1!.name} 
-                    width={350} 
-                    height={350} 
-                    className="drop-shadow-[0_35px_35px_rgba(0,0,0,0.5)] animate-float"
-                  />
+                  {p1 && getArtwork(p1) ? (
+                    <Image 
+                      src={getArtwork(p1)!} 
+                      alt={p1.name} 
+                      width={350} 
+                      height={350} 
+                      className="drop-shadow-[0_35px_35px_rgba(0,0,0,0.5)] animate-float"
+                    />
+                  ) : <div className="w-[350px] h-[350px]" />}
                 </motion.div>
                 <div className="w-48 h-6 bg-black/20 rounded-[100%] blur-md" />
               </div>
@@ -231,13 +236,15 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                   animate={attackingPlayer === 2 ? { x: [0, -150, 0], scale: [1, 1.2, 1] } : attackingPlayer === 1 ? { x: [0, 20, 0], filter: ["brightness(1)", "brightness(2)", "brightness(1)"] } : {}}
                   transition={{ duration: 0.4, ease: "easeInOut" }}
                 >
-                  <Image 
-                    src={p2!.sprites.other["official-artwork"].front_default} 
-                    alt={p2!.name} 
-                    width={350} 
-                    height={350} 
-                    className="drop-shadow-[0_35px_35px_rgba(0,0,0,0.5)] animate-float"
-                  />
+                  {p2 && getArtwork(p2) ? (
+                    <Image 
+                      src={getArtwork(p2)!} 
+                      alt={p2.name} 
+                      width={350} 
+                      height={350} 
+                      className="drop-shadow-[0_35px_35px_rgba(0,0,0,0.5)] animate-float"
+                    />
+                  ) : <div className="w-[350px] h-[350px]" />}
                 </motion.div>
                 <div className="w-48 h-6 bg-black/20 rounded-[100%] blur-md" />
               </div>
@@ -270,13 +277,15 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                       )}
                     >
                       {winner === 1 && <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-black px-6 py-1 rounded-full text-xs font-black uppercase tracking-widest flex items-center gap-2 shadow-xl"><Trophy className="w-4 h-4"/> {t.winner}</div>}
-                      <Image 
-                        src={p1.sprites.other["official-artwork"].front_default} 
-                        alt={p1.name} 
-                        width={220} 
-                        height={220} 
-                        className="drop-shadow-2xl mb-6 mx-auto animate-float"
-                      />
+                      {getArtwork(p1) ? (
+                        <Image 
+                          src={getArtwork(p1)!} 
+                          alt={p1.name} 
+                          width={220} 
+                          height={220} 
+                          className="drop-shadow-2xl mb-6 mx-auto animate-float"
+                        />
+                      ) : <div className="w-[220px] h-[220px] mx-auto" />}
                       <div className="space-y-4">
                         <StatBar label={t.hp} value={getStatValue(p1, 'hp')} max={255} icon={<Heart className="w-3 h-3" />} color="bg-red-500" />
                         <StatBar label={t.attack} value={getStatValue(p1, 'attack')} max={255} icon={<Swords className="w-3 h-3" />} color="bg-orange-500" />
@@ -337,13 +346,15 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                       )}
                     >
                       {winner === 2 && <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-secondary text-white px-6 py-1 rounded-full text-xs font-black uppercase tracking-widest flex items-center gap-2 shadow-xl"><Trophy className="w-4 h-4"/> {t.winner}</div>}
-                      <Image 
-                        src={p2.sprites.other["official-artwork"].front_default} 
-                        alt={p2.name} 
-                        width={220} 
-                        height={220} 
-                        className="drop-shadow-2xl mb-6 mx-auto animate-float"
-                      />
+                      {getArtwork(p2) ? (
+                        <Image 
+                          src={getArtwork(p2)!} 
+                          alt={p2.name} 
+                          width={220} 
+                          height={220} 
+                          className="drop-shadow-2xl mb-6 mx-auto animate-float"
+                        />
+                      ) : <div className="w-[220px] h-[220px] mx-auto" />}
                       <div className="space-y-4">
                         <StatBar label={t.hp} value={getStatValue(p2, 'hp')} max={255} icon={<Heart className="w-3 h-3" />} color="bg-red-500" />
                         <StatBar label={t.attack} value={getStatValue(p2, 'attack')} max={255} icon={<Swords className="w-3 h-3" />} color="bg-orange-500" />
