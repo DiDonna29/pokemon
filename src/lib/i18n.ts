@@ -70,6 +70,7 @@ export const translations = {
     arena_subtitle: "Combat Simulator",
     choose_your_fighter: "Choose Your Fighter",
     search_pokemon: "Search Pokemon...",
+    go_back: "Go Back",
     // Types
     normal: "Normal",
     fire: "Fire",
@@ -158,6 +159,7 @@ export const translations = {
     arena_subtitle: "Simulador de Combate",
     choose_your_fighter: "Elige tu Luchador",
     search_pokemon: "Buscar Pokémon...",
+    go_back: "Regresar",
     // Tipos
     normal: "Normal",
     fire: "Fuego",

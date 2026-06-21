@@ -101,15 +101,10 @@ export default function Home() {
         return;
       }
 
-      // Find the type key even if searched in Spanish
       let matchedType: string | null = null;
-      
-      // Check direct English match
       if (POKEMON_TYPES.includes(q)) {
         matchedType = q;
-      } 
-      // Check translations (Spanish or English)
-      else {
+      } else {
         const currentTranslations = translations[lang];
         const esTranslations = translations.es;
         const enTranslations = translations.en;
@@ -137,7 +132,6 @@ export default function Home() {
         setSearchTypeFilteredNames(null);
       }
     }
-    
     checkSearchForType();
   }, [searchQuery, lang]);
 
@@ -148,7 +142,6 @@ export default function Home() {
         setTypeFilteredNames(null);
         return;
       }
-      
       setFiltering(true);
       try {
         const results = await Promise.all(selectedTypes.map(type => fetchPokemonByType(type)));
@@ -173,52 +166,34 @@ export default function Home() {
     setCurrentPage(1);
   }, [searchQuery, aiSuggestions, selectedTypes, selectedWeight, selectedHeight, sortBy, showCapturedOnly]);
 
-  // Filtered List Logic (Supports Name, ID, Type, AI, Captured)
+  // Filtered List Logic
   const filteredList = useMemo(() => {
     let list = [...allPokemon];
-    
     if (searchQuery) {
       const q = searchQuery.toLowerCase().trim();
       list = list.filter(p => {
-        // Extract ID from URL
         const id = p.url.split('/').filter(Boolean).pop() || '0';
-        
-        // Match by Name
         const nameMatch = p.name.includes(q);
-        // Match by ID
         const idMatch = id === q || id.startsWith(q);
-        // Match by Type (if search query matched a type name in useEffect)
         const typeMatch = searchTypeFilteredNames?.has(p.name);
-        
         return nameMatch || idMatch || typeMatch;
       });
     }
-
     if (aiSuggestions) {
       list = list.filter(p => aiSuggestions.includes(p.name.toLowerCase()));
     }
-
     if (typeFilteredNames) {
       list = list.filter(p => typeFilteredNames.has(p.name));
     }
-
     if (showCapturedOnly) {
       list = list.filter(p => {
         const id = parseInt(p.url.split('/').filter(Boolean).pop() || '0');
         return caughtPokemon.has(id);
       });
     }
-
-    // Sorting
-    if (sortBy === "name-asc") {
-      list.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sortBy === "name-desc") {
-      list.sort((a, b) => b.name.localeCompare(a.name));
-    } else if (sortBy === "id-desc") {
-      list = [...list].reverse();
-    }
-    // id-asc is default (pokeapi list is already sorted by id)
-    
+    if (sortBy === "name-asc") list.sort((a, b) => a.name.localeCompare(b.name));
+    else if (sortBy === "name-desc") list.sort((a, b) => b.name.localeCompare(a.name));
+    else if (sortBy === "id-desc") list = [...list].reverse();
     return list;
   }, [allPokemon, searchQuery, searchTypeFilteredNames, aiSuggestions, typeFilteredNames, sortBy, showCapturedOnly, caughtPokemon]);
 
@@ -272,59 +247,61 @@ export default function Home() {
   const skipBackward = () => setCurrentPage(p => Math.max(1, p - 3));
 
   return (
-    <main className="min-h-[100dvh] bg-background text-foreground relative pb-20 overflow-x-hidden transition-colors duration-500">
-      {/* Dynamic Background Elements */}
-      <div className="fixed top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
+    <main className="min-h-screen bg-background text-foreground relative pb-20 transition-colors duration-500">
+      {/* Background Decor */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <motion.div 
           animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }}
-          transition={{ duration: 10, repeat: Infinity }}
-          className="absolute top-[-10%] left-[-10%] w-[80%] h-[80%] bg-primary/10 rounded-full blur-[150px]" 
+          transition={{ duration: 15, repeat: Infinity }}
+          className="absolute top-[-10%] left-[-10%] w-full h-full bg-primary/10 rounded-full blur-[200px]" 
         />
         <motion.div 
           animate={{ scale: [1, 1.3, 1], opacity: [0.1, 0.15, 0.1] }}
-          transition={{ duration: 12, repeat: Infinity, delay: 2 }}
-          className="absolute bottom-[-10%] right-[-10%] w-[80%] h-[80%] bg-secondary/10 rounded-full blur-[150px]" 
+          transition={{ duration: 18, repeat: Infinity, delay: 2 }}
+          className="absolute bottom-[-10%] right-[-10%] w-full h-full bg-secondary/10 rounded-full blur-[200px]" 
         />
       </div>
 
-      {/* Modern Centered Header */}
-      <header className="relative z-50 glass border-b border-foreground/5 py-4 sticky top-0 backdrop-blur-2xl px-4 md:px-8">
-        <div className="container mx-auto flex items-center justify-between gap-4">
+      {/* Symmetric Modern Header */}
+      <header className="relative z-50 nav-glass sticky top-0 px-4 md:px-12 py-4 md:py-5">
+        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           
-          {/* Left: Navigation */}
-          <div className="flex-1 flex justify-start">
-            <div className="flex glass bg-foreground/5 p-1 rounded-2xl border border-foreground/10 shadow-sm overflow-hidden">
-              <Button 
-                variant="ghost"
-                onClick={() => setActiveTab("pokedex")}
-                className={cn(
-                  "rounded-xl font-black uppercase text-[9px] md:text-[10px] tracking-widest h-9 px-3 md:px-6 transition-all",
-                  activeTab === "pokedex" ? "bg-primary text-black" : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                <LayoutGrid className="w-3.5 h-3.5 md:mr-2" />
-                <span className="hidden md:inline">{t.infinite_dex}</span>
-              </Button>
-              <Button 
-                variant="ghost"
-                onClick={() => setActiveTab("arena")}
-                className={cn(
-                  "rounded-xl font-black uppercase text-[9px] md:text-[10px] tracking-widest h-9 px-3 md:px-6 transition-all",
-                  activeTab === "arena" ? "bg-secondary text-white" : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                <Swords className="w-3.5 h-3.5 md:mr-2" />
-                <span className="hidden md:inline">{t.battle_arena}</span>
-              </Button>
-            </div>
+          {/* Navigation - Left on Desktop */}
+          <div className="flex items-center gap-2 order-2 md:order-1 bg-foreground/5 p-1 rounded-2xl border border-foreground/10 shadow-inner">
+            <Button 
+              variant="ghost"
+              onClick={() => setActiveTab("pokedex")}
+              className={cn(
+                "rounded-xl font-black uppercase text-[10px] tracking-widest h-10 px-6 transition-all",
+                activeTab === "pokedex" ? "bg-primary text-black shadow-lg shadow-primary/20" : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <LayoutGrid className="w-4 h-4 md:mr-2" />
+              <span className="hidden md:inline">{t.infinite_dex}</span>
+            </Button>
+            <Button 
+              variant="ghost"
+              onClick={() => setActiveTab("arena")}
+              className={cn(
+                "rounded-xl font-black uppercase text-[10px] tracking-widest h-10 px-6 transition-all",
+                activeTab === "arena" ? "bg-secondary text-white shadow-lg shadow-secondary/20" : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <Swords className="w-4 h-4 md:mr-2" />
+              <span className="hidden md:inline">{t.battle_arena}</span>
+            </Button>
           </div>
 
-          {/* Center: Branding with Official Logo */}
-          <div className="flex flex-col items-center gap-1 shrink-0">
+          {/* Branding - Centered */}
+          <div className="flex flex-col items-center gap-1 order-1 md:order-2">
             <motion.div 
-              whileHover={{ scale: 1.1, rotate: [-1, 1, -1] }}
-              transition={{ type: "spring", stiffness: 260, damping: 20 }}
-              className="relative w-28 h-10 md:w-40 md:h-14"
+              whileHover={{ scale: 1.1 }}
+              transition={{ type: "spring", stiffness: 300 }}
+              className="relative w-36 h-12 md:w-48 md:h-16 cursor-pointer"
+              onClick={() => {
+                setActiveTab("pokedex");
+                handleClearFilters();
+              }}
             >
               <Image 
                 src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg"
@@ -334,34 +311,31 @@ export default function Home() {
                 priority
               />
             </motion.div>
-            <div className="hidden sm:block text-center -mt-1">
-              <p className="text-[8px] md:text-[9px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-70">NEXUS</p>
+            <div className="text-center -mt-1">
+              <p className="text-[10px] text-muted-foreground uppercase tracking-[0.4em] font-black opacity-60">NEXUS</p>
             </div>
           </div>
 
-          {/* Right: Controls */}
-          <div className="flex-1 flex justify-end items-center gap-2">
+          {/* Right: Utils */}
+          <div className="flex items-center gap-3 order-3">
              <motion.button 
                whileHover={{ scale: 1.05 }}
                whileTap={{ scale: 0.95 }}
                onClick={() => setShowCapturedOnly(!showCapturedOnly)}
                className={cn(
-                 "glass px-3 md:px-5 py-2 rounded-full flex items-center gap-2 border-foreground/10 transition-all",
+                 "glass px-4 h-10 rounded-full flex items-center gap-2 border-foreground/10 transition-all",
                  showCapturedOnly ? "ring-2 ring-primary bg-primary/10" : ""
                )}
              >
-                <div className={cn(
-                  "w-2 h-2 rounded-full",
-                  showCapturedOnly ? "bg-primary animate-ping" : "bg-primary/50"
-                )} />
-                <span className="text-[10px] md:text-xs font-black uppercase tracking-tight">{caughtPokemon.size}</span>
+                <div className={cn("w-2 h-2 rounded-full", showCapturedOnly ? "bg-primary animate-ping" : "bg-primary/40")} />
+                <span className="text-xs font-black uppercase tracking-tight">{caughtPokemon.size}</span>
              </motion.button>
              
-             <div className="flex items-center gap-1 glass p-1 rounded-full border-foreground/10">
-                <Button variant="ghost" size="icon" onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="rounded-full w-8 h-8 md:w-9 md:h-9">
+             <div className="flex items-center gap-1 glass p-1 rounded-full border-foreground/10 bg-foreground/5">
+                <Button variant="ghost" size="icon" onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="rounded-full w-9 h-9 hover:bg-foreground/10">
                   <Globe className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-full w-8 h-8 md:w-9 md:h-9">
+                <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-full w-9 h-9 hover:bg-foreground/10">
                   {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                 </Button>
              </div>
@@ -370,9 +344,9 @@ export default function Home() {
       </header>
 
       {/* Main Container */}
-      <section className="relative z-10 container mx-auto px-4 md:px-8 py-8 md:py-12">
-        <Tabs value={activeTab} className="space-y-12">
-          <TabsContent value="pokedex" className="mt-0 space-y-12 outline-none">
+      <section className="relative z-10 container mx-auto px-6 md:px-12 py-10 md:py-16">
+        <Tabs value={activeTab} className="space-y-16">
+          <TabsContent value="pokedex" className="mt-0 space-y-16 outline-none">
             {/* Search Section */}
             <div className="max-w-3xl mx-auto w-full">
               <SearchPanel onSearch={handleSearch} onAiSuggest={handleAiSuggest} isLoading={loading} lang={lang} />
@@ -382,9 +356,9 @@ export default function Home() {
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col lg:flex-row items-center justify-between gap-4 glass p-4 md:p-6 rounded-[2rem] md:rounded-[3rem] border-foreground/10 shadow-xl"
+              className="flex flex-col lg:flex-row items-center justify-between gap-6 glass p-6 md:p-8 rounded-[3rem] border-foreground/10 shadow-2xl"
             >
-              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 w-full lg:w-auto">
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 w-full lg:w-auto">
                  <FiltersDrawer 
                    selectedTypes={selectedTypes} setSelectedTypes={setSelectedTypes}
                    selectedWeight={selectedWeight} setSelectedWeight={setSelectedWeight}
@@ -396,22 +370,22 @@ export default function Home() {
                    size="sm" 
                    onClick={() => setShowCapturedOnly(!showCapturedOnly)} 
                    className={cn(
-                     "rounded-xl font-black text-[10px] uppercase tracking-widest gap-2 h-11 px-6 transition-all",
-                     showCapturedOnly ? "bg-primary text-black shadow-lg" : "glass border-foreground/10"
+                     "rounded-2xl font-black text-[10px] uppercase tracking-widest gap-2 h-12 px-8 transition-all border border-foreground/5",
+                     showCapturedOnly ? "bg-primary text-black shadow-xl shadow-primary/20" : "glass hover:bg-foreground/5"
                    )}
                  >
-                   <Star className={cn("w-3.5 h-3.5", showCapturedOnly ? "fill-current" : "")} />
+                   <Star className={cn("w-4 h-4", showCapturedOnly ? "fill-current" : "")} />
                    {t.my_collection}
                  </Button>
-                 <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-3 bg-foreground/5 px-6 py-2.5 rounded-full border border-foreground/5">
-                   {filtering ? <Loader2 className="w-3.5 h-3.5 animate-spin text-primary" /> : totalCount} {t.species}
+                 <div className="text-[11px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-4 bg-foreground/5 px-8 py-3 rounded-full border border-foreground/5">
+                   {filtering ? <Loader2 className="w-4 h-4 animate-spin text-primary" /> : totalCount} {t.species}
                  </div>
               </div>
 
-              <div className="flex items-center gap-4 w-full lg:w-auto justify-center">
+              <div className="flex items-center gap-5 w-full lg:w-auto justify-center">
                 <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest hidden sm:inline">{t.sort_by}</span>
                 <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-full sm:w-56 glass border-foreground/10 h-11 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-sm hover:border-primary/50 transition-colors">
+                  <SelectTrigger className="w-full sm:w-64 glass border-foreground/10 h-12 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-lg hover:border-primary/50 transition-colors bg-foreground/5">
                     <SelectValue placeholder="Numerical" />
                   </SelectTrigger>
                   <SelectContent className="glass border-foreground/10">
@@ -425,7 +399,7 @@ export default function Home() {
             </motion.div>
 
             {/* Grid of Pokemon */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 md:gap-8 min-h-[400px]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 md:gap-10 min-h-[400px]">
               <AnimatePresence mode="popLayout">
                 {!loading && !filtering && visiblePokemon.map((p) => {
                   const id = parseInt(p.url.split('/').filter(Boolean).pop() || '0');
@@ -445,25 +419,25 @@ export default function Home() {
               </AnimatePresence>
             </div>
 
-            {/* Enhanced Pagination */}
+            {/* Pagination */}
             {!loading && !filtering && visiblePokemon.length > 0 && (
-              <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-6 pt-12 pb-8">
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={goToFirstPage} className="rounded-2xl glass h-11 w-11 border-foreground/10 hover:border-primary transition-all"><ChevronsLeft className="w-5 h-5" /></Button>
-                  <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={skipBackward} className="rounded-2xl glass h-11 w-11 border-foreground/10 hover:border-primary transition-all font-black text-[10px] tracking-tighter">-3</Button>
-                  <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="rounded-2xl glass h-11 w-11 border-foreground/10 hover:border-primary transition-all"><ChevronLeft className="w-5 h-5" /></Button>
+              <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-8 pt-16 pb-12">
+                <div className="flex items-center gap-3">
+                  <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={goToFirstPage} className="rounded-2xl glass h-12 w-12 border-foreground/10 hover:border-primary transition-all bg-card/40"><ChevronsLeft className="w-5 h-5" /></Button>
+                  <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={skipBackward} className="rounded-2xl glass h-12 w-12 border-foreground/10 hover:border-primary transition-all font-black text-[10px] bg-card/40">-3</Button>
+                  <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="rounded-2xl glass h-12 w-12 border-foreground/10 hover:border-primary transition-all bg-card/40"><ChevronLeft className="w-5 h-5" /></Button>
                 </div>
 
-                <div className="glass px-8 py-3 rounded-2xl font-black text-xs md:text-sm tracking-widest flex items-center gap-4 border-foreground/10 shadow-inner min-w-[140px] justify-center uppercase">
+                <div className="glass px-10 py-4 rounded-2xl font-black text-xs md:text-sm tracking-widest flex items-center gap-6 border-foreground/10 shadow-2xl min-w-[160px] justify-center uppercase bg-card/80">
                   <span className="text-primary">{t.page} {currentPage}</span>
                   <span className="opacity-30">/</span>
                   <span>{totalPages}</span>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="rounded-2xl glass h-11 w-11 border-foreground/10 hover:border-primary transition-all"><ChevronRight className="w-5 h-5" /></Button>
-                  <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={skipForward} className="rounded-2xl glass h-11 w-11 border-foreground/10 hover:border-primary transition-all font-black text-[10px] tracking-tighter">+3</Button>
-                  <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={goToLastPage} className="rounded-2xl glass h-11 w-11 border-foreground/10 hover:border-primary transition-all"><ChevronsRight className="w-5 h-5" /></Button>
+                <div className="flex items-center gap-3">
+                  <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="rounded-2xl glass h-12 w-12 border-foreground/10 hover:border-primary transition-all bg-card/40"><ChevronRight className="w-5 h-5" /></Button>
+                  <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={skipForward} className="rounded-2xl glass h-12 w-12 border-foreground/10 hover:border-primary transition-all font-black text-[10px] bg-card/40">+3</Button>
+                  <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={goToLastPage} className="rounded-2xl glass h-12 w-12 border-foreground/10 hover:border-primary transition-all bg-card/40"><ChevronsRight className="w-5 h-5" /></Button>
                 </div>
               </div>
             )}

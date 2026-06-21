@@ -1,20 +1,20 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 220 33% 98%;
     --foreground: 222 47% 11%;
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
     
-    /* Triple Color Palette - Light */
-    --primary: 45 93% 47%;      /* Amber/Gold - Energetic */
-    --secondary: 262 83% 58%;    /* Indigo/Purple - Mystic */
-    --accent: 160 84% 39%;       /* Emerald/Teal - Natural */
+    --primary: 45 93% 47%;
+    --secondary: 262 83% 58%;
+    --accent: 160 84% 39%;
     
     --primary-foreground: 210 40% 98%;
     --secondary-foreground: 210 40% 98%;
@@ -27,27 +27,26 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 45 93% 47%;
-    --radius: 1rem;
+    --radius: 1.5rem;
   }
 
   .dark {
     --background: 222 47% 4%;
     --foreground: 210 40% 98%;
-    --card: 222 47% 7%;
+    --card: 222 47% 8%;
     --card-foreground: 210 40% 98%;
     --popover: 222 47% 4%;
     --popover-foreground: 210 40% 98%;
     
-    /* Triple Color Palette - Dark */
-    --primary: 48 100% 50%;     /* Electric Neon Yellow */
-    --secondary: 270 91% 65%;    /* Cyber Purple */
-    --accent: 190 90% 50%;       /* Radiant Cyan */
+    --primary: 48 100% 50%;
+    --secondary: 270 91% 65%;
+    --accent: 190 90% 50%;
     
     --primary-foreground: 222 47% 11%;
     --secondary-foreground: 210 40% 98%;
     --accent-foreground: 222 47% 11%;
     
-    --muted: 222 47% 15%;
+    --muted: 222 47% 12%;
     --muted-foreground: 215 20.2% 65.1%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
@@ -62,16 +61,24 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground transition-colors duration-500;
+    @apply bg-background text-foreground transition-colors duration-500 overflow-x-hidden;
   }
 }
 
 .glass {
-  @apply bg-card/40 backdrop-blur-xl border border-white/10 shadow-xl;
+  @apply bg-card/60 backdrop-blur-xl border border-foreground/5 shadow-xl;
 }
 
 .dark .glass {
-  @apply bg-card/40 backdrop-blur-xl border border-white/5 shadow-2xl;
+  @apply bg-card/60 backdrop-blur-xl border border-white/5 shadow-2xl;
+}
+
+.nav-glass {
+  @apply bg-background/80 backdrop-blur-2xl border-b border-foreground/5 shadow-lg;
+}
+
+.dark .nav-glass {
+  @apply bg-card/90 backdrop-blur-2xl border-b border-white/5 shadow-2xl;
 }
 
 .pokemon-card-tilt {
@@ -111,4 +118,20 @@
 
 .animate-float {
   animation: float 4s ease-in-out infinite;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-foreground/10 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-foreground/20;
 }
