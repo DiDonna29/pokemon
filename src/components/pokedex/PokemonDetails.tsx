@@ -95,15 +95,15 @@ export function PokemonDetailsView({ pokemon, onClose, lang, isCaught, onToggleC
                   <Button
                     onClick={() => onToggleCaught(pokemon.id)}
                     className={cn(
-                      "glass h-11 w-11 rounded-2xl flex items-center justify-center border-white/20 transition-all duration-300",
+                      "glass h-14 w-14 rounded-2xl flex items-center justify-center border-white/20 transition-all duration-300 shadow-xl",
                       isCaught ? "bg-primary/40 border-primary/50" : "bg-white/10"
                     )}
                   >
                     <Image 
                       src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
                       alt="Caught"
-                      width={24}
-                      height={24}
+                      width={32}
+                      height={32}
                       className={cn("pixelated", isCaught ? "" : "grayscale opacity-40")}
                     />
                   </Button>
