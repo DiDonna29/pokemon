@@ -33,6 +33,7 @@ import {
 import { Language, translations } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 const PAGE_SIZE = 20;
 
@@ -318,18 +319,23 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Center: Branding */}
-          <div className="flex items-center gap-3 shrink-0">
+          {/* Center: Branding with Official Logo */}
+          <div className="flex flex-col items-center gap-1 shrink-0">
             <motion.div 
-              whileHover={{ rotate: 360, scale: 1.1 }}
+              whileHover={{ scale: 1.1, rotate: [-1, 1, -1] }}
               transition={{ type: "spring", stiffness: 260, damping: 20 }}
-              className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-primary via-secondary to-accent rounded-2xl flex items-center justify-center shadow-xl shadow-primary/20"
+              className="relative w-28 h-10 md:w-40 md:h-14"
             >
-              <Trophy className="text-white w-6 h-6 md:w-7 h-7" />
+              <Image 
+                src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg"
+                alt="Pokemon Logo"
+                fill
+                className="object-contain"
+                priority
+              />
             </motion.div>
-            <div className="hidden sm:block text-center">
-              <h1 className="font-headline text-lg md:text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent leading-none">PokeNexus</h1>
-              <p className="text-[8px] md:text-[9px] text-muted-foreground uppercase tracking-widest font-black opacity-70 mt-1">{t.app_subtitle}</p>
+            <div className="hidden sm:block text-center -mt-1">
+              <p className="text-[8px] md:text-[9px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-70">NEXUS</p>
             </div>
           </div>
 
