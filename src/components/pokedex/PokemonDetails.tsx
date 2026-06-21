@@ -75,9 +75,8 @@ export function PokemonDetailsView({ pokemon, onClose, lang, isCaught, onToggleC
               transition={{ type: "spring", damping: 30, stiffness: 200 }}
               className="flex flex-col h-full w-full relative overflow-hidden"
             >
-              {/* Top Section: Visual (Exactly 50% on mobile) */}
               <div className={cn(
-                "relative h-[50%] flex flex-col items-center justify-center p-6",
+                "relative h-[45%] md:h-[50%] flex flex-col items-center justify-center p-6",
                 getTypeColorClass(mainType)
               )}>
                 <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40" />
@@ -124,18 +123,16 @@ export function PokemonDetailsView({ pokemon, onClose, lang, isCaught, onToggleC
                 </div>
               </div>
 
-              {/* Bottom Section: Info Panel (Exactly 50% on mobile) */}
-              <div className="flex-1 bg-card rounded-t-[3rem] -mt-12 relative z-20 shadow-[0_-20px_60px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden">
-                <div className="w-16 h-1.5 bg-foreground/10 rounded-full mx-auto mt-5 shrink-0" />
+              <div className="flex-1 bg-card rounded-t-[3.5rem] -mt-16 relative z-20 shadow-[0_-30px_60px_rgba(0,0,0,0.4)] flex flex-col overflow-hidden">
+                <div className="w-16 h-1.5 bg-foreground/10 rounded-full mx-auto mt-6 mb-2 shrink-0" />
                 
-                {/* Scroll area with massive bottom padding to clear the navigation bar */}
-                <div className="flex-1 overflow-y-auto px-6 md:px-12 pb-40 scrollbar-none">
+                <div className="flex-1 overflow-y-auto px-6 md:px-12 pb-32 scrollbar-none">
                   <header className="py-8 space-y-4">
                     <div className="flex items-center justify-between">
-                      <DialogTitle className="text-3xl md:text-5xl font-headline font-black capitalize tracking-tighter">
+                      <DialogTitle className="text-4xl md:text-5xl font-headline font-black capitalize tracking-tighter">
                         {pokemon.name}
                       </DialogTitle>
-                      <span className="text-muted-foreground font-black tracking-widest text-xl opacity-30">#{String(pokemon.id).padStart(3, '0')}</span>
+                      <span className="text-muted-foreground font-black tracking-widest text-2xl opacity-20">#{String(pokemon.id).padStart(3, '0')}</span>
                     </div>
                     <div className="flex flex-wrap gap-3">
                       {pokemon.types.map(typeInfo => (
@@ -153,11 +150,11 @@ export function PokemonDetailsView({ pokemon, onClose, lang, isCaught, onToggleC
                   </header>
 
                   <Tabs defaultValue="about" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 bg-foreground/5 h-14 p-1.5 rounded-2xl mb-10">
-                      <TabsTrigger value="about" className="rounded-xl font-black uppercase text-[11px] tracking-widest data-[state=active]:bg-foreground data-[state=active]:text-background transition-all">
+                    <TabsList className="flex items-center gap-8 bg-transparent border-b border-foreground/5 h-auto p-0 rounded-none mb-10 overflow-x-auto scrollbar-none">
+                      <TabsTrigger value="about" className="bg-transparent border-none shadow-none rounded-none p-0 pb-4 font-black uppercase text-[11px] tracking-widest text-muted-foreground data-[state=active]:text-foreground data-[state=active]:border-b-2 data-[state=active]:border-primary transition-all">
                         {t.about}
                       </TabsTrigger>
-                      <TabsTrigger value="stats" className="rounded-xl font-black uppercase text-[11px] tracking-widest data-[state=active]:bg-foreground data-[state=active]:text-background transition-all">
+                      <TabsTrigger value="stats" className="bg-transparent border-none shadow-none rounded-none p-0 pb-4 font-black uppercase text-[11px] tracking-widest text-muted-foreground data-[state=active]:text-foreground data-[state=active]:border-b-2 data-[state=active]:border-primary transition-all">
                         {t.stats}
                       </TabsTrigger>
                     </TabsList>

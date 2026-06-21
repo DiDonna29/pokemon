@@ -39,7 +39,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
-const PAGE_SIZE = 12; // Adjusted for 3 and 4 column layouts
+const PAGE_SIZE = 12;
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<"pokedex" | "battle" | "quiz">("pokedex");
@@ -419,32 +419,32 @@ export default function Home() {
         </AnimatePresence>
       </div>
 
-      <nav className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[120] w-[95%] max-w-xl h-24 glass rounded-[3rem] flex items-center justify-around px-12 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.5)] border-white/20">
+      <nav className="fixed bottom-0 md:bottom-10 left-0 right-0 md:left-1/2 md:-translate-x-1/2 z-[120] w-full md:w-[95%] md:max-w-xl h-20 md:h-24 bg-background/60 backdrop-blur-3xl md:glass md:rounded-[3rem] flex items-center justify-around px-8 md:px-12 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] md:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.5)] border-t border-foreground/5 md:border-white/20">
         <button 
           onClick={() => handleTabChange("pokedex")}
           className={cn(
-            "flex flex-col items-center gap-2 transition-all group",
+            "flex flex-col items-center gap-1.5 transition-all group",
             activeTab === 'pokedex' ? "text-primary scale-110" : "text-muted-foreground opacity-40 hover:opacity-100"
           )}
         >
-          <LayoutGrid className="w-7 h-7" />
-          <span className="text-[10px] font-black uppercase tracking-[0.2em] group-hover:tracking-[0.4em]">Dex</span>
+          <LayoutGrid className="w-6 h-6 md:w-7 md:h-7" />
+          <span className="text-[9px] font-black uppercase tracking-[0.2em] group-hover:tracking-[0.4em]">Dex</span>
         </button>
 
         <motion.button 
-          whileHover={{ scale: 1.15, y: -10 }}
+          whileHover={{ scale: 1.1, y: -5 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => handleTabChange("battle")}
           className={cn(
-            "w-24 h-24 rounded-[2.5rem] border-[6px] shadow-2xl transition-all flex items-center justify-center bg-background relative -top-8",
+            "w-20 h-20 md:w-24 md:h-24 rounded-[2rem] md:rounded-[2.5rem] border-[4px] md:border-[6px] shadow-2xl transition-all flex items-center justify-center bg-background relative -top-6 md:-top-8",
             activeTab === 'battle' ? "border-primary bg-primary/10 shadow-primary/30" : "border-foreground/10 glass"
           )}
         >
           <Image 
             src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
             alt="Battle"
-            width={52}
-            height={52}
+            width={48}
+            height={48}
             className={cn("pixelated", activeTab === 'battle' ? "animate-bounce" : "opacity-30 grayscale")}
           />
         </motion.button>
@@ -452,12 +452,12 @@ export default function Home() {
         <button 
           onClick={() => handleTabChange("quiz")}
           className={cn(
-            "flex flex-col items-center gap-2 transition-all group",
+            "flex flex-col items-center gap-1.5 transition-all group",
             activeTab === 'quiz' ? "text-secondary scale-110" : "text-muted-foreground opacity-40 hover:opacity-100"
           )}
         >
-          <Gamepad2 className="w-7 h-7" />
-          <span className="text-[10px] font-black uppercase tracking-[0.2em] group-hover:tracking-[0.4em]">Quiz</span>
+          <Gamepad2 className="w-6 h-6 md:w-7 md:h-7" />
+          <span className="text-[9px] font-black uppercase tracking-[0.2em] group-hover:tracking-[0.4em]">Quiz</span>
         </button>
       </nav>
 
