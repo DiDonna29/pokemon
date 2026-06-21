@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { 
   PokemonSummary, 
   PokemonDetails, 
@@ -18,43 +18,30 @@ import { Footer } from "@/components/pokedex/Footer";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { 
-  Trophy, 
   Globe, 
   Sun, 
   Moon, 
   LayoutGrid, 
   ChevronLeft, 
   ChevronRight, 
-  ChevronsLeft, 
-  ChevronsRight, 
-  Loader2, 
   Star, 
-  Swords,
   Gamepad2,
-  Menu,
-  X
+  ChevronsLeft,
+  ChevronsRight
 } from "lucide-react";
 import { Language, translations } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/components/ui/sheet";
 
 const PAGE_SIZE = 10;
 
-const POKEMON_TYPES = [
-  "normal", "fire", "water", "electric", "grass", "ice", "fighting", "poison",
-  "ground", "flying", "psychic", "bug", "rock", "ghost", "dragon", "dark", "steel", "fairy"
-];
-
 export default function Home() {
-  // Navigation State
   const [activeTab, setActiveTab] = useState<"pokedex" | "battle" | "quiz">("pokedex");
   const [lang, setLang] = useState<Language>('es');
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const t = translations[lang];
 
-  // Data State
   const [allPokemon, setAllPokemon] = useState<PokemonSummary[]>([]);
   const [visiblePokemon, setVisiblePokemon] = useState<PokemonSummary[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -62,27 +49,22 @@ export default function Home() {
   const [filtering, setFiltering] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
 
-  // Filter State
   const [searchQuery, setSearchQuery] = useState("");
   const [aiSuggestions, setAiSuggestions] = useState<string[] | null>(null);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [typeFilteredNames, setTypeFilteredNames] = useState<Set<string> | null>(null);
-  const [searchTypeFilteredNames, setSearchTypeFilteredNames] = useState<Set<string> | null>(null);
   const [selectedWeight, setSelectedWeight] = useState<string | null>(null);
   const [selectedHeight, setSelectedHeight] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState("id-asc");
   const [showCapturedOnly, setShowCapturedOnly] = useState(false);
 
-  // UX State
   const [caughtPokemon, setCaughtPokemon] = useState<Set<number>>(new Set());
   const [selectedDetails, setSelectedDetails] = useState<PokemonDetails | null>(null);
   
-  // Apply Theme Class
   useEffect(() => {
     document.documentElement.className = theme;
   }, [theme]);
 
-  // Initial Load
   useEffect(() => {
     async function loadInitial() {
       try {
@@ -97,7 +79,6 @@ export default function Home() {
     loadInitial();
   }, []);
 
-  // Update Drawer Type Filters
   useEffect(() => {
     async function updateTypeFilters() {
       if (selectedTypes.length === 0) {
@@ -123,7 +104,6 @@ export default function Home() {
     updateTypeFilters();
   }, [selectedTypes]);
 
-  // Filtered List Logic
   const filteredList = useMemo(() => {
     let list = [...allPokemon];
     if (searchQuery) {
@@ -159,10 +139,12 @@ export default function Home() {
   }, [filteredList, currentPage]);
 
   const toggleCaught = (id: number) => {
-    const next = new Set(caughtPokemon);
-    if (next.has(id)) next.delete(id);
-    else next.add(id);
-    setCaughtPokemon(next);
+    setCaughtPokemon(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
   };
 
   const handleClearFilters = () => {
@@ -175,20 +157,32 @@ export default function Home() {
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE) || 1;
 
+  const jumpToPage = (p: number) => {
+    const target = Math.max(1, Math.min(p, totalPages));
+    setCurrentPage(target);
+  };
+
   return (
-    <main className="min-h-screen bg-background text-foreground transition-colors duration-500 pb-32">
-      {/* Dynamic Background */}
+    <main className="min-h-screen bg-background text-foreground transition-colors duration-500 pb-20 md:pb-32">
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.05, 0.1, 0.05] }} transition={{ duration: 15, repeat: Infinity }} className="absolute top-[-10%] left-[-10%] w-full h-full bg-primary/20 rounded-full blur-[200px]" />
         <motion.div animate={{ scale: [1, 1.3, 1], opacity: [0.05, 0.08, 0.05] }} transition={{ duration: 18, repeat: Infinity, delay: 2 }} className="absolute bottom-[-10%] right-[-10%] w-full h-full bg-secondary/20 rounded-full blur-[200px]" />
       </div>
 
-      {/* Modern Header */}
       <header className="relative z-50 px-6 py-8 md:px-12">
         <div className="container mx-auto flex items-center justify-between">
-          <div className="flex flex-col">
-            <h1 className="text-3xl font-black tracking-tighter uppercase">{activeTab === 'pokedex' ? 'Master Dex' : activeTab === 'battle' ? t.battle_arena : t.quiz_title}</h1>
-            <p className="text-xs text-muted-foreground font-bold tracking-[0.3em] uppercase opacity-60">PokeNexus Pro</p>
+          <div className="flex items-center gap-4">
+            <div className="relative w-24 h-10 md:w-32 md:h-12">
+              <Image 
+                src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg"
+                alt="Pokemon Logo"
+                fill
+                className="object-contain"
+              />
+            </div>
+            <div className="hidden sm:flex flex-col border-l border-foreground/10 pl-4">
+              <p className="text-[10px] font-black tracking-[0.3em] uppercase opacity-60">pokenexus</p>
+            </div>
           </div>
           
           <div className="flex items-center gap-3">
@@ -202,13 +196,14 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Main Content Area */}
       <div className="container mx-auto px-6 md:px-12 relative z-10">
         <AnimatePresence mode="wait">
           {activeTab === "pokedex" && (
             <motion.div key="dex" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-12">
               <div className="max-w-3xl mx-auto space-y-6">
-                <h2 className="text-4xl md:text-5xl font-black tracking-tight text-center md:text-left">What Are You <span className="text-primary">Looking For?</span></h2>
+                <h2 className="text-4xl md:text-5xl font-black tracking-tight text-center md:text-left">
+                  {t.looking_for} <span className="text-primary">{t.looking_for_span}</span>
+                </h2>
                 <SearchPanel onSearch={setSearchQuery} onAiSuggest={setAiSuggestions} isLoading={loading} lang={lang} />
               </div>
 
@@ -253,12 +248,19 @@ export default function Home() {
                 </AnimatePresence>
               </div>
 
-              {/* Pagination */}
               {visiblePokemon.length > 0 && (
-                <div className="flex justify-center items-center gap-4 py-12">
-                   <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="rounded-2xl glass h-12 w-12"><ChevronLeft /></Button>
-                   <div className="glass px-8 py-3 rounded-2xl font-black text-xs uppercase tracking-widest">{t.page} {currentPage} / {totalPages}</div>
-                   <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="rounded-2xl glass h-12 w-12"><ChevronRight /></Button>
+                <div className="flex flex-wrap justify-center items-center gap-2 py-12">
+                   <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => jumpToPage(1)} className="rounded-xl glass h-10 w-10"><ChevronsLeft className="w-4 h-4" /></Button>
+                   <Button variant="outline" size="icon" disabled={currentPage <= 3} onClick={() => jumpToPage(currentPage - 3)} className="rounded-xl glass h-10 w-10 flex items-center justify-center font-black text-[10px]">-3</Button>
+                   <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="rounded-xl glass h-10 w-10"><ChevronLeft className="w-4 h-4" /></Button>
+                   
+                   <div className="glass px-6 h-10 flex items-center rounded-xl font-black text-[10px] uppercase tracking-widest">
+                    {t.page} {currentPage} / {totalPages}
+                   </div>
+                   
+                   <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="rounded-xl glass h-10 w-10"><ChevronRight className="w-4 h-4" /></Button>
+                   <Button variant="outline" size="icon" disabled={currentPage >= totalPages - 2} onClick={() => jumpToPage(currentPage + 3)} className="rounded-xl glass h-10 w-10 flex items-center justify-center font-black text-[10px]">+3</Button>
+                   <Button variant="outline" size="icon" disabled={currentPage === totalPages} onClick={() => jumpToPage(totalPages)} className="rounded-xl glass h-10 w-10"><ChevronsRight className="w-4 h-4" /></Button>
                 </div>
               )}
             </motion.div>
@@ -278,8 +280,7 @@ export default function Home() {
         </AnimatePresence>
       </div>
 
-      {/* Floating Bottom Navigation */}
-      <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-md h-20 glass rounded-[2.5rem] border-foreground/10 shadow-[0_20px_50px_rgba(0,0,0,0.3)] flex items-center justify-around px-4">
+      <nav className="fixed bottom-0 left-0 right-0 md:bottom-8 md:left-1/2 md:-translate-x-1/2 z-[100] w-full md:w-[90%] md:max-w-md h-20 glass md:rounded-[2.5rem] border-t md:border border-foreground/10 shadow-[0_20px_50px_rgba(0,0,0,0.3)] flex items-center justify-around px-4">
         <button 
           onClick={() => setActiveTab("pokedex")}
           className={cn(
@@ -291,13 +292,13 @@ export default function Home() {
           <span className="text-[9px] font-black uppercase tracking-widest">Dex</span>
         </button>
 
-        <div className="relative -top-8">
+        <div className="relative -top-4 md:-top-8">
           <motion.button 
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={() => setActiveTab("battle")}
             className={cn(
-              "w-20 h-20 rounded-full border-4 shadow-2xl transition-all duration-500 flex items-center justify-center overflow-hidden",
+              "w-16 h-16 md:w-20 md:h-20 rounded-full border-4 shadow-2xl transition-all duration-500 flex items-center justify-center overflow-hidden bg-background",
               activeTab === 'battle' ? "border-primary bg-primary/20 scale-110" : "border-foreground/10 glass"
             )}
           >
@@ -323,7 +324,9 @@ export default function Home() {
         </button>
       </nav>
 
-      <Footer lang={lang} />
+      <div className="mt-8">
+        <Footer lang={lang} />
+      </div>
       <PokemonDetailsView pokemon={selectedDetails} onClose={() => setSelectedDetails(null)} lang={lang} />
     </main>
   );

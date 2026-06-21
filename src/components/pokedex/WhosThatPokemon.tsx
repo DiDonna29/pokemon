@@ -6,7 +6,7 @@ import { PokemonDetails, fetchPokemonDetails, PokemonSummary } from "@/lib/pokea
 import { Language, translations } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Sparkles, HelpCircle, RotateCcw, CheckCircle2, AlertCircle } from "lucide-react";
+import { Sparkles, HelpCircle, RotateCcw, CheckCircle2, AlertCircle, Lightbulb } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -25,6 +25,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [status, setStatus] = useState<'idle' | 'correct' | 'wrong'>('idle');
+  const [hintType, setHintType] = useState<'none' | 'letter' | 'types'>('none');
 
   const loadRandomPokemon = useCallback(async () => {
     setLoading(true);
@@ -32,6 +33,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
     setGuess("");
     setMessage(null);
     setStatus('idle');
+    setHintType('none');
     
     try {
       const randomIndex = Math.floor(Math.random() * Math.min(allPokemon.length, 1010));
@@ -87,10 +89,16 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
     }
   };
 
+  const getHint = () => {
+    if (!currentPokemon) return;
+    if (hintType === 'none') setHintType('letter');
+    else if (hintType === 'letter') setHintType('types');
+  };
+
   const artwork = currentPokemon?.sprites.other["official-artwork"].front_default || currentPokemon?.sprites.front_default;
 
   return (
-    <div className="flex flex-col items-center gap-10 max-w-4xl mx-auto py-10">
+    <div className="flex flex-col items-center gap-10 max-w-4xl mx-auto py-10 px-6">
       <div className="text-center space-y-4">
         <h2 className="text-4xl md:text-6xl font-black bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary uppercase tracking-tighter">
           {t.quiz_title}
@@ -98,37 +106,25 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
         <p className="text-muted-foreground font-medium italic text-lg">{t.quiz_desc}</p>
       </div>
 
-      <div className="relative w-full aspect-square max-w-md glass rounded-[4rem] border-foreground/5 p-12 flex items-center justify-center overflow-hidden shadow-2xl">
+      <div className="relative w-full aspect-square max-w-md glass rounded-[3rem] md:rounded-[4rem] border-foreground/5 p-8 md:p-12 flex items-center justify-center overflow-hidden shadow-2xl">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 -z-10" />
         
         <AnimatePresence mode="wait">
           {loading ? (
-            <motion.div 
-              key="loading"
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
-              exit={{ opacity: 0 }}
-              className="flex flex-col items-center gap-4"
-            >
+            <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col items-center gap-4">
               <RotateCcw className="w-12 h-12 animate-spin text-primary" />
             </motion.div>
           ) : (
             artwork && (
-              <motion.div 
-                key={currentPokemon?.id}
-                initial={{ scale: 0.5, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="relative w-full h-full"
-              >
+              <motion.div key={currentPokemon?.id} initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative w-full h-full">
                 <Image 
                   src={artwork}
                   alt="Quiz Pokemon"
                   fill
                   className={cn(
                     "object-contain transition-all duration-700 animate-float",
-                    !isRevealed ? "brightness-0 grayscale invert-0" : "drop-shadow-[0_20px_40px_rgba(0,0,0,0.4)]"
+                    !isRevealed ? "brightness-0" : "drop-shadow-[0_20px_40px_rgba(0,0,0,0.4)]"
                   )}
-                  style={{ filter: !isRevealed ? 'brightness(0)' : 'none' }}
                 />
               </motion.div>
             )
@@ -137,13 +133,13 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
 
         {!isRevealed && !loading && (
           <div className="absolute top-6 left-6 text-primary/20">
-            <HelpCircle className="w-16 h-16" />
+            <HelpCircle className="w-12 h-12 md:w-16 md:h-16" />
           </div>
         )}
       </div>
 
-      <div className="w-full max-w-md space-y-6">
-        <div className="flex gap-3">
+      <div className="w-full max-w-md space-y-4">
+        <div className="flex flex-col sm:flex-row gap-3">
           <Input 
             value={guess}
             onChange={(e) => setGuess(e.target.value)}
@@ -155,7 +151,7 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
           <Button 
             onClick={handleGuess}
             disabled={isRevealed || loading || !guess}
-            className="h-14 px-8 rounded-2xl bg-primary text-black font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all"
+            className="h-14 px-8 rounded-2xl bg-primary text-black font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all w-full sm:w-auto"
           >
             {t.check_guess}
           </Button>
@@ -163,17 +159,39 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
 
         <AnimatePresence>
           {message && (
-            <motion.div 
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -20, opacity: 0 }}
-              className={cn(
-                "p-5 rounded-2xl border flex items-center gap-4 font-black uppercase text-xs tracking-widest",
+            <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} className="space-y-3">
+              <div className={cn(
+                "p-4 rounded-2xl border flex items-center gap-4 font-black uppercase text-[10px] tracking-widest",
                 status === 'correct' ? "bg-green-500/10 border-green-500/30 text-green-500" : "bg-red-500/10 border-red-500/30 text-red-500"
+              )}>
+                {status === 'correct' ? <CheckCircle2 className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
+                {message}
+              </div>
+
+              {!isRevealed && status === 'wrong' && (
+                <Button 
+                  variant="ghost" 
+                  onClick={getHint}
+                  className="w-full h-12 rounded-xl glass border-foreground/5 text-primary font-black uppercase text-[10px] tracking-widest gap-2"
+                >
+                  <Lightbulb className="w-4 h-4" />
+                  {t.get_hint}
+                </Button>
               )}
-            >
-              {status === 'correct' ? <CheckCircle2 className="w-6 h-6" /> : <AlertCircle className="w-6 h-6" />}
-              {message}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {hintType !== 'none' && !isRevealed && (
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="glass p-4 rounded-2xl border-primary/20 text-center">
+              <p className="text-xs font-black uppercase tracking-widest text-primary">
+                {hintType === 'letter' ? (
+                  <>{t.hint_first_letter} <span className="text-xl ml-2">{currentPokemon?.name.charAt(0).toUpperCase()}</span></>
+                ) : (
+                  <>{t.hint_types} <span className="ml-2 capitalize">{currentPokemon?.types.map(t => t.type.name).join(', ')}</span></>
+                )}
+              </p>
             </motion.div>
           )}
         </AnimatePresence>

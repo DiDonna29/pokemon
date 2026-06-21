@@ -6,7 +6,6 @@ import Image from "next/image";
 import { PokemonDetails, fetchPokemonDetails, getTypeColorClass } from "@/lib/pokeapi";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { CheckCircle2, Circle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
@@ -54,28 +53,32 @@ export function PokemonCard({ name, isCaught, onToggleCaught, onClick }: Pokemon
       className="group relative glass rounded-[3rem] p-8 h-[360px] flex flex-col items-center justify-between cursor-pointer overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-primary/20 border-foreground/10"
       onClick={() => onClick(pokemon)}
     >
-      {/* Caught Toggle Overlay */}
       <motion.button
-        whileHover={{ scale: 1.25 }}
+        whileHover={{ scale: 1.25, rotate: 20 }}
         whileTap={{ scale: 0.8 }}
         onClick={(e) => {
           e.stopPropagation();
           onToggleCaught(pokemon.id);
         }}
         className={cn(
-          "absolute top-6 right-6 z-10 p-3 rounded-2xl transition-all duration-300 backdrop-blur-md",
-          isCaught ? "text-primary bg-primary/20 shadow-xl shadow-primary/30" : "text-muted-foreground hover:text-primary hover:bg-foreground/10"
+          "absolute top-6 right-6 z-20 p-2 rounded-2xl transition-all duration-300 backdrop-blur-md border border-foreground/10",
+          isCaught ? "bg-primary/20 shadow-xl shadow-primary/30" : "bg-foreground/5"
         )}
       >
-        {isCaught ? <CheckCircle2 className="w-6 h-6" /> : <Circle className="w-6 h-6" />}
+        <div className="relative w-8 h-8">
+          <Image 
+            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
+            alt="Caught"
+            fill
+            className={cn("object-contain transition-all duration-300", isCaught ? "grayscale-0" : "grayscale opacity-30")}
+          />
+        </div>
       </motion.button>
 
-      {/* ID Badge */}
       <span className="absolute top-8 left-8 font-headline text-xs font-black text-primary/40 uppercase tracking-widest">
         #{String(pokemon.id).padStart(3, '0')}
       </span>
 
-      {/* Image with enhanced glow */}
       <div className="relative mt-4">
         <div className={cn(
           "absolute inset-0 blur-[80px] opacity-20 group-hover:opacity-60 transition-opacity duration-700 rounded-full",
@@ -117,7 +120,6 @@ export function PokemonCard({ name, isCaught, onToggleCaught, onClick }: Pokemon
         </div>
       </div>
 
-      {/* Background Graphic */}
       <div className="absolute -bottom-8 -right-8 font-headline text-[10rem] font-black text-foreground/[0.03] pointer-events-none select-none uppercase tracking-tighter group-hover:text-primary/[0.05] transition-colors">
         {pokemon.name.charAt(0)}
       </div>

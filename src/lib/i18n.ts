@@ -4,6 +4,8 @@ export type Language = 'en' | 'es';
 export const translations = {
   en: {
     app_subtitle: "The Ultimate Digital Pokedex",
+    looking_for: "What Are You ",
+    looking_for_span: "Looking For?",
     search_placeholder: "Search by name, number or type...",
     ai_placeholder: "Ask AI: 'a fast fire-type that can fly'...",
     classic_search: "Classic Search",
@@ -52,7 +54,6 @@ export const translations = {
     choose_your_fighter: "Choose Your Fighter",
     search_pokemon: "Search Pokemon...",
     go_back: "Go Back",
-    // New Quiz strings
     quiz_title: "Who's That Pokemon?",
     quiz_desc: "Guess the Pokemon based on its silhouette!",
     guess_placeholder: "Type the name here...",
@@ -60,11 +61,18 @@ export const translations = {
     correct_guess: "Correct! It's ",
     incorrect_guess: "Incorrect! Try again.",
     next_pokemon: "Next Pokemon",
-    // Footer
+    get_hint: "Get a Hint",
+    hint_first_letter: "Starts with: ",
+    hint_types: "Types: ",
     developed_by: "Developed by",
     rights_reserved: "All rights reserved.",
     portfolio: "Portfolio",
-    // Types
+    hp: "HP",
+    attack: "Attack",
+    defense: "Defense",
+    'special-attack': "Sp. Atk",
+    'special-defense': "Sp. Def",
+    speed: "Speed",
     normal: "Normal",
     fire: "Fire",
     water: "Water",
@@ -86,6 +94,8 @@ export const translations = {
   },
   es: {
     app_subtitle: "La Pokédex Digital Definitiva",
+    looking_for: "¿Qué estás ",
+    looking_for_span: "buscando?",
     search_placeholder: "Buscar por nombre, número o tipo...",
     ai_placeholder: "Pregunta a la IA: 'un tipo fuego rápido'...",
     classic_search: "Búsqueda Clásica",
@@ -134,7 +144,6 @@ export const translations = {
     choose_your_fighter: "Elige tu Luchador",
     search_pokemon: "Buscar Pokémon...",
     go_back: "Regresar",
-    // New Quiz strings
     quiz_title: "¿Quién es ese Pokémon?",
     quiz_desc: "¡Adivina el Pokémon por su silueta!",
     guess_placeholder: "Escribe el nombre aquí...",
@@ -142,11 +151,18 @@ export const translations = {
     correct_guess: "¡Correcto! Es ",
     incorrect_guess: "¡Incorrecto! Inténtalo de nuevo.",
     next_pokemon: "Siguiente Pokémon",
-    // Footer
+    get_hint: "Obtener Pista",
+    hint_first_letter: "Empieza por: ",
+    hint_types: "Tipos: ",
     developed_by: "Desarrollado por",
     rights_reserved: "Todos los derechos reservados.",
     portfolio: "Portafolio",
-    // Tipos
+    hp: "PS",
+    attack: "Ataque",
+    defense: "Defensa",
+    'special-attack': "At. Esp",
+    'special-defense': "Def. Esp",
+    speed: "Velocidad",
     normal: "Normal",
     fire: "Fuego",
     water: "Agua",
