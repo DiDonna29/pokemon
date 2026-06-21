@@ -111,7 +111,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
     while (currentHp1 > 0 && currentHp2 > 0 && turnCount < 50) {
       setAttackingPlayer(turn as 1 | 2);
       
-      // Delay for "wind up"
+      // Delay for "wind up" before lunge
       await new Promise(resolve => setTimeout(resolve, 300));
       
       const dmgLabel = lang === 'es' ? 'DAÑO' : 'DMG';
@@ -140,13 +140,13 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
       
       setBattleLogs([...currentLogs]);
       
-      // Impact duration
-      await new Promise(resolve => setTimeout(resolve, 400));
+      // Dramatic pause for impact
+      await new Promise(resolve => setTimeout(resolve, 500));
       setIsHit(null);
       setAttackingPlayer(null);
       
       // Recovery delay
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise(resolve => setTimeout(resolve, 400));
       turnCount++;
     }
     
@@ -182,21 +182,21 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
   };
 
   return (
-    <div className="space-y-16 md:space-y-32 max-w-7xl mx-auto px-4 md:px-6 pb-20">
+    <div className="space-y-12 md:space-y-24 max-w-7xl mx-auto px-4 md:px-12 pb-24 overflow-hidden">
       {/* Header Section */}
-      <div className="flex flex-col items-center gap-10 text-center">
+      <div className="flex flex-col items-center gap-6 text-center">
         <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
           className="relative inline-block"
         >
           <Badge variant="outline" className="px-6 py-2.5 rounded-full border-primary/20 text-primary uppercase font-black text-[10px] tracking-[0.4em] bg-primary/5">
-            Battle Simulation 2.0
+            Battle Arena 2.0
           </Badge>
         </motion.div>
 
-        <div className="space-y-6">
-          <h2 className="text-6xl md:text-[10rem] font-headline font-black uppercase tracking-tighter leading-[0.8]">
+        <div className="space-y-4">
+          <h2 className="text-5xl md:text-[8rem] font-headline font-black uppercase tracking-tighter leading-[0.8] text-foreground">
             {t.battle_arena}
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-lg md:text-2xl px-4 italic opacity-40 leading-relaxed">
@@ -206,19 +206,19 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
       </div>
 
       {/* Main Arena Stage */}
-      <div className="relative min-h-[600px] md:min-h-[850px] w-full glass rounded-[4rem] border-foreground/[0.03] flex flex-col items-center justify-center overflow-hidden shadow-[0_64px_128px_-16px_rgba(0,0,0,0.2)]">
+      <div className="relative min-h-[500px] md:min-h-[750px] w-full glass rounded-[3rem] md:rounded-[5rem] border-foreground/[0.03] flex flex-col items-center justify-center overflow-hidden shadow-4xl group">
         
-        {/* Dynamic Background */}
-        <div className="absolute inset-0 pointer-events-none">
+        {/* Dynamic Background Aura */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <AnimatePresence mode="wait">
             {attackingPlayer && (
               <motion.div 
                 key={attackingPlayer}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.15 }}
-                exit={{ opacity: 0 }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 0.2, scale: 1.2 }}
+                exit={{ opacity: 0, scale: 1.5 }}
                 className={cn(
-                  "absolute inset-0 blur-[150px]",
+                  "absolute inset-0 blur-[120px] transition-colors duration-1000",
                   attackingPlayer === 1 ? "bg-primary" : "bg-secondary"
                 )}
               />
@@ -234,20 +234,20 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="w-full h-full flex flex-col md:flex-row items-center justify-around gap-12 md:gap-8 relative z-10 px-6 py-20"
+              className="w-full h-full flex flex-col md:flex-row items-center justify-around gap-16 md:gap-4 relative z-10 px-6 py-12 md:py-20"
             >
               {/* Player 1 Battle Slot */}
-              <div className="flex flex-col items-center gap-10 relative flex-1 w-full md:w-auto">
+              <div className="flex flex-col items-center gap-6 md:gap-12 relative flex-1 w-full order-2 md:order-1">
                 <motion.div 
-                  initial={{ x: -100, opacity: 0 }}
+                  initial={{ x: -50, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
-                  className="w-full max-w-[340px] space-y-5 z-30"
+                  className="w-full max-w-[280px] md:max-w-[340px] space-y-4 z-30"
                 >
                   <div className="flex justify-between items-end px-2">
-                    <span className="font-black uppercase text-xl tracking-tighter truncate max-w-[180px]">{p1?.name}</span>
-                    <span className="font-black text-2xl text-primary">{hp1} <span className="text-[10px] opacity-40">HP</span></span>
+                    <span className="font-black uppercase text-lg md:text-xl tracking-tighter truncate">{p1?.name}</span>
+                    <span className="font-black text-xl md:text-2xl text-primary">{hp1} <span className="text-[10px] opacity-40">HP</span></span>
                   </div>
-                  <div className="h-4 w-full bg-foreground/5 rounded-full overflow-hidden border border-foreground/5">
+                  <div className="h-3 md:h-4 w-full bg-foreground/5 rounded-full overflow-hidden border border-foreground/5">
                     <motion.div 
                       initial={{ width: "100%" }}
                       animate={{ width: `${(hp1 / maxHp1) * 100}%` }}
@@ -262,7 +262,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                 <motion.div
                   animate={
                     attackingPlayer === 1 
-                      ? { x: [0, 150, 0], scale: [1, 1.2, 1], rotate: [0, 5, 0] } 
+                      ? { x: [0, 100, 0], scale: [1, 1.15, 1], rotate: [0, 5, 0] } 
                       : isHit === 1 
                       ? { x: [0, -10, 10, -10, 10, 0], filter: ["brightness(1)", "brightness(2.5)", "brightness(1)"] }
                       : { scale: 1, x: 0 }
@@ -272,14 +272,14 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                     type: attackingPlayer === 1 ? "spring" : "keyframes",
                     stiffness: 300 
                   }}
-                  className="relative w-48 h-48 sm:w-72 sm:h-72 lg:w-[480px] lg:h-[480px]"
+                  className="relative w-40 h-40 sm:w-64 sm:h-64 lg:w-[420px] lg:h-[420px]"
                 >
                   {p1 && getArtwork(p1) && (
                     <Image 
                       src={getArtwork(p1)!} 
                       alt={p1.name} 
                       fill 
-                      className="object-contain drop-shadow-[0_40px_80px_rgba(0,0,0,0.5)] animate-float-hero" 
+                      className="object-contain drop-shadow-4xl animate-float-hero" 
                       priority
                     />
                   )}
@@ -287,22 +287,22 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
               </div>
 
               {/* Central VS / Winner Action */}
-              <div className="flex flex-col items-center gap-12 z-20 shrink-0">
+              <div className="flex flex-col items-center gap-8 z-20 shrink-0 order-1 md:order-2">
                 {winner ? (
                   <motion.div 
                     initial={{ scale: 0, rotate: -15 }} 
                     animate={{ scale: 1, rotate: 0 }} 
-                    className="flex flex-col items-center gap-10"
+                    className="flex flex-col items-center gap-8"
                   >
                     <div className="relative">
-                      <Trophy className="w-24 h-24 md:w-40 md:h-40 text-primary opacity-20 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10" />
-                      <div className="text-4xl md:text-8xl font-black text-primary drop-shadow-[0_0_40px_rgba(var(--primary),0.6)] uppercase tracking-tighter text-center leading-none">
+                      <Trophy className="w-20 h-20 md:w-40 md:h-40 text-primary opacity-20 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10" />
+                      <div className="text-4xl md:text-8xl font-black text-primary drop-shadow-glow uppercase tracking-tighter text-center leading-none italic">
                         {t.winner}
                       </div>
                     </div>
                     <Button 
                       onClick={resetBattle} 
-                      className="bg-primary text-black rounded-full px-14 h-16 font-black uppercase text-sm tracking-[0.3em] hover:scale-110 shadow-2xl shadow-primary/40 active:scale-95 transition-all border-none"
+                      className="bg-primary text-black rounded-full px-12 h-14 md:h-16 font-black uppercase text-xs tracking-widest hover:scale-110 shadow-3xl active:scale-95 transition-all"
                     >
                       <RotateCcw className="w-5 h-5 mr-3" />
                       {lang === 'es' ? 'OTRA VEZ' : 'AGAIN'}
@@ -310,9 +310,9 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                   </motion.div>
                 ) : (
                   <motion.div 
-                    animate={{ scale: [1, 1.1, 1] }} 
+                    animate={{ scale: [1, 1.1, 1], opacity: [0.1, 0.2, 0.1] }} 
                     transition={{ repeat: Infinity, duration: 1.5 }} 
-                    className="text-7xl md:text-[12rem] font-black text-foreground/5 italic select-none"
+                    className="text-6xl md:text-[15rem] font-black text-foreground italic select-none"
                   >
                     VS
                   </motion.div>
@@ -320,17 +320,17 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
               </div>
 
               {/* Player 2 Battle Slot */}
-              <div className="flex flex-col items-center gap-10 relative flex-1 w-full md:w-auto">
+              <div className="flex flex-col items-center gap-6 md:gap-12 relative flex-1 w-full order-3">
                 <motion.div 
-                  initial={{ x: 100, opacity: 0 }}
+                  initial={{ x: 50, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
-                  className="w-full max-w-[340px] space-y-5 z-30"
+                  className="w-full max-w-[280px] md:max-w-[340px] space-y-4 z-30"
                 >
                   <div className="flex justify-between items-end px-2">
-                    <span className="font-black uppercase text-xl tracking-tighter truncate max-w-[180px]">{p2?.name}</span>
-                    <span className="font-black text-2xl text-secondary">{hp2} <span className="text-[10px] opacity-40">HP</span></span>
+                    <span className="font-black uppercase text-lg md:text-xl tracking-tighter truncate">{p2?.name}</span>
+                    <span className="font-black text-xl md:text-2xl text-secondary">{hp2} <span className="text-[10px] opacity-40">HP</span></span>
                   </div>
-                  <div className="h-4 w-full bg-foreground/5 rounded-full overflow-hidden border border-foreground/5">
+                  <div className="h-3 md:h-4 w-full bg-foreground/5 rounded-full overflow-hidden border border-foreground/5">
                     <motion.div 
                       initial={{ width: "100%" }}
                       animate={{ width: `${(hp2 / maxHp2) * 100}%` }}
@@ -345,7 +345,7 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                 <motion.div
                   animate={
                     attackingPlayer === 2 
-                      ? { x: [0, -150, 0], scale: [1, 1.2, 1], rotate: [0, -5, 0] } 
+                      ? { x: [0, -100, 0], scale: [1, 1.15, 1], rotate: [0, -5, 0] } 
                       : isHit === 2 
                       ? { x: [0, 10, -10, 10, -10, 0], filter: ["brightness(1)", "brightness(2.5)", "brightness(1)"] }
                       : { scale: 1, x: 0 }
@@ -355,14 +355,14 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
                     type: attackingPlayer === 2 ? "spring" : "keyframes",
                     stiffness: 300 
                   }}
-                  className="relative w-48 h-48 sm:w-72 sm:h-72 lg:w-[480px] lg:h-[480px]"
+                  className="relative w-40 h-40 sm:w-64 sm:h-64 lg:w-[420px] lg:h-[420px]"
                 >
                   {p2 && getArtwork(p2) && (
                     <Image 
                       src={getArtwork(p2)!} 
                       alt={p2.name} 
                       fill 
-                      className="object-contain drop-shadow-[0_40px_80px_rgba(0,0,0,0.5)] animate-float-hero" 
+                      className="object-contain drop-shadow-4xl animate-float-hero" 
                       priority
                     />
                   )}
@@ -373,68 +373,68 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
             /* Preparation Stage */
             <motion.div 
               key="prep-stage"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="w-full h-full flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-24 relative z-10 px-8 py-20"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="w-full h-full flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-24 relative z-10 px-8 py-16"
             >
-              <div className="w-full lg:flex-1 max-w-[480px] flex flex-col gap-8">
+              <div className="w-full lg:flex-1 max-w-[440px] flex flex-col gap-6 md:gap-10">
                  <Button 
                     variant="outline" onClick={() => setActiveSelector(1)}
-                    className="w-full h-24 glass border-foreground/10 rounded-[2.5rem] flex items-center justify-between px-10 hover:bg-foreground/5 group"
+                    className="w-full h-20 md:h-24 glass border-foreground/10 rounded-[2.5rem] flex items-center justify-between px-8 md:px-12 hover:bg-foreground/5 group"
                   >
                     <div className="flex items-center gap-6">
-                      <Search className="w-8 h-8 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <Search className="w-6 h-6 md:w-8 md:h-8 text-muted-foreground group-hover:text-primary transition-colors" />
                       <span className="font-black uppercase text-xl md:text-2xl tracking-tighter truncate text-foreground">{p1 ? p1.name : t.select_pokemon}</span>
                     </div>
                   </Button>
                   
                   {p1 ? (
-                    <div className="glass p-12 rounded-[4rem] border-foreground/5 text-center relative flex-1 min-h-[350px] flex flex-col justify-center group overflow-hidden">
-                      <div className="relative w-48 h-48 md:w-72 md:h-72 mx-auto">
-                        <Image src={getArtwork(p1)!} alt={p1.name} fill className="object-contain drop-shadow-2xl animate-float-hero" />
+                    <div className="glass p-8 md:p-12 rounded-[3.5rem] border-foreground/5 text-center relative flex-1 min-h-[300px] md:min-h-[450px] flex flex-col justify-center group overflow-hidden">
+                      <div className="relative w-40 h-40 md:w-72 md:h-72 mx-auto">
+                        <Image src={getArtwork(p1)!} alt={p1.name} fill className="object-contain drop-shadow-4xl animate-float-hero" />
                       </div>
                     </div>
                   ) : (
-                    <div className="glass h-[250px] md:h-[500px] rounded-[4rem] border-dashed border-foreground/10 flex flex-col items-center justify-center text-muted-foreground gap-6 opacity-30 w-full">
-                       <div className="font-black uppercase text-xs tracking-[0.5em]">Slot 01</div>
+                    <div className="glass h-[200px] md:h-[400px] rounded-[3.5rem] border-dashed border-foreground/10 flex flex-col items-center justify-center text-muted-foreground gap-6 opacity-20 w-full">
+                       <div className="font-black uppercase text-[10px] tracking-[0.5em]">Slot 01</div>
                     </div>
                   )}
               </div>
 
-              <div className="flex flex-col items-center gap-14">
-                <div className="w-28 h-28 md:w-44 md:h-44 rounded-[3rem] glass border-primary/20 flex items-center justify-center relative shadow-3xl">
-                   <span className="text-4xl md:text-8xl font-black text-primary italic">VS</span>
+              <div className="flex flex-col items-center gap-10 md:gap-16">
+                <div className="w-24 h-24 md:w-36 md:h-36 rounded-[2.5rem] md:rounded-[3.5rem] glass border-primary/20 flex items-center justify-center relative shadow-3xl">
+                   <span className="text-4xl md:text-7xl font-black text-primary italic">VS</span>
                    <motion.div animate={{ scale: [1, 1.4, 1], opacity: [0.1, 0.4, 0.1] }} transition={{ duration: 4, repeat: Infinity }} className="absolute inset-0 bg-primary/20 rounded-full blur-[100px] -z-10" />
                 </div>
                 
                 <Button 
                   disabled={!p1 || !p2 || loading} onClick={simulateBattle}
-                  className="w-full sm:w-80 h-20 md:h-28 rounded-full bg-primary text-black font-black text-2xl md:text-5xl shadow-[0_32px_64px_-12px_rgba(var(--primary),0.4)] hover:scale-105 active:scale-95 transition-all uppercase tracking-tighter border-none"
+                  className="w-full sm:w-72 h-20 md:h-24 rounded-full bg-primary text-black font-black text-xl md:text-4xl shadow-glow hover:scale-105 active:scale-95 transition-all uppercase tracking-tighter border-none"
                 >
                   {t.start_battle}
                 </Button>
               </div>
 
-              <div className="w-full lg:flex-1 max-w-[480px] flex flex-col gap-8">
+              <div className="w-full lg:flex-1 max-w-[440px] flex flex-col gap-6 md:gap-10">
                   <Button 
                     variant="outline" onClick={() => setActiveSelector(2)}
-                    className="w-full h-24 glass border-foreground/10 rounded-[2.5rem] flex items-center justify-between px-10 hover:bg-foreground/5 group"
+                    className="w-full h-20 md:h-24 glass border-foreground/10 rounded-[2.5rem] flex items-center justify-between px-8 md:px-12 hover:bg-foreground/5 group"
                   >
                     <div className="flex items-center gap-6">
-                      <Search className="w-8 h-8 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <Search className="w-6 h-6 md:w-8 md:h-8 text-muted-foreground group-hover:text-primary transition-colors" />
                       <span className="font-black uppercase text-xl md:text-2xl tracking-tighter truncate text-foreground">{p2 ? p2.name : t.select_pokemon}</span>
                     </div>
                   </Button>
                   
                   {p2 ? (
-                    <div className="glass p-12 rounded-[4rem] border-foreground/5 text-center relative flex-1 min-h-[350px] flex flex-col justify-center group overflow-hidden">
-                      <div className="relative w-48 h-48 md:w-72 md:h-72 mx-auto">
-                        <Image src={getArtwork(p2)!} alt={p2.name} fill className="object-contain drop-shadow-2xl animate-float-hero" />
+                    <div className="glass p-8 md:p-12 rounded-[3.5rem] border-foreground/5 text-center relative flex-1 min-h-[300px] md:min-h-[450px] flex flex-col justify-center group overflow-hidden">
+                      <div className="relative w-40 h-40 md:w-72 md:h-72 mx-auto">
+                        <Image src={getArtwork(p2)!} alt={p2.name} fill className="object-contain drop-shadow-4xl animate-float-hero" />
                       </div>
                     </div>
                   ) : (
-                    <div className="glass h-[250px] md:h-[500px] rounded-[4rem] border-dashed border-foreground/10 flex flex-col items-center justify-center text-muted-foreground gap-6 opacity-30 w-full">
-                       <div className="font-black uppercase text-xs tracking-[0.5em]">Slot 02</div>
+                    <div className="glass h-[200px] md:h-[400px] rounded-[3.5rem] border-dashed border-foreground/10 flex flex-col items-center justify-center text-muted-foreground gap-6 opacity-20 w-full">
+                       <div className="font-black uppercase text-[10px] tracking-[0.5em]">Slot 02</div>
                     </div>
                   )}
               </div>
@@ -446,32 +446,31 @@ export function BattleArena({ lang, allPokemon }: BattleArenaProps) {
       {/* Battle Logs Section */}
       <AnimatePresence>
         {battleLogs.length > 0 && (
-          <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} className="max-w-5xl mx-auto w-full">
-            <div className="glass rounded-[3.5rem] p-10 md:p-20 border-foreground/[0.03] shadow-4xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-16 opacity-[0.03] select-none pointer-events-none">
-                <Swords className="w-64 h-64" />
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mx-auto w-full">
+            <div className="glass rounded-[3rem] p-8 md:p-16 border-foreground/[0.03] shadow-4xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-12 opacity-[0.02] select-none pointer-events-none">
+                <Swords className="w-48 h-48" />
               </div>
               
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-10 mb-20 relative z-10">
-                <h3 className="text-4xl md:text-6xl font-headline font-black uppercase tracking-tighter flex items-center gap-8">
-                  <span className="w-4 h-16 bg-primary rounded-full shadow-[0_0_20px_rgba(var(--primary),0.5)]" />
+              <div className="flex flex-col items-start gap-4 mb-12 relative z-10">
+                <h3 className="text-3xl md:text-5xl font-headline font-black uppercase tracking-tighter flex items-center gap-6">
+                  <span className="w-3 h-12 bg-primary rounded-full" />
                   {t.battle_logs}
                 </h3>
               </div>
               
-              <div className="space-y-8 max-h-[600px] overflow-y-auto pr-8 scrollbar-none relative z-10">
+              <div className="space-y-6 max-h-[450px] overflow-y-auto pr-6 scrollbar-none relative z-10">
                 {battleLogs.map((log, i) => (
                   <motion.div 
-                    initial={{ opacity: 0, x: -30 }}
+                    initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.05 }}
                     key={i} 
                     className={cn(
-                      "text-xl md:text-3xl font-black border-b border-foreground/[0.05] pb-8 last:border-0 flex items-center gap-10",
-                      i === 0 ? "text-primary scale-105 origin-left" : "opacity-20"
+                      "text-lg md:text-2xl font-black border-b border-foreground/[0.05] pb-6 last:border-0 flex items-center gap-8",
+                      i === 0 ? "text-primary scale-105 origin-left" : "opacity-30"
                     )}
                   >
-                    <div className="flex flex-col items-center justify-center shrink-0 w-16 h-16 rounded-3xl bg-foreground/[0.05] text-xs font-black">
+                    <div className="flex flex-col items-center justify-center shrink-0 w-12 h-12 rounded-2xl bg-foreground/[0.05] text-[10px] font-black">
                       <span className="opacity-30">T.</span>
                       <span>{log.turn}</span>
                     </div>

@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -60,7 +61,7 @@
     @apply border-border outline-none transition-all duration-500 ease-in-out;
   }
   body {
-    @apply bg-background text-foreground antialiased selection:bg-primary/30 selection:text-foreground;
+    @apply bg-background text-foreground antialiased selection:bg-primary/30 selection:text-foreground overflow-x-hidden;
     font-feature-settings: "cv02", "cv03", "cv04", "ss01";
     letter-spacing: -0.01em;
   }
@@ -81,6 +82,14 @@
 
 .nav-glass {
   @apply bg-background/60 backdrop-blur-3xl border-t border-foreground/[0.03];
+}
+
+.shadow-glow {
+  @apply shadow-[0_20px_50px_-10px_rgba(var(--primary),0.4)];
+}
+
+.shadow-4xl {
+  @apply shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)];
 }
 
 /* Cinematic Animations */
