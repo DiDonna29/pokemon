@@ -1,9 +1,9 @@
 
 "use client";
 
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetClose } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetClose, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { SlidersHorizontal, RotateCcw, X, Sparkles } from "lucide-react";
+import { SlidersHorizontal, RotateCcw, X } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -78,13 +78,11 @@ export function FiltersDrawer({
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="glass w-full sm:max-w-md border-l border-foreground/10 p-0 flex flex-col [&>button]:hidden">
-        {/* Hidden titles for accessibility */}
         <SheetHeader className="sr-only">
           <SheetTitle>{t.filters}</SheetTitle>
           <SheetDescription>{t.filters_desc}</SheetDescription>
         </SheetHeader>
 
-        {/* Fixed Header */}
         <div className="shrink-0 p-6 md:p-8 space-y-6">
           <div className="flex items-center justify-between">
             <div className="relative w-32 h-10">
@@ -125,7 +123,6 @@ export function FiltersDrawer({
 
         <ScrollArea className="flex-1 px-6 md:px-8 py-6">
           <div className="space-y-12 pb-32">
-            {/* Types section */}
             <div className="space-y-6">
               <div className="flex justify-center">
                 <h3 className="font-headline text-[10px] font-black text-white bg-white/10 px-6 py-2 rounded-full uppercase tracking-[0.3em] inline-block">
@@ -156,7 +153,6 @@ export function FiltersDrawer({
               </div>
             </div>
 
-            {/* Weight section */}
             <div className="space-y-6">
               <div className="flex justify-center">
                 <h3 className="font-headline text-[10px] font-black text-white bg-white/10 px-6 py-2 rounded-full uppercase tracking-[0.3em] inline-block">
@@ -187,7 +183,6 @@ export function FiltersDrawer({
               </div>
             </div>
 
-            {/* Height section */}
             <div className="space-y-6">
               <div className="flex justify-center">
                 <h3 className="font-headline text-[10px] font-black text-white bg-white/10 px-6 py-2 rounded-full uppercase tracking-[0.3em] inline-block">
