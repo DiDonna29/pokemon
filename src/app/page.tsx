@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState, useMemo, useCallback } from "react";
@@ -39,7 +38,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/components/ui/sheet";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 
 const POKEMON_TYPES = [
   "normal", "fire", "water", "electric", "grass", "ice", "fighting", "poison",
