@@ -69,7 +69,6 @@ export default function Home() {
   
   const [deepFilteredList, setDeepFilteredList] = useState<PokemonSummary[] | null>(null);
 
-  // Load theme from localStorage and fix Hydration issues
   useEffect(() => {
     setMounted(true);
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
@@ -81,7 +80,6 @@ export default function Home() {
     }
   }, []);
 
-  // Update theme and persist to localStorage
   const handleToggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
@@ -282,8 +280,8 @@ export default function Home() {
   if (!mounted) return null;
 
   return (
-    <main className="min-h-screen bg-background text-foreground transition-all duration-1000 pb-32 md:pb-40 lg:pb-48 overflow-x-hidden">
-      <header className="fixed top-0 left-0 right-0 z-[100] px-6 py-6 bg-background/60 backdrop-blur-3xl border-b border-foreground/[0.03]">
+    <main className="min-h-screen bg-background text-foreground pb-32 md:pb-40 lg:pb-48 overflow-x-hidden">
+      <header className="fixed top-0 left-0 right-0 z-[100] px-6 py-6 bg-card/80 backdrop-blur-3xl border-b border-border/50">
         <div className="container mx-auto max-w-[1800px] flex items-center justify-between">
           <motion.div 
             initial={{ opacity: 0, x: -30 }}
@@ -300,10 +298,10 @@ export default function Home() {
             />
           </motion.div>
           <div className="flex items-center gap-2 md:gap-3">
-            <Button variant="ghost" size="icon" onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="rounded-2xl w-10 h-10 md:w-12 md:h-12 glass hover:bg-foreground/5">
-              <Globe className="w-4 h-4 md:w-5 md:h-5 text-black dark:text-white" />
+            <Button variant="ghost" size="icon" onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="rounded-2xl w-10 h-10 md:w-12 md:h-12 glass hover:bg-muted/50">
+              <Globe className="w-4 h-4 md:w-5 md:h-5 text-foreground" />
             </Button>
-            <Button variant="ghost" size="icon" onClick={handleToggleTheme} className="rounded-2xl w-10 h-10 md:w-12 md:h-12 glass hover:bg-foreground/5">
+            <Button variant="ghost" size="icon" onClick={handleToggleTheme} className="rounded-2xl w-10 h-10 md:w-12 md:h-12 glass hover:bg-muted/50">
               {theme === 'dark' ? <Sun className="w-4 h-4 md:w-5 md:h-5 text-primary" /> : <Moon className="w-4 h-4 md:w-5 md:h-5 text-secondary" />}
             </Button>
           </div>
@@ -334,7 +332,7 @@ export default function Home() {
                 </motion.div>
               </div>
 
-              <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-between gap-8 glass p-6 md:p-8 rounded-[3.5rem] border-foreground/[0.05]">
+              <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-between gap-8 glass p-6 md:p-8 rounded-[3.5rem]">
                 <div className="flex flex-wrap gap-4">
                   <FiltersDrawer 
                     selectedTypes={selectedTypes} setSelectedTypes={setSelectedTypes}
@@ -348,8 +346,8 @@ export default function Home() {
                     className={cn(
                       "rounded-3xl font-black text-[10px] uppercase tracking-widest h-14 px-8 md:px-10 transition-all duration-700",
                       showCapturedOnly 
-                        ? "bg-primary text-black shadow-[0_20px_40px_-10px_rgba(var(--primary),0.4)] scale-105" 
-                        : "glass text-black dark:text-white hover:bg-foreground/5"
+                        ? "bg-primary text-black shadow-glow scale-105" 
+                        : "glass text-foreground hover:bg-muted/50"
                     )}
                   >
                     <Image 
@@ -372,7 +370,7 @@ export default function Home() {
                     )}
                   </AnimatePresence>
                   <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="w-52 md:w-60 h-14 glass border-none rounded-3xl font-black text-[10px] uppercase tracking-widest px-8 text-black dark:text-white">
+                    <SelectTrigger className="w-52 md:w-60 h-14 glass border-none rounded-3xl font-black text-[10px] uppercase tracking-widest px-8">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="glass border-none rounded-[2rem] overflow-hidden">
@@ -401,7 +399,7 @@ export default function Home() {
                   </Button>
                 </motion.div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 md:gap-12 lg:gap-16">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-12 md:gap-16">
                   <AnimatePresence mode="popLayout">
                     {visiblePokemon.map((p) => {
                       const id = parseInt(p.url.split('/').filter(Boolean).pop() || '0');
@@ -417,13 +415,13 @@ export default function Home() {
 
               {visiblePokemon.length > 0 && (
                 <motion.div variants={itemVariants} className="flex justify-center items-center gap-3 md:gap-5 py-24">
-                   <Button variant="ghost" size="icon" disabled={currentPage === 1} onClick={() => jumpToPage(1)} className="rounded-2xl w-12 h-12 md:w-14 md:h-14 glass text-black dark:text-white"><ChevronsLeft className="w-5 h-5 md:w-6 md:h-6" /></Button>
-                   <Button variant="ghost" size="icon" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="rounded-2xl w-12 h-12 md:w-14 md:h-14 glass text-black dark:text-white"><ChevronLeft className="w-5 h-5 md:w-6 md:h-6" /></Button>
-                   <div className="px-6 md:px-10 h-12 md:h-14 glass flex items-center rounded-3xl font-black text-[10px] md:text-[11px] uppercase tracking-[0.2em] md:tracking-[0.3em] text-black dark:text-white">
+                   <Button variant="ghost" size="icon" disabled={currentPage === 1} onClick={() => jumpToPage(1)} className="rounded-2xl w-12 h-12 md:w-14 md:h-14 glass"><ChevronsLeft className="w-5 h-5 md:w-6 md:h-6" /></Button>
+                   <Button variant="ghost" size="icon" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="rounded-2xl w-12 h-12 md:w-14 md:h-14 glass"><ChevronLeft className="w-5 h-5 md:w-6 md:h-6" /></Button>
+                   <div className="px-6 md:px-10 h-12 md:h-14 glass flex items-center rounded-3xl font-black text-[10px] md:text-[11px] uppercase tracking-[0.2em] md:tracking-[0.3em]">
                     {t.page} <span className="text-primary mx-2 md:mx-3">{currentPage}</span> / {totalPages}
                    </div>
-                   <Button variant="ghost" size="icon" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="rounded-2xl w-12 h-12 md:w-14 md:h-14 glass text-black dark:text-white"><ChevronRight className="w-5 h-5 md:w-6 md:h-6" /></Button>
-                   <Button variant="ghost" size="icon" disabled={currentPage === totalPages} onClick={() => jumpToPage(totalPages)} className="rounded-2xl w-12 h-12 md:w-14 md:h-14 glass text-black dark:text-white"><ChevronsRight className="w-5 h-5 md:w-6 md:h-6" /></Button>
+                   <Button variant="ghost" size="icon" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="rounded-2xl w-12 h-12 md:w-14 md:h-14 glass"><ChevronRight className="w-5 h-5 md:w-6 md:h-6" /></Button>
+                   <Button variant="ghost" size="icon" disabled={currentPage === totalPages} onClick={() => jumpToPage(totalPages)} className="rounded-2xl w-12 h-12 md:w-14 md:h-14 glass"><ChevronsRight className="w-5 h-5 md:w-6 md:h-6" /></Button>
                 </motion.div>
               )}
             </motion.div>
@@ -444,9 +442,9 @@ export default function Home() {
       </div>
 
       <nav className={cn(
-        "fixed bg-background/80 backdrop-blur-3xl border-foreground/5 md:border-white/10 flex items-center justify-around shadow-[0_-10px_40px_rgba(0,0,0,0.1)] transition-all duration-700 z-40",
-        "bottom-0 left-0 right-0 w-full h-20 md:h-24 border-t px-8 md:px-12", // Mobile & Tablet: Docked
-        "lg:bottom-10 lg:left-1/2 lg:-translate-x-1/2 lg:w-fit lg:min-w-[600px] lg:px-16 lg:rounded-[3rem] lg:border lg:h-24" // Desktop: Floating
+        "fixed bg-muted/90 backdrop-blur-3xl border-border flex items-center justify-around shadow-4xl transition-all duration-700 z-40",
+        "bottom-0 left-0 right-0 w-full h-20 md:h-24 border-t px-8 md:px-12",
+        "lg:bottom-10 lg:left-1/2 lg:-translate-x-1/2 lg:w-fit lg:min-w-[600px] lg:px-16 lg:rounded-[3rem] lg:border lg:h-24"
       )}>
         <button 
           onClick={() => handleTabChange("pokedex")}
@@ -464,8 +462,8 @@ export default function Home() {
           whileTap={{ scale: 0.9 }}
           onClick={() => handleTabChange("battle")}
           className={cn(
-            "w-20 h-20 md:w-24 md:h-24 rounded-[2rem] md:rounded-[2.5rem] border-[4px] md:border-[6px] shadow-2xl transition-all flex items-center justify-center bg-background relative -top-6 md:-top-8 lg:top-0",
-            activeTab === 'battle' ? "border-primary bg-primary/10 shadow-primary/30 shadow-[0_0_40px_rgba(var(--primary),0.3)]" : "border-foreground/10 glass"
+            "w-20 h-20 md:w-24 md:h-24 rounded-[2rem] md:rounded-[2.5rem] border-[4px] md:border-[6px] shadow-2xl transition-all flex items-center justify-center bg-card relative -top-6 md:-top-8 lg:top-0",
+            activeTab === 'battle' ? "border-primary bg-primary/10 shadow-primary/30" : "border-border glass"
           )}
         >
           <Image 

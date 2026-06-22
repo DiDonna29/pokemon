@@ -5,7 +5,7 @@
 
 @layer base {
   :root {
-    --background: 220 33% 98%;
+    --background: 210 40% 98%;
     --foreground: 222 47% 11%;
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
@@ -20,12 +20,12 @@
     --secondary-foreground: 210 40% 98%;
     --accent-foreground: 210 40% 98%;
     
-    --muted: 210 40% 96.1%;
+    --muted: 210 40% 94%;
     --muted-foreground: 215.4 16.3% 46.9%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
+    --border: 214.3 31.8% 88%;
+    --input: 214.3 31.8% 88%;
     --ring: 45 93% 47%;
     --radius: 2.5rem;
   }
@@ -33,9 +33,9 @@
   .dark {
     --background: 222 47% 2%;
     --foreground: 210 40% 98%;
-    --card: 222 47% 4%;
+    --card: 222 47% 6%;
     --card-foreground: 210 40% 98%;
-    --popover: 222 47% 2%;
+    --popover: 222 47% 4%;
     --popover-foreground: 210 40% 98%;
     
     --primary: 48 100% 50%;
@@ -46,12 +46,12 @@
     --secondary-foreground: 210 40% 98%;
     --accent-foreground: 222 47% 11%;
     
-    --muted: 222 47% 8%;
+    --muted: 222 47% 12%;
     --muted-foreground: 215 20.2% 65.1%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    --border: 222 47% 10%;
-    --input: 222 47% 10%;
+    --border: 222 47% 15%;
+    --input: 222 47% 15%;
     --ring: 48 100% 50%;
   }
 }
@@ -73,15 +73,15 @@
 
 /* Taste Skill: Anti-Slop Premium Surfaces */
 .glass {
-  @apply bg-white/40 dark:bg-black/40 backdrop-blur-[40px] border border-white/20 dark:border-white/5 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)];
+  @apply bg-card/60 dark:bg-card/40 backdrop-blur-[40px] border border-border/50 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)];
 }
 
 .glass-card {
-  @apply bg-white/60 dark:bg-white/[0.03] backdrop-blur-[30px] border border-white/30 dark:border-white/10 shadow-2xl;
+  @apply bg-card dark:bg-card/60 backdrop-blur-[30px] border border-border shadow-4xl;
 }
 
 .nav-glass {
-  @apply bg-background/60 backdrop-blur-3xl border-t border-foreground/[0.03];
+  @apply bg-muted/80 dark:bg-muted/60 backdrop-blur-3xl border-t border-border/20;
 }
 
 .shadow-glow {
@@ -89,7 +89,7 @@
 }
 
 .shadow-4xl {
-  @apply shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)];
+  @apply shadow-[0_40px_80px_-20px_rgba(0,0,0,0.1)];
 }
 
 /* Cinematic Animations */
