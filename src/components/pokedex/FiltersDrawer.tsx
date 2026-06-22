@@ -67,8 +67,8 @@ export function FiltersDrawer({
         <Button 
           variant="outline" 
           className={cn(
-            "relative glass border-foreground/10 hover:bg-foreground/5 transition-all duration-300 gap-2 h-12 px-4 md:px-8 rounded-2xl font-black text-[10px] uppercase tracking-widest",
-            activeCount > 0 ? "border-primary/40 bg-primary/5" : "text-black dark:text-white"
+            "relative glass border-border/50 hover:bg-muted/50 transition-all duration-300 gap-2 h-12 px-4 md:px-8 rounded-2xl font-black text-[10px] uppercase tracking-widest",
+            activeCount > 0 ? "border-primary/40 bg-primary/5 text-primary" : "text-foreground"
           )}
         >
           <Menu className="w-5 h-5 md:hidden" />
@@ -81,13 +81,13 @@ export function FiltersDrawer({
           )}
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="glass w-full sm:max-w-md border-l border-foreground/10 p-0 flex flex-col [&>button]:hidden z-[150]">
+      <SheetContent side="right" className="glass w-full sm:max-w-md border-l border-border/50 p-0 flex flex-col [&>button]:hidden z-[150]">
         <SheetHeader className="sr-only">
           <SheetTitle>{t.filters}</SheetTitle>
           <SheetDescription>{t.filters_desc}</SheetDescription>
         </SheetHeader>
 
-        <div className="shrink-0 p-6 md:p-8 space-y-8 sticky top-0 z-10 glass border-b border-foreground/5 bg-background/90 backdrop-blur-3xl">
+        <div className="shrink-0 p-6 md:p-8 space-y-8 sticky top-0 z-10 glass border-b border-border/10 bg-background/95 backdrop-blur-3xl">
           <div className="flex items-center justify-between">
             <div className="relative w-32 h-10">
               <Image 
@@ -98,17 +98,17 @@ export function FiltersDrawer({
               />
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon" className="rounded-2xl w-10 h-10 glass hover:bg-foreground/5">
-                <Globe className="w-4 h-4 text-black dark:text-white" />
+              <Button variant="ghost" size="icon" onClick={() => {}} className="rounded-2xl w-10 h-10 glass hover:bg-muted">
+                <Globe className="w-4 h-4 text-foreground" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={onToggleTheme} className="rounded-2xl w-10 h-10 glass hover:bg-foreground/5">
+              <Button variant="ghost" size="icon" onClick={onToggleTheme} className="rounded-2xl w-10 h-10 glass hover:bg-muted">
                 {theme === 'dark' ? <Sun className="w-4 h-4 text-primary" /> : <Moon className="w-4 h-4 text-secondary" />}
               </Button>
               <SheetClose asChild>
                 <Button 
                   variant="ghost" 
                   size="icon" 
-                  className="h-10 w-10 rounded-2xl glass border-foreground/10 text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition-all shadow-xl"
+                  className="h-10 w-10 rounded-2xl glass border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted transition-all shadow-xl"
                 >
                   <X className="w-5 h-5" />
                 </Button>
@@ -117,14 +117,14 @@ export function FiltersDrawer({
           </div>
           
           <div className="flex flex-col items-center gap-4">
-            <p className="text-muted-foreground font-medium italic text-xs text-center opacity-60">
+            <p className="text-muted-foreground font-medium italic text-xs text-center opacity-70">
               {t.filters_desc}
             </p>
             <Button 
               variant="ghost" 
               size="sm" 
               onClick={onClear} 
-              className="text-primary gap-2 h-10 font-black uppercase text-[10px] tracking-widest hover:bg-primary/5 rounded-xl"
+              className="text-primary gap-2 h-10 font-black uppercase text-[10px] tracking-widest hover:bg-primary/10 rounded-xl transition-colors"
             >
               <RotateCcw className="w-4 h-4" />
               {t.reset}
@@ -134,9 +134,10 @@ export function FiltersDrawer({
         
         <ScrollArea className="flex-1 px-6 md:px-8 py-6">
           <div className="space-y-12 pb-32">
+            {/* TIPOS DE POKEMON */}
             <div className="space-y-6">
               <div className="flex justify-center">
-                <h3 className="font-headline text-[10px] font-black text-white bg-white/10 px-6 py-2 rounded-full uppercase tracking-[0.3em] inline-block">
+                <h3 className="font-headline text-[10px] font-black text-foreground/60 bg-muted/50 px-6 py-2 rounded-full uppercase tracking-[0.3em] inline-block">
                   {t.pokemon_types}
                 </h3>
               </div>
@@ -145,8 +146,8 @@ export function FiltersDrawer({
                   <div 
                     key={type} 
                     className={cn(
-                      "flex items-center space-x-4 glass bg-black/60 p-4 rounded-[2rem] border-foreground/5 hover:border-primary/30 transition-all cursor-pointer group",
-                      selectedTypes.includes(type) && "border-primary/40 bg-primary/10"
+                      "flex items-center space-x-4 glass bg-muted/30 p-4 rounded-[2rem] border-border/50 hover:border-primary/50 transition-all cursor-pointer group",
+                      selectedTypes.includes(type) && "border-primary/60 bg-primary/10"
                     )}
                     onClick={() => toggleType(type)}
                   >
@@ -156,7 +157,7 @@ export function FiltersDrawer({
                       onCheckedChange={() => toggleType(type)}
                       className="border-foreground/30 rounded-full w-7 h-7 data-[state=checked]:bg-primary data-[state=checked]:text-black transition-all border-2"
                     />
-                    <Label htmlFor={`type-${type}`} className="capitalize text-sm font-black tracking-widest cursor-pointer group-hover:text-primary transition-colors flex-1 text-white/90">
+                    <Label htmlFor={`type-${type}`} className="capitalize text-sm font-black tracking-widest cursor-pointer group-hover:text-primary transition-colors flex-1 text-foreground">
                       {t[type as keyof typeof t] || type}
                     </Label>
                   </div>
@@ -164,9 +165,10 @@ export function FiltersDrawer({
               </div>
             </div>
 
+            {/* CLASE DE PESO */}
             <div className="space-y-6">
               <div className="flex justify-center">
-                <h3 className="font-headline text-[10px] font-black text-white bg-white/10 px-6 py-2 rounded-full uppercase tracking-[0.3em] inline-block">
+                <h3 className="font-headline text-[10px] font-black text-foreground/60 bg-muted/50 px-6 py-2 rounded-full uppercase tracking-[0.3em] inline-block">
                   {t.weight_class}
                 </h3>
               </div>
@@ -175,8 +177,8 @@ export function FiltersDrawer({
                   <div 
                     key={w.value} 
                     className={cn(
-                      "flex items-center space-x-4 glass bg-black/60 p-5 rounded-[2rem] border-foreground/5 hover:border-primary/30 transition-all cursor-pointer group",
-                      selectedWeight === w.value && "border-primary/40 bg-primary/10"
+                      "flex items-center space-x-4 glass bg-muted/30 p-5 rounded-[2rem] border-border/50 hover:border-primary/50 transition-all cursor-pointer group",
+                      selectedWeight === w.value && "border-primary/60 bg-primary/10"
                     )}
                     onClick={() => setSelectedWeight(selectedWeight === w.value ? null : w.value)}
                   >
@@ -186,7 +188,7 @@ export function FiltersDrawer({
                       onCheckedChange={() => setSelectedWeight(selectedWeight === w.value ? null : w.value)}
                       className="border-foreground/30 rounded-full w-7 h-7 data-[state=checked]:bg-primary data-[state=checked]:text-black border-2"
                     />
-                    <Label htmlFor={`weight-${w.value}`} className="text-sm font-black tracking-widest cursor-pointer group-hover:text-primary flex-1 text-white/90">
+                    <Label htmlFor={`weight-${w.value}`} className="text-sm font-black tracking-widest cursor-pointer group-hover:text-primary flex-1 text-foreground">
                       {w.label}
                     </Label>
                   </div>
@@ -194,9 +196,10 @@ export function FiltersDrawer({
               </div>
             </div>
 
+            {/* CLASE DE ALTURA */}
             <div className="space-y-6">
               <div className="flex justify-center">
-                <h3 className="font-headline text-[10px] font-black text-white bg-white/10 px-6 py-2 rounded-full uppercase tracking-[0.3em] inline-block">
+                <h3 className="font-headline text-[10px] font-black text-foreground/60 bg-muted/50 px-6 py-2 rounded-full uppercase tracking-[0.3em] inline-block">
                   {t.height_class}
                 </h3>
               </div>
@@ -205,8 +208,8 @@ export function FiltersDrawer({
                   <div 
                     key={h.value} 
                     className={cn(
-                      "flex items-center space-x-4 glass bg-black/60 p-5 rounded-[2rem] border-foreground/5 hover:border-primary/30 transition-all cursor-pointer group",
-                      selectedHeight === h.value && "border-primary/40 bg-primary/10"
+                      "flex items-center space-x-4 glass bg-muted/30 p-5 rounded-[2rem] border-border/50 hover:border-primary/50 transition-all cursor-pointer group",
+                      selectedHeight === h.value && "border-primary/60 bg-primary/10"
                     )}
                     onClick={() => setSelectedHeight(selectedHeight === h.value ? null : h.value)}
                   >
@@ -216,7 +219,7 @@ export function FiltersDrawer({
                       onCheckedChange={() => setSelectedHeight(selectedHeight === h.value ? null : h.value)}
                       className="border-foreground/30 rounded-full w-7 h-7 data-[state=checked]:bg-primary data-[state=checked]:text-black border-2"
                     />
-                    <Label htmlFor={`height-${h.value}`} className="text-sm font-black tracking-widest cursor-pointer group-hover:text-primary flex-1 text-white/90">
+                    <Label htmlFor={`height-${h.value}`} className="text-sm font-black tracking-widest cursor-pointer group-hover:text-primary flex-1 text-foreground">
                       {h.label}
                     </Label>
                   </div>
