@@ -5,6 +5,10 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'PokeNexus | Ultimate Pokédex',
   description: 'Gotta catch \'em all with PokeNexus - your ultimate Pokémon companion.',
+  icons: {
+    icon: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png',
+    apple: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png',
+  },
 };
 
 export default function RootLayout({
