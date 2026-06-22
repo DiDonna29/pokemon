@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
@@ -110,7 +111,6 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
     setIsRevealing(true);
     setMessage(null);
     
-    // Cinematic Suspense
     setTimeout(() => {
       setIsRevealed(true);
       setIsRevealing(false);
@@ -175,7 +175,6 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
                 className={cn(
                   "relative w-full h-full",
                   !isRevealed && !isRevealing && "animate-pulsate-glow",
-                  isRevealing && "animate-vibrate"
                 )}
               >
                 <div className={cn(
@@ -187,9 +186,9 @@ export function WhosThatPokemon({ lang, allPokemon }: WhosThatPokemonProps) {
                   alt="Quiz Pokemon"
                   fill
                   className={cn(
-                    "object-contain transition-all duration-1000 ease-out",
-                    !isRevealed && !isRevealing && "brightness-0",
-                    isRevealing && "brightness-0 blur-[4px] opacity-80",
+                    "object-contain transition-all duration-1000 ease-out transform-gpu",
+                    !isRevealed && !isRevealing && "brightness-0 dark:invert",
+                    isRevealing && "brightness-0 dark:invert blur-[4px] opacity-80",
                     isRevealed && "drop-shadow-[0_40px_80px_rgba(0,0,0,0.5)] brightness-100 scale-110"
                   )}
                   priority
