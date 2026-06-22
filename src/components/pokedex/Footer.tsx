@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Language, translations } from "@/lib/i18n";
@@ -46,7 +45,7 @@ export function Footer({ lang }: FooterProps) {
           </div>
         </div>
         
-        <div className="mt-12 md:mt-16 flex justify-center opacity-10 grayscale hover:grayscale-0 hover:opacity-30 transition-all duration-700">
+        <div className="mt-12 md:mt-16 flex flex-col items-center gap-4 opacity-10 grayscale hover:grayscale-0 hover:opacity-30 transition-all duration-700">
           <div className="relative w-40 h-12 md:w-64 md:h-24 select-none pointer-events-none">
             <Image 
               src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg"
@@ -55,6 +54,9 @@ export function Footer({ lang }: FooterProps) {
               className="object-contain"
             />
           </div>
+          <p className="text-[9px] font-black uppercase tracking-[0.5em] text-foreground text-center">
+            {t.google_ai_notice}
+          </p>
         </div>
       </div>
     </footer>
