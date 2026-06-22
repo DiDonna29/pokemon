@@ -5,7 +5,8 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
+    /* MODO CLARO: Fondo Gris Claro Premium */
+    --background: 210 20% 92%;
     --foreground: 222 47% 11%;
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
@@ -20,17 +21,18 @@
     --secondary-foreground: 210 40% 98%;
     --accent-foreground: 210 40% 98%;
     
-    --muted: 210 40% 94%;
+    --muted: 210 20% 88%;
     --muted-foreground: 215.4 16.3% 46.9%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 88%;
-    --input: 214.3 31.8% 88%;
+    --border: 214.3 31.8% 80%;
+    --input: 214.3 31.8% 85%;
     --ring: 45 93% 47%;
     --radius: 2.5rem;
   }
 
   .dark {
+    /* MODO OSCURO: Negro Profundo con Matices */
     --background: 222 47% 2%;
     --foreground: 210 40% 98%;
     --card: 222 47% 6%;
@@ -46,12 +48,12 @@
     --secondary-foreground: 210 40% 98%;
     --accent-foreground: 222 47% 11%;
     
-    --muted: 222 47% 12%;
+    --muted: 222 47% 10%;
     --muted-foreground: 215 20.2% 65.1%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    --border: 222 47% 15%;
-    --input: 222 47% 15%;
+    --border: 222 47% 12%;
+    --input: 222 47% 12%;
     --ring: 48 100% 50%;
   }
 }
@@ -73,7 +75,7 @@
 
 /* Taste Skill: Anti-Slop Premium Surfaces */
 .glass {
-  @apply bg-card/60 dark:bg-card/40 backdrop-blur-[40px] border border-border/50 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)];
+  @apply bg-card/80 dark:bg-card/40 backdrop-blur-[40px] border border-border/50 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)];
 }
 
 .glass-card {
@@ -81,7 +83,7 @@
 }
 
 .nav-glass {
-  @apply bg-muted/80 dark:bg-muted/60 backdrop-blur-3xl border-t border-border/20;
+  @apply bg-muted/95 dark:bg-muted/90 backdrop-blur-3xl border-t border-border/20;
 }
 
 .shadow-glow {
