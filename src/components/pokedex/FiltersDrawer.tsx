@@ -10,7 +10,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Language, translations } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { useState, useEffect } from "react";
 
 const TYPES = [
   "normal", "fire", "water", "electric", "grass", "ice", "fighting", "poison",
@@ -26,6 +25,8 @@ interface FiltersDrawerProps {
   setSelectedHeight: (height: string | null) => void;
   onClear: () => void;
   lang: Language;
+  theme: 'light' | 'dark';
+  onToggleTheme: () => void;
 }
 
 export function FiltersDrawer({ 
@@ -33,22 +34,12 @@ export function FiltersDrawer({
   selectedWeight, setSelectedWeight,
   selectedHeight, setSelectedHeight,
   onClear,
-  lang
+  lang,
+  theme,
+  onToggleTheme
 }: FiltersDrawerProps) {
   const t = translations[lang];
   const activeCount = selectedTypes.length + (selectedWeight ? 1 : 0) + (selectedHeight ? 1 : 0);
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
-
-  useEffect(() => {
-    const isDark = document.documentElement.classList.contains('dark');
-    setTheme(isDark ? 'dark' : 'light');
-  }, []);
-
-  const toggleTheme = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
-    document.documentElement.className = newTheme;
-  };
 
   const WEIGHTS = [
     { label: t.light_lt_10kg, value: "light" },
@@ -96,7 +87,6 @@ export function FiltersDrawer({
           <SheetDescription>{t.filters_desc}</SheetDescription>
         </SheetHeader>
 
-        {/* Header Bar like the reference image */}
         <div className="shrink-0 p-6 md:p-8 space-y-8 sticky top-0 z-10 glass border-b border-foreground/5 bg-background/90 backdrop-blur-3xl">
           <div className="flex items-center justify-between">
             <div className="relative w-32 h-10">
@@ -111,7 +101,7 @@ export function FiltersDrawer({
               <Button variant="ghost" size="icon" className="rounded-2xl w-10 h-10 glass hover:bg-foreground/5">
                 <Globe className="w-4 h-4 text-black dark:text-white" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-2xl w-10 h-10 glass hover:bg-foreground/5">
+              <Button variant="ghost" size="icon" onClick={onToggleTheme} className="rounded-2xl w-10 h-10 glass hover:bg-foreground/5">
                 {theme === 'dark' ? <Sun className="w-4 h-4 text-primary" /> : <Moon className="w-4 h-4 text-secondary" />}
               </Button>
               <SheetClose asChild>

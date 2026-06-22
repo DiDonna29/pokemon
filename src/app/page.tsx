@@ -69,16 +69,25 @@ export default function Home() {
   
   const [deepFilteredList, setDeepFilteredList] = useState<PokemonSummary[] | null>(null);
 
-  // Fix Hydration issues
+  // Load theme from localStorage and fix Hydration issues
   useEffect(() => {
     setMounted(true);
+    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+    if (savedTheme) {
+      setTheme(savedTheme);
+      document.documentElement.className = savedTheme;
+    } else {
+      document.documentElement.className = 'dark';
+    }
   }, []);
 
-  useEffect(() => {
-    if (mounted) {
-      document.documentElement.className = theme;
-    }
-  }, [theme, mounted]);
+  // Update theme and persist to localStorage
+  const handleToggleTheme = () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+    document.documentElement.className = newTheme;
+  };
 
   useEffect(() => {
     async function loadInitial() {
@@ -294,7 +303,7 @@ export default function Home() {
             <Button variant="ghost" size="icon" onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="rounded-2xl w-10 h-10 md:w-12 md:h-12 glass hover:bg-foreground/5">
               <Globe className="w-4 h-4 md:w-5 md:h-5 text-black dark:text-white" />
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-2xl w-10 h-10 md:w-12 md:h-12 glass hover:bg-foreground/5">
+            <Button variant="ghost" size="icon" onClick={handleToggleTheme} className="rounded-2xl w-10 h-10 md:w-12 md:h-12 glass hover:bg-foreground/5">
               {theme === 'dark' ? <Sun className="w-4 h-4 md:w-5 md:h-5 text-primary" /> : <Moon className="w-4 h-4 md:w-5 md:h-5 text-secondary" />}
             </Button>
           </div>
@@ -332,6 +341,7 @@ export default function Home() {
                     selectedWeight={selectedWeight} setSelectedWeight={setSelectedWeight}
                     selectedHeight={selectedHeight} setSelectedHeight={setSelectedHeight}
                     onClear={handleClearFilters} lang={lang}
+                    theme={theme} onToggleTheme={handleToggleTheme}
                   />
                   <Button 
                     onClick={() => setSelectedCapturedOnly(!showCapturedOnly)} 
@@ -434,9 +444,9 @@ export default function Home() {
       </div>
 
       <nav className={cn(
-        "fixed bg-background/80 backdrop-blur-3xl border-foreground/5 md:border-white/10 flex items-center justify-around shadow-[0_-10px_40px_rgba(0,0,0,0.1)] transition-all duration-700",
-        "bottom-0 left-0 right-0 w-full h-20 md:h-24 border-t px-8 md:px-12 z-40", // Mobile & Tablet: Docked (z-40 to be below sheets/modals)
-        "lg:bottom-10 lg:left-1/2 lg:-translate-x-1/2 lg:w-fit lg:min-w-[600px] lg:px-16 lg:rounded-[3rem] lg:border lg:h-24 lg:z-40" // Desktop: Floating
+        "fixed bg-background/80 backdrop-blur-3xl border-foreground/5 md:border-white/10 flex items-center justify-around shadow-[0_-10px_40px_rgba(0,0,0,0.1)] transition-all duration-700 z-40",
+        "bottom-0 left-0 right-0 w-full h-20 md:h-24 border-t px-8 md:px-12", // Mobile & Tablet: Docked
+        "lg:bottom-10 lg:left-1/2 lg:-translate-x-1/2 lg:w-fit lg:min-w-[600px] lg:px-16 lg:rounded-[3rem] lg:border lg:h-24" // Desktop: Floating
       )}>
         <button 
           onClick={() => handleTabChange("pokedex")}
