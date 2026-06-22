@@ -6,47 +6,48 @@ Este documento proporciona una visión profunda de la arquitectura y las funcion
 
 El proyecto sigue una estructura de **Next.js 15 App Router** optimizada para el rendimiento y la escalabilidad:
 
-- `src/app`: Rutas y páginas principales.
-- `src/components`: Componentes UI modulares y lógicos (Pokedex, BattleArena, Quiz).
-- `src/ai`: Integración con Genkit, definiciones de prompts y flujos de IA.
+- `src/app`: Rutas y páginas principales con manejo de hidratación para evitar errores de SSR.
+- `src/components`: Componentes UI modulares (Pokedex, BattleArena, Quiz, Filters).
+- `src/ai`: Integración con Genkit v1.x, definiciones de prompts y flujos de IA (Gemini 2.5 Flash).
 - `src/lib`: Utilidades, clientes de API (PokeAPI) y sistemas de internacionalización (i18n).
-- `src/hooks`: Hooks personalizados para gestión de estado y UI móvil.
+- `src/hooks`: Hooks personalizados para gestión de estado, UI móvil y notificaciones (Toast).
 
 ## 🧠 Integración de IA (Genkit)
 
 La funcionalidad de **Descubrimiento IA** utiliza Genkit para procesar lenguaje natural:
 
 1. **Definición de Flujo:** Ubicado en `src/ai/flows/intelligent-pokemon-discovery-flow.ts`.
-2. **Modelo:** Utiliza `gemini-1.5-flash` a través de `@genkit-ai/google-genai`.
-3. **Lógica de Fallback:** Si la IA no encuentra resultados o falla la conexión (ej. falta de API Key), el sistema lanza un aviso visual (Toast) y permite resetear los filtros para no bloquear la experiencia del usuario.
+2. **Modelo:** Utiliza `gemini-2.5-flash` para una respuesta rápida y precisa.
+3. **Lógica de Fallback:** Implementación de manejo de errores centralizado que informa al usuario mediante Toasts si el servicio no está disponible o no hay coincidencias.
 
-## 🌓 Sistema de Contraste Inteligente (UI/UX)
+## 🌓 Sistema de UI/UX Premium (Taste Skill)
 
-Se ha implementado una lógica de contraste dinámico para asegurar la accesibilidad (WCAG) en todas las condiciones:
+Se ha implementado una lógica de diseño de "Alta Gama" (Anti-Slop):
 
-- **Regla de Oro:** Texto NEGRO sobre fondos claros/amarillos y texto BLANCO sobre fondos oscuros/cristal.
-- **Botón Mi Colección:** Implementa un estado "Sticky/Activo" que cambia radicalmente su apariencia para indicar que el filtro está aplicado.
-- **Modo Oscuro/Claro:** Sincronización total mediante variables CSS HSL que garantizan que el cristalismo (glassmorphism) nunca comprometa la legibilidad.
+- **Navegación Inteligente:** Barra inferior que se ancla al borde en móviles (docked) y flota en escritorio (floating) para máxima ergonomía.
+- **Cristalismo (Glassmorphism):** Superficies con `backdrop-blur` denso y bordes sutiles que reaccionan al tema claro/oscuro.
+- **Contraste Dinámico:** Uso de variables CSS HSL para asegurar legibilidad WCAG, con especial atención a los botones de tipo y estados activos.
 
-## 🎮 Funcionalidades Premium
+## 🎮 Funcionalidades Core
 
-### 1. Sistema de Filtrado Profundo (Deep Filtering)
-A diferencia de una búsqueda simple, PokeNexus realiza llamadas asíncronas para obtener detalles de Peso y Altura. Hemos implementado un motor de filtrado que analiza estas métricas en tiempo real, permitiendo segmentar la Pokedex por categorías como "Pesado (>100kg)" o "Pequeño (<1m)".
+### 1. Campo de Batalla (Combat Engine)
+Un motor de simulación cinemático:
+- **Animaciones Físicas:** Uso de `framer-motion` para movimientos de embestida (atacante) y vibración/flash de impacto (defensor).
+- **Lógica de Turnos:** Simulación basada en estadísticas de HP, Ataque, Defensa y Velocidad con registros de batalla en tiempo real.
 
-### 2. Campo de Batalla Directo
-Un motor de simulación basado en las estadísticas reales (HP, Attack, Defense, Speed). Los registros de batalla se generan con delays controlados para simular turnos de juego clásicos.
+### 2. Sistema de Filtrado de Cápsula
+- **UI de Referencia:** Panel lateral con cápsulas oscuras y checkboxes circulares amarillos de alto contraste.
+- **Filtrado Profundo:** Procesamiento asíncrono que analiza peso y altura real de los especímenes, más allá de los datos básicos de la lista general.
 
-### 3. Quiz de Suspenso Cinematográfico
-El modo "¿Quién es ese Pokémon?" ha sido mejorado con:
-- **Vibración y Destellos:** Al intentar revelar al Pokémon, la silueta vibra y emite luz pulsante para crear suspenso.
-- **Revelado Automático:** Si el usuario falla 3 veces, se habilita el botón "Revelar Pokémon".
-- **Feedback Visual:** Explosión de confeti y cambio de brillo al descubrir la identidad.
+### 3. Quiz "¿Quién es ese Pokémon?"
+- **Suspenso Cinematográfico:** Siluetas con brillo pulsante que se revelan tras una secuencia de vibración y destellos de luz.
+- **Pistas Progresivas:** Sistema de pistas por letra inicial y tipo elemental para guiar al usuario.
 
-## 📦 Gestión de Paquetes y Producción
+## 📦 Producción y Despliegue
 
-El proyecto está configurado para ser agnóstico al gestor de paquetes:
-- **Scripts:** `dev`, `build`, `start`, `lint`.
-- **Configuración:** `next.config.ts` incluye protecciones de `allowedDevOrigins` para entornos de desarrollo en la nube.
-- **Soporte:** Probado en `pnpm`, `yarn` y `npm`.
+El proyecto está configurado para ser desplegado instantáneamente:
+- **Scripts:** Totalmente compatible con `yarn build` y `pnpm build`.
+- **Next.js 15:** Aprovechando las últimas mejoras en compilación y tiempo de ejecución.
+- **Imágenes:** Configuración de `next.config.ts` optimizada para dominios externos de PokeAPI y GitHub.
 
-© 2024 PokeNexus - Desarrollado con pasión por los detalles.
+© 2024 PokeNexus - Desarrollado con pasión por los detalles y el rendimiento.

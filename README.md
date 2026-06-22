@@ -8,8 +8,6 @@ Este proyecto es totalmente compatible con `npm`, `yarn` y `pnpm`.
 
 ### Instalación de dependencias:
 ```bash
-npm install
-# o
 yarn install
 # o
 pnpm install
@@ -17,30 +15,30 @@ pnpm install
 
 ### Ejecución en desarrollo:
 ```bash
-npm run dev
+yarn dev
 ```
 
 ### Construcción para producción:
 ```bash
-npm run build
-npm start
+yarn build
+yarn start
 ```
 
 ## ✨ Características Principales
 
-- 🔍 **Búsqueda Inteligente:** Encuentra cualquier Pokémon por nombre, ID o tipo.
+- 🔍 **Búsqueda Inteligente:** Encuentra cualquier Pokémon por nombre, ID o tipo con carga optimizada.
 - 🤖 **Descubrimiento IA (Genkit):** Utiliza lenguaje natural para encontrar Pokémon (ej: "un tipo fuego rápido").
-- ⚖️ **Filtros Avanzados Profundos:** Clasifica por clase de peso, altura y tipos elementales con procesamiento asíncrono.
-- 🛡️ **Campo de Batalla:** Simula enfrentamientos épicos entre dos especies analizando sus estadísticas reales en tiempo real.
-- 🎮 **Quiz "¿Quién es ese Pokémon?":** Pon a prueba tus conocimientos con un sistema de siluetas, pistas y revelación con suspenso cinematográfico.
-- 🎒 **Colección Personal:** Marca tus capturas y activa el "Modo Colección" para ver solo tu equipo con una interfaz dedicada.
-- 🌓 **Diseño Adaptativo Premium:** Estilo *Glassmorphism* con lógica de contraste inteligente (texto adaptable al fondo para máxima legibilidad).
+- ⚖️ **Filtros Avanzados Profundos:** Clasifica por clase de peso, altura y tipos elementales con procesamiento asíncrono y UI de cápsula premium.
+- 🛡️ **Campo de Batalla Animado:** Simula enfrentamientos épicos con animaciones de embestida, impacto y retroceso basadas en estadísticas reales.
+- 🎮 **Quiz "¿Quién es ese Pokémon?":** Pon a prueba tus conocimientos con un sistema de siluetas, pistas progresivas y revelación con suspenso cinematográfico.
+- 🎒 **Colección Personal:** Marca tus capturas y filtra tu equipo con una interfaz dedicada y animaciones de Pokéball.
+- 🌓 **Diseño Adaptativo Premium:** Estilo *Glassmorphism* con navegación inteligente: pegada al fondo (docked) en móviles y flotante en escritorio.
 
 ## 🛠️ Stack Tecnológico
 
 - **Frontend:** Next.js 15 (App Router), React 19, Tailwind CSS.
-- **UI Components:** Shadcn/UI, Framer Motion (Animaciones de suspenso), Lucide React (Iconos).
-- **IA:** Genkit + Google Gemini 1.5 Flash.
+- **UI Components:** Shadcn/UI, Framer Motion (Animaciones cinemáticas), Lucide React.
+- **IA:** Genkit + Google Gemini 2.5 Flash.
 - **API:** PokeAPI (Datos en tiempo real).
 
 Para una guía técnica más profunda, consulta el archivo `PROJECT_DETAILS.md`.
