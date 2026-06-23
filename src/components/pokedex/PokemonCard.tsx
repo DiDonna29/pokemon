@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -31,7 +30,7 @@ export function PokemonCard({ name, isCaught, onToggleCaught, onClick }: Pokemon
 
   if (loading) {
     return (
-      <div className="glass rounded-[4rem] p-10 h-[500px] flex flex-col items-center justify-between">
+      <div className="glass rounded-[4rem] p-10 h-[500px] flex flex-col items-center justify-between overflow-hidden">
         <Skeleton className="h-64 w-64 rounded-full bg-foreground/5" />
         <div className="space-y-4 w-full">
           <Skeleton className="h-10 w-3/4 mx-auto rounded-2xl bg-foreground/5" />
@@ -54,9 +53,9 @@ export function PokemonCard({ name, isCaught, onToggleCaught, onClick }: Pokemon
       className="group relative glass-card rounded-[4rem] p-8 md:p-10 h-[500px] flex flex-col items-center justify-between cursor-pointer overflow-hidden transform-gpu"
       onClick={() => onClick(pokemon)}
     >
-      <div className="absolute top-8 left-8 flex flex-col items-start gap-1 z-20">
+      <div className="absolute top-8 left-8 flex flex-col items-start gap-1 z-20 max-w-[50%]">
         <span className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.3em]">Entry</span>
-        <span className="font-headline text-2xl font-black text-primary/60 tracking-tighter italic">
+        <span className="font-headline text-2xl font-black text-primary/60 tracking-tighter italic truncate w-full">
           #{String(pokemon.id).padStart(3, '0')}
         </span>
       </div>
@@ -82,7 +81,7 @@ export function PokemonCard({ name, isCaught, onToggleCaught, onClick }: Pokemon
         />
       </motion.button>
 
-      <div className="relative mt-12 flex-1 flex items-center justify-center w-full transform-gpu">
+      <div className="relative mt-12 flex-1 flex items-center justify-center w-full transform-gpu overflow-hidden">
         <div className={cn(
           "absolute inset-0 blur-[80px] opacity-10 group-hover:opacity-30 transition-opacity duration-700 rounded-full scale-125 transform-gpu",
           getTypeColorClass(pokemon.types[0].type.name)
@@ -93,25 +92,25 @@ export function PokemonCard({ name, isCaught, onToggleCaught, onClick }: Pokemon
             alt={pokemon.name} 
             width={350} 
             height={350} 
-            className="relative z-10 drop-shadow-2xl group-hover:scale-105 transition-transform duration-500 animate-float-hero w-auto h-full max-h-[250px] transform-gpu"
+            className="relative z-10 drop-shadow-2xl group-hover:scale-105 transition-transform duration-500 animate-float-hero w-auto h-full max-h-[220px] md:max-h-[250px] transform-gpu object-contain"
             priority={pokemon.id < 20}
           />
         )}
       </div>
 
-      <div className="w-full text-center mt-auto z-10">
+      <div className="w-full text-center mt-auto z-10 max-w-full px-2">
         <h3 className={cn(
-          "font-black capitalize tracking-tighter group-hover:text-primary mb-5 transition-all duration-300 leading-tight",
-          pokemon.name.length > 10 ? "text-3xl md:text-4xl" : "text-4xl md:text-5xl"
+          "font-black capitalize tracking-tighter group-hover:text-primary mb-5 transition-all duration-300 leading-tight truncate w-full",
+          pokemon.name.length > 10 ? "text-2xl md:text-3xl" : "text-4xl md:text-5xl"
         )}>
           {pokemon.name}
         </h3>
-        <div className="flex gap-3 justify-center">
+        <div className="flex gap-2 justify-center flex-wrap">
           {pokemon.types.map((t) => (
             <Badge 
               key={t.type.name} 
               className={cn(
-                "capitalize text-[10px] py-2 px-6 rounded-full border-none font-black text-white shadow-lg tracking-[0.2em]",
+                "capitalize text-[9px] py-1.5 px-4 rounded-full border-none font-black text-white shadow-lg tracking-[0.2em] whitespace-nowrap",
                 getTypeColorClass(t.type.name)
               )}
             >
